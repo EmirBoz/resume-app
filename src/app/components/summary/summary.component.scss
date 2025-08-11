@@ -1,0 +1,59 @@
+// Summary component specific styles
+
+:host {
+  display: block;
+}
+
+section {
+  // Ensure proper spacing
+  h2 {
+    line-height: 1.2;
+    letter-spacing: -0.025em;
+    margin-bottom: 0.75rem;
+  }
+
+  // Summary text styling
+  div {
+    line-height: 1.6;
+    
+    // Better text rendering
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+// Print-specific styles
+@media print {
+  .print\:gap-y-1 {
+    row-gap: 0.25rem !important;
+  }
+  
+  .print\:text-\[12px\] {
+    font-size: 12px !important;
+  }
+  
+  section {
+    // Ensure proper page breaks
+    page-break-inside: avoid;
+    
+    h2 {
+      margin-bottom: 0.5rem;
+    }
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 640px) {
+  section {
+    gap: 0.5rem;
+    
+    h2 {
+      font-size: 1.125rem; // text-lg
+    }
+    
+    div {
+      font-size: 0.875rem; // text-sm
+    }
+  }
+}

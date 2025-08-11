@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { DataService, ThemeService } from './services';
 import { SkeletonComponent } from './components/ui';
 import { HeaderComponent } from './components/header/header.component';
+import { SummaryComponent } from './components/summary/summary.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, SkeletonComponent, HeaderComponent],
+  imports: [CommonModule, SkeletonComponent, HeaderComponent, SummaryComponent],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })
