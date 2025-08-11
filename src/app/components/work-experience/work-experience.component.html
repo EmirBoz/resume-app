@@ -1,0 +1,93 @@
+<section class="flex min-h-0 flex-col gap-y-3 print:gap-y-1">
+  <h2 class="text-xl font-bold" id="work-experience">
+    Work Experience
+  </h2>
+  
+  <div
+    class="space-y-4 print:space-y-0"
+    role="feed"
+    aria-labelledby="work-experience"
+  >
+    @for (work of workExperience(); track trackByWork($index, work)) {
+      <article>
+        <app-card className="py-1 print:py-0">
+          <!-- Card Header -->
+          <app-card-header className="print:space-y-1">
+            <!-- Company name, badges, and period -->
+            <div class="flex items-center justify-between gap-x-2 text-base">
+              <h3 class="inline-flex items-center justify-center gap-x-1 font-semibold leading-none print:text-sm">
+                <!-- Company link -->
+                <a
+                  class="hover:underline"
+                  [href]="work.link"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  [attr.aria-label]="getCompanyAriaLabel(work.company)"
+                >
+                  {{ work.company }}
+                </a>
+                
+                <!-- Desktop badges (hidden on mobile) -->
+                <ul
+                  class="hidden gap-x-1 sm:inline-flex list-none p-0"
+                  aria-label="Technologies used"
+                >
+                  @for (badge of work.badges; track trackByBadge($index, badge)) {
+                    <li>
+                      <app-badge
+                        variant="secondary"
+                        className="align-middle text-xs print:px-1 print:py-0.5 print:text-[8px] print:leading-tight"
+                      >
+                        {{ badge }}
+                      </app-badge>
+                    </li>
+                  }
+                </ul>
+              </h3>
+              
+              <!-- Work period -->
+              <div
+                class="text-sm tabular-nums text-gray-500"
+                [attr.title]="getWorkPeriodTitle(work.start, work.end)"
+              >
+                {{ formatWorkPeriod(work.start, work.end) }}
+              </div>
+            </div>
+
+            <!-- Job title -->
+            <h4 class="font-mono text-sm font-semibold leading-none print:text-[12px]">
+              {{ work.title }}
+            </h4>
+          </app-card-header>
+
+          <!-- Card Content -->
+          <app-card-content>
+            <!-- Job description -->
+            <div class="mt-2 text-xs text-foreground/80 print:mt-1 print:text-[10px] text-pretty">
+              {{ work.description }}
+            </div>
+            
+            <!-- Mobile badges (visible only on mobile) -->
+            <div class="mt-2">
+              <ul
+                class="-mx-2 flex-wrap gap-1 sm:hidden inline-flex list-none p-0"
+                aria-label="Technologies used"
+              >
+                @for (badge of work.badges; track trackByBadge($index, badge)) {
+                  <li>
+                    <app-badge
+                      variant="secondary"
+                      className="align-middle text-xs print:px-1 print:py-0.5 print:text-[8px] print:leading-tight"
+                    >
+                      {{ badge }}
+                    </app-badge>
+                  </li>
+                }
+              </ul>
+            </div>
+          </app-card-content>
+        </app-card>
+      </article>
+    }
+  </div>
+</section>

@@ -4,11 +4,12 @@ import { DataService, ThemeService } from './services';
 import { SkeletonComponent } from './components/ui';
 import { HeaderComponent } from './components/header/header.component';
 import { SummaryComponent } from './components/summary/summary.component';
+import { WorkExperienceComponent } from './components/work-experience/work-experience.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, SkeletonComponent, HeaderComponent, SummaryComponent],
+  imports: [CommonModule, SkeletonComponent, HeaderComponent, SummaryComponent, WorkExperienceComponent],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })
@@ -30,8 +31,16 @@ export class App {
   pageTitle = computed(() => `${this.resumeData().name} - Resume`);
   
   constructor() {
-    // Initialize theme system
-    this.themeService.initSystemThemeListener();
+    // Force light theme for CV - CVs should always be readable
+    this.themeService.setTheme('light');
+    
+    // Remove any dark theme classes from document
+    if (typeof document !== 'undefined') {
+      document.documentElement.classList.remove('dark');
+      document.documentElement.classList.add('light');
+      document.body.classList.remove('dark');
+      document.body.classList.add('light');
+    }
   }
 
   // Error boundary-like functionality

@@ -4,6 +4,7 @@
   id="cv-content"
   role="main"
   [attr.aria-label]="resumeData().name + ' Resume'"
+  style="background-color: hsl(45 15% 96%) !important; color: hsl(0 0% 15%) !important;"
 >
   <!-- Screen reader only title -->
   <div class="sr-only">
@@ -31,8 +32,9 @@
   } @else {
     <!-- Main CV Content -->
     <section
-      class="mx-auto w-full max-w-2xl space-y-8 bg-white print:space-y-4"
+      class="mx-auto w-full max-w-2xl space-y-8 print:space-y-4"
       aria-label="Resume Content"
+      style="background-color: transparent !important; color: hsl(0 0% 15%) !important;"
     >
       <!-- Header Section -->
       <div class="space-y-4">
@@ -59,14 +61,7 @@
           @if (isLoading()) {
             <app-skeleton [lines]="6" height="1rem"></app-skeleton>
           } @else {
-            <div class="text-center p-6 border-2 border-dashed border-muted rounded-lg">
-              <h3 class="text-md font-semibold text-muted-foreground">
-                Work Experience Component
-              </h3>
-              <p class="text-sm text-muted-foreground mt-2">
-                {{ resumeData().work.length }} work experiences
-              </p>
-            </div>
+            <app-work-experience />
           }
         </div>
 

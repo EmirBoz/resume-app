@@ -1,0 +1,164 @@
+// Work Experience component specific styles
+
+:host {
+  display: block;
+}
+
+section {
+  h2 {
+    line-height: 1.2;
+    letter-spacing: -0.025em;
+    margin-bottom: 0.75rem;
+  }
+
+  // Work experience list
+  .space-y-4 > * + * {
+    margin-top: 1rem;
+  }
+
+  // Individual work item
+  article {
+    // Company name and link styling
+    h3 {
+      a {
+        transition: all 0.2s ease-in-out;
+        text-decoration: none;
+        
+        &:hover {
+          text-decoration: underline;
+          color: hsl(var(--foreground));
+        }
+        
+        &:focus-visible {
+          outline: 2px solid hsl(var(--ring));
+          outline-offset: 2px;
+          border-radius: 0.25rem;
+        }
+      }
+    }
+
+    // Job title styling
+    h4 {
+      color: hsl(var(--foreground) / 0.9);
+    }
+
+    // Work period styling
+    .tabular-nums {
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: "tnum";
+    }
+
+    // Description text
+    .text-pretty {
+      text-wrap: pretty;
+    }
+
+    // Badge lists
+    ul {
+      // Desktop badges
+      &.hidden.sm\:inline-flex {
+        @media (min-width: 640px) {
+          display: inline-flex !important;
+        }
+      }
+
+      // Mobile badges
+      &.sm\:hidden {
+        @media (min-width: 640px) {
+          display: none !important;
+        }
+      }
+    }
+  }
+}
+
+// Print-specific styles
+@media print {
+  .print\:gap-y-1 {
+    row-gap: 0.25rem !important;
+  }
+  
+  .print\:space-y-0 > * + * {
+    margin-top: 0 !important;
+  }
+  
+  .print\:py-0 {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+  }
+  
+  .print\:space-y-1 > * + * {
+    margin-top: 0.25rem !important;
+  }
+  
+  .print\:text-sm {
+    font-size: 0.875rem !important;
+  }
+  
+  .print\:text-\[12px\] {
+    font-size: 12px !important;
+  }
+  
+  .print\:mt-1 {
+    margin-top: 0.25rem !important;
+  }
+  
+  .print\:text-\[10px\] {
+    font-size: 10px !important;
+  }
+  
+  .print\:px-1 {
+    padding-left: 0.25rem !important;
+    padding-right: 0.25rem !important;
+  }
+  
+  .print\:py-0\.5 {
+    padding-top: 0.125rem !important;
+    padding-bottom: 0.125rem !important;
+  }
+  
+  .print\:text-\[8px\] {
+    font-size: 8px !important;
+  }
+  
+  .print\:leading-tight {
+    line-height: 1.25 !important;
+  }
+
+  // Ensure proper page breaks
+  section {
+    page-break-inside: avoid;
+  }
+  
+  article {
+    page-break-inside: avoid;
+    margin-bottom: 0.5rem;
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 640px) {
+  section {
+    h2 {
+      font-size: 1.125rem; // text-lg
+    }
+    
+    .space-y-4 > * + * {
+      margin-top: 0.75rem;
+    }
+  }
+  
+  article {
+    h3 {
+      font-size: 0.875rem; // text-sm
+    }
+    
+    h4 {
+      font-size: 0.75rem; // text-xs
+    }
+    
+    .text-sm {
+      font-size: 0.75rem; // text-xs
+    }
+  }
+}

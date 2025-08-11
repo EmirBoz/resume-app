@@ -3,6 +3,29 @@
 :host {
   display: block;
   min-height: 100vh;
+  
+  /* CV Theme - Warm beige background */
+  background-color: hsl(45 15% 96%) !important; /* Warm beige #f7f5f3 */
+  color: hsl(0 0% 15%) !important; /* Rich dark gray #262626 */
+}
+
+/* Ensure CV content uses warm professional theme */
+#cv-content {
+  background-color: hsl(45 15% 96%) !important; /* Warm beige background */
+  color: hsl(0 0% 15%) !important; /* Rich dark gray text */
+  
+  /* Override theme variables with warm professional palette */
+  --background: 45 15% 96%; /* Warm beige background */
+  --foreground: 0 0% 15%; /* Rich dark gray */
+  --card: 45 20% 98%; /* Very light warm beige cards for subtle contrast */
+  --card-foreground: 0 0% 15%; /* Dark text on cards */
+  --muted: 45 8% 88%; /* Subtle warm gray */
+  --muted-foreground: 0 0% 45%; /* Medium gray for muted text */
+  --border: 45 8% 82%; /* Subtle warm border */
+  --primary: 0 0% 20%; /* Deep charcoal for primary elements */
+  --primary-foreground: 45 15% 96%; /* Beige text on dark backgrounds */
+  --secondary: 45 10% 90%; /* Light warm gray for secondary */
+  --secondary-foreground: 0 0% 25%; /* Dark gray on secondary */
 }
 
 // Screen reader only utility

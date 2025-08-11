@@ -7,7 +7,7 @@ export const RESUME_DATA: ResumeData = {
   locationLink: 'https://www.google.com/maps/place/İstanbul',
   about: 'Full Stack Developer passionate about creating innovative solutions.',
   summary: 'Experienced Full Stack Developer specializing in modern web technologies, scalable applications, and user-centered design. Passionate about clean code, performance optimization, and continuous learning.',
-  avatarUrl: 'https://avatars.githubusercontent.com/u/placeholder?v=4',
+  avatarUrl: '/profile.jpeg',
   personalWebsiteUrl: 'https://emirboz.dev',
   contact: {
     email: 'emir@example.com',

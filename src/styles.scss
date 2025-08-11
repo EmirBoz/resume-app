@@ -4,33 +4,34 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 224 71.4% 4.1%;
+    /* CV Theme - Warm beige background with elegant dark text */
+    --background: 45 15% 96%; /* Warm beige background #f7f5f3 */
+    --foreground: 0 0% 15%; /* Rich dark gray #262626 */
 
-    --card: 0 0% 100%;
-    --card-foreground: 224 71.4% 4.1%;
+    --card: 45 20% 98%; /* Very light warm beige cards for subtle contrast */
+    --card-foreground: 0 0% 15%; /* Rich dark gray text on cards */
 
     --popover: 0 0% 100%;
-    --popover-foreground: 224 71.4% 4.1%;
+    --popover-foreground: 0 0% 15%;
 
-    --primary: 220.9 39.3% 11%;
-    --primary-foreground: 210 20% 98%;
+    --primary: 0 0% 20%; /* Deep charcoal for primary elements */
+    --primary-foreground: 45 15% 96%; /* Beige text on dark backgrounds */
 
-    --secondary: 220 14.3% 95.9%;
-    --secondary-foreground: 220.9 39.3% 11%;
+    --secondary: 45 10% 90%; /* Light warm gray for secondary elements */
+    --secondary-foreground: 0 0% 25%; /* Dark gray text on secondary */
 
-    --muted: 220 14.3% 95.9%;
-    --muted-foreground: 220 8.9% 46.1%;
+    --muted: 45 8% 88%; /* Subtle warm gray for muted backgrounds */
+    --muted-foreground: 0 0% 45%; /* Medium gray for muted text */
 
-    --accent: 220 14.3% 95.9%;
-    --accent-foreground: 220.9 39.3% 11%;
+    --accent: 45 12% 85%; /* Warm accent color */
+    --accent-foreground: 0 0% 20%; /* Dark text on accent */
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 20% 98%;
+    --destructive: 0 65% 50%; /* Error red */
+    --destructive-foreground: 0 0% 98%; /* White text on error */
 
-    --border: 220 13% 91%;
-    --input: 220 13% 91%;
-    --ring: 224 71.4% 4.1%;
+    --border: 45 8% 82%; /* Subtle warm border */
+    --input: 45 8% 85%; /* Input background */
+    --ring: 0 0% 20%; /* Focus ring color */
 
     --radius: 0.5rem;
   }
@@ -70,8 +71,38 @@
   * {
     @apply border-border;
   }
+  
+  /* Force light theme for CV - CVs should always be readable with dark text on light background */
+  html {
+    color-scheme: light;
+  }
+  
   body {
-    @apply bg-background text-foreground;
+    /* CV Theme - Warm beige background with elegant typography */
+    background-color: hsl(45 15% 96%) !important; /* Warm beige #f7f5f3 */
+    color: hsl(0 0% 15%) !important; /* Rich dark gray #262626 */
+    
+    /* Ensure proper contrast and warmth */
+    --background: 45 15% 96%; /* Warm beige background */
+    --foreground: 0 0% 15%; /* Rich dark gray text */
+    --card: 45 20% 98%; /* Very light warm beige cards */
+    --card-foreground: 0 0% 15%; /* Dark text on cards */
+    --muted: 45 8% 88%; /* Subtle warm gray */
+    --muted-foreground: 0 0% 45%; /* Medium gray for muted text */
+  }
+  
+  /* Ensure all CV content uses warm theme */
+  #cv-content {
+    background-color: hsl(45 15% 96%) !important; /* Warm beige */
+    color: hsl(0 0% 15%) !important; /* Rich dark gray */
+  }
+  
+  /* Override any dark theme classes */
+  .dark {
+    --background: 45 15% 96% !important;
+    --foreground: 0 0% 15% !important;
+    --card: 45 20% 98% !important;
+    --card-foreground: 0 0% 15% !important;
   }
 }
 
