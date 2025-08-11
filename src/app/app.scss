@@ -1,0 +1,76 @@
+// App component specific styles
+
+:host {
+  display: block;
+  min-height: 100vh;
+}
+
+// Screen reader only utility
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+// Print mode styles
+@media print {
+  :host {
+    min-height: auto;
+  }
+  
+  .print\:hidden {
+    display: none !important;
+  }
+  
+  .print\:p-11 {
+    padding: 2.75rem !important;
+  }
+  
+  .print\:space-y-4 > * + * {
+    margin-top: 1rem !important;
+  }
+}
+
+// Error state styles
+.error-boundary {
+  border: 1px solid hsl(var(--destructive));
+  background: hsl(var(--destructive) / 0.1);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  
+  h2 {
+    color: hsl(var(--destructive));
+  }
+  
+  button {
+    transition: all 0.2s ease-in-out;
+    
+    &:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+  }
+}
+
+// Placeholder component styles
+.placeholder-component {
+  border: 2px dashed hsl(var(--muted));
+  background: hsl(var(--muted) / 0.1);
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  text-align: center;
+  
+  h2, h3 {
+    color: hsl(var(--muted-foreground));
+  }
+  
+  p {
+    color: hsl(var(--muted-foreground) / 0.8);
+  }
+}
