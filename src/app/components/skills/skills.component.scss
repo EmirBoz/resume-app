@@ -1,0 +1,109 @@
+// Skills component specific styles
+
+:host {
+  display: block;
+}
+
+section {
+  h2 {
+    line-height: 1.2;
+    letter-spacing: -0.025em;
+    margin-bottom: 0.75rem;
+  }
+
+  // Skills container
+  .flex.flex-wrap {
+    // Ensure proper spacing between skill badges
+    gap: 0.25rem;
+    
+    // Align items properly
+    align-items: flex-start;
+    
+    // Ensure badges wrap nicely
+    justify-content: flex-start;
+  }
+
+  // Individual skill badge container
+  div[role="listitem"] {
+    // Ensure badges don't break awkwardly
+    display: inline-block;
+    
+    // Smooth transitions for hover effects
+    app-badge {
+      transition: all 0.2s ease-in-out;
+      
+      &:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+    }
+  }
+}
+
+// Print-specific styles
+@media print {
+  .print\:gap-y-1 {
+    row-gap: 0.25rem !important;
+  }
+  
+  .print\:px-1 {
+    padding-left: 0.25rem !important;
+    padding-right: 0.25rem !important;
+  }
+  
+  .print\:py-0\.5 {
+    padding-top: 0.125rem !important;
+    padding-bottom: 0.125rem !important;
+  }
+  
+  .print\:text-\[10px\] {
+    font-size: 10px !important;
+  }
+  
+  .print\:leading-tight {
+    line-height: 1.25 !important;
+  }
+
+  // Ensure proper page breaks
+  section {
+    page-break-inside: avoid;
+  }
+  
+  // Optimize spacing for print
+  .flex.flex-wrap {
+    gap: 0.125rem !important;
+  }
+  
+  // Remove hover effects in print
+  div[role="listitem"] app-badge {
+    transform: none !important;
+    box-shadow: none !important;
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 640px) {
+  section {
+    h2 {
+      font-size: 1.125rem; // text-lg
+    }
+  }
+  
+  // Slightly larger gaps on mobile for better touch targets
+  .flex.flex-wrap {
+    gap: 0.375rem;
+  }
+}
+
+// Ensure skills don't break awkwardly on very small screens
+@media (max-width: 480px) {
+  .flex.flex-wrap {
+    // Allow more flexible wrapping
+    justify-content: flex-start;
+    
+    // Ensure badges don't get too small
+    app-badge {
+      min-width: fit-content;
+    }
+  }
+}

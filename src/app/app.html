@@ -70,14 +70,7 @@
           @if (isLoading()) {
             <app-skeleton [lines]="3" height="1rem"></app-skeleton>
           } @else {
-            <div class="text-center p-6 border-2 border-dashed border-muted rounded-lg">
-              <h3 class="text-md font-semibold text-muted-foreground">
-                Education Component
-              </h3>
-              <p class="text-sm text-muted-foreground mt-2">
-                {{ resumeData().education.length }} education entries
-              </p>
-            </div>
+            <app-education />
           }
         </div>
 
@@ -86,14 +79,7 @@
           @if (isLoading()) {
             <app-skeleton [lines]="2" height="1rem"></app-skeleton>
           } @else {
-            <div class="text-center p-6 border-2 border-dashed border-muted rounded-lg">
-              <h3 class="text-md font-semibold text-muted-foreground">
-                Skills Component
-              </h3>
-              <p class="text-sm text-muted-foreground mt-2">
-                {{ resumeData().skills.length }} skills
-              </p>
-            </div>
+            <app-skills />
           }
         </div>
 
@@ -102,14 +88,7 @@
           @if (isLoading()) {
             <app-skeleton [lines]="5" height="1rem"></app-skeleton>
           } @else {
-            <div class="text-center p-6 border-2 border-dashed border-muted rounded-lg">
-              <h3 class="text-md font-semibold text-muted-foreground">
-                Projects Component
-              </h3>
-              <p class="text-sm text-muted-foreground mt-2">
-                {{ resumeData().projects.length }} projects
-              </p>
-            </div>
+            <app-projects />
           }
         </div>
       </div>

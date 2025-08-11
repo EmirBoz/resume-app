@@ -1,0 +1,46 @@
+<section class="flex min-h-0 flex-col gap-y-3 print:gap-y-1">
+  <h2 class="text-xl font-bold" id="education-section">
+    Education
+  </h2>
+  
+  <div
+    class="space-y-4"
+    role="feed"
+    aria-labelledby="education-section"
+  >
+    @for (edu of education(); track trackByEducation($index, edu)) {
+      <article>
+        <app-card>
+          <!-- Card Header -->
+          <app-card-header>
+            <!-- School name and period -->
+            <div class="flex items-center justify-between gap-x-2 text-base">
+              <h3
+                class="font-semibold leading-none"
+                [id]="getSchoolId(edu.school)"
+              >
+                {{ edu.school }}
+              </h3>
+              
+              <!-- Education period -->
+              <div
+                class="text-sm tabular-nums text-gray-500"
+                [attr.title]="getEducationPeriodTitle(edu.start, edu.end)"
+              >
+                {{ formatEducationPeriod(edu.start, edu.end) }}
+              </div>
+            </div>
+          </app-card-header>
+
+          <!-- Card Content -->
+          <app-card-content
+            className="mt-2 text-foreground/80 print:text-[12px]"
+            [attr.aria-labelledby]="getSchoolId(edu.school)"
+          >
+            {{ edu.degree }}
+          </app-card-content>
+        </app-card>
+      </article>
+    }
+  </div>
+</section>

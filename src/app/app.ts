@@ -5,11 +5,14 @@ import { SkeletonComponent } from './components/ui';
 import { HeaderComponent } from './components/header/header.component';
 import { SummaryComponent } from './components/summary/summary.component';
 import { WorkExperienceComponent } from './components/work-experience/work-experience.component';
+import { EducationComponent } from './components/education/education.component';
+import { SkillsComponent } from './components/skills/skills.component';
+import { ProjectsComponent } from './components/projects/projects.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, SkeletonComponent, HeaderComponent, SummaryComponent, WorkExperienceComponent],
+  imports: [CommonModule, SkeletonComponent, HeaderComponent, SummaryComponent, WorkExperienceComponent, EducationComponent, SkillsComponent, ProjectsComponent],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })

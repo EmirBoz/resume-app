@@ -1,0 +1,242 @@
+// Projects component specific styles
+
+:host {
+  display: block;
+}
+
+section {
+  h2 {
+    line-height: 1.2;
+    letter-spacing: -0.025em;
+    margin-bottom: 1rem;
+  }
+
+  // Projects grid
+  .grid {
+    // Ensure proper grid layout
+    display: grid;
+    
+    // Grid gaps
+    gap: 0.75rem;
+    
+    // Negative margins for alignment
+    margin-left: -0.75rem;
+    margin-right: -0.75rem;
+    
+    // Grid columns
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+    
+    @media (min-width: 768px) {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    
+    @media (min-width: 1024px) {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  // Individual project article
+  article {
+    height: 100%;
+    
+    // Project card
+    app-card {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      // overflow: hidden; // Removed to prevent cutting off badges
+      border: none !important; // Remove border but keep shadow
+      padding: 0.75rem;
+      border-radius: 0.5rem !important; // Ensure rounded corners
+      background: hsl(45 15% 96%) !important; // Match main background color
+      transition: all 0.2s ease-in-out;
+      
+      // Override any dark background from Tailwind bg-card class but keep shadow
+      ::ng-deep div {
+        background: hsl(45 15% 96%) !important; // Match main background color
+        border: none !important; // Remove border from inner div
+        border-radius: 0.5rem !important; // Ensure rounded corners on inner div too
+        // Keep the default shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)
+        box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1) !important;
+      }
+      
+      &:hover {
+        // Keep hover shadow effect
+        ::ng-deep div {
+          box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1) !important;
+        }
+        transform: translateY(-1px); // Subtle lift on hover
+      }
+      
+      // Card header
+      .card-header {
+        .space-y-1 > * + * {
+          margin-top: 0.25rem;
+        }
+        
+        .card-title {
+          font-size: 1rem;
+          font-weight: 600;
+          line-height: 1.5;
+          
+          a {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            text-decoration: none;
+            color: inherit;
+            
+            &:hover {
+              text-decoration: underline;
+            }
+            
+            // Active indicator
+            .size-1 {
+              width: 0.25rem;
+              height: 0.25rem;
+              border-radius: 50%;
+              background-color: #10b981;
+            }
+          }
+          
+          // Print link display
+          .print\\:visible {
+            display: none;
+            font-family: ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace;
+            font-size: 0.75rem;
+            text-decoration: underline;
+          }
+        }
+        
+        .card-description {
+          font-family: ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace;
+          font-size: 0.75rem;
+          color: var(--text-muted, #6b7280);
+          line-height: 1.4;
+          text-wrap: pretty;
+        }
+      }
+      
+      // Card content
+      .card-content {
+        margin-top: auto;
+        display: flex;
+        
+        // Technology tags
+        ul {
+          margin-top: 0.5rem;
+          margin-bottom: 0.25rem; // Add bottom margin to prevent cutting
+          display: flex;
+          flex-wrap: wrap;
+          gap: 0.25rem;
+          padding: 0;
+          list-style: none;
+          
+          li {
+            app-badge {
+              padding: 0 0.25rem;
+              font-size: 0.625rem;
+              line-height: 1.2;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+// Print-specific styles
+@media print {
+  section {
+    .space-y-4 > * + * {
+      margin-top: 1rem !important;
+    }
+    
+    .grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+      gap: 0.5rem !important;
+    }
+    
+    article app-card {
+      box-shadow: none !important;
+      transform: none !important;
+      page-break-inside: avoid;
+      
+      .card-header {
+        .card-title {
+          .print\\:visible {
+            display: block !important;
+          }
+        }
+        
+        .card-description {
+          font-size: 10px !important;
+        }
+      }
+      
+      .card-content ul li app-badge {
+        padding: 0.125rem 0.25rem !important;
+        font-size: 8px !important;
+        line-height: 1.25 !important;
+      }
+    }
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 640px) {
+  section {
+    h2 {
+      font-size: 1.125rem; // text-lg
+    }
+    
+    .grid {
+      margin-left: -0.5rem;
+      margin-right: -0.5rem;
+      gap: 0.5rem;
+    }
+    
+    article app-card {
+      padding: 0.5rem;
+      
+      .card-header .card-title {
+        font-size: 0.875rem;
+      }
+      
+      .card-content ul {
+        gap: 0.125rem;
+        
+        li app-badge {
+          font-size: 0.5rem;
+          padding: 0.125rem 0.25rem;
+        }
+      }
+    }
+  }
+}
+
+// Dark mode support (if implemented)
+@media (prefers-color-scheme: dark) {
+  section article app-card {
+    --border-color: #374151;
+    --card-background: #1f2937;
+    
+    .card-header .card-description {
+      --text-muted: #9ca3af;
+    }
+  }
+}
+
+// Ensure proper scroll behavior
+.scroll-mb-16 {
+  scroll-margin-bottom: 4rem;
+}
+
+// Feed role styling
+[role="feed"] {
+  // Ensure proper focus management for screen readers
+  &:focus-within {
+    outline: 2px solid var(--focus-color, #3b82f6);
+    outline-offset: 2px;
+  }
+}

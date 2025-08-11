@@ -1,0 +1,98 @@
+// Education component specific styles
+
+:host {
+  display: block;
+}
+
+section {
+  h2 {
+    line-height: 1.2;
+    letter-spacing: -0.025em;
+    margin-bottom: 0.75rem;
+  }
+
+  // Education list
+  .space-y-4 > * + * {
+    margin-top: 1rem;
+  }
+
+  // Individual education item
+  article {
+    // School name styling
+    h3 {
+      color: hsl(var(--foreground));
+      font-weight: 600;
+    }
+
+    // Education period styling
+    .tabular-nums {
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: "tnum";
+      color: hsl(var(--muted-foreground));
+    }
+
+    // Degree text styling
+    app-card-content {
+      color: hsl(var(--foreground) / 0.8);
+      line-height: 1.5;
+    }
+  }
+}
+
+// Print-specific styles
+@media print {
+  .print\:gap-y-1 {
+    row-gap: 0.25rem !important;
+  }
+  
+  .print\:text-\[12px\] {
+    font-size: 12px !important;
+  }
+
+  // Ensure proper page breaks
+  section {
+    page-break-inside: avoid;
+  }
+  
+  article {
+    page-break-inside: avoid;
+    margin-bottom: 0.5rem;
+  }
+  
+  // Optimize spacing for print
+  .space-y-4 > * + * {
+    margin-top: 0.5rem !important;
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 640px) {
+  section {
+    h2 {
+      font-size: 1.125rem; // text-lg
+    }
+    
+    .space-y-4 > * + * {
+      margin-top: 0.75rem;
+    }
+  }
+  
+  article {
+    // Stack school name and period on mobile if needed
+    .flex.items-center.justify-between {
+      @media (max-width: 480px) {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.25rem;
+      }
+    }
+    
+    h3 {
+      font-size: 0.875rem; // text-sm
+    }
+    
+    .text-sm {
+      font-size: 0.75rem; // text-xs
+    }
+  }
+}

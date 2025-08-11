@@ -1,0 +1,82 @@
+<section class="scroll-mb-16 print:space-y-4">
+  <h2 class="text-xl font-bold" id="side-projects">
+    Side projects
+  </h2>
+  
+  <div
+    class="-mx-3 grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3 print:grid-cols-3 print:gap-2"
+    role="feed"
+    [attr.aria-labelledby]="'side-projects'"
+  >
+    @for (project of projects(); track trackByProject($index, project)) {
+      <article class="h-full">
+        <app-card class="flex h-full flex-col p-3 border-0 rounded-lg">
+          <!-- Card Header -->
+          <div class="card-header">
+            <div class="space-y-1">
+              <!-- Project Title -->
+              <h3 class="text-base font-semibold card-title">
+                @if (project.link?.href) {
+                  <a
+                    [href]="project.link!.href"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="inline-flex items-center gap-1 hover:underline"
+                    [attr.aria-label]="getProjectAriaLabel(project.title)"
+                    [attr.id]="getProjectId(project.title)"
+                  >
+                    {{ project.title }}
+                    <span
+                      class="size-1 rounded-full bg-green-500"
+                      title="Active project indicator"
+                      aria-hidden="true"
+                    ></span>
+                  </a>
+                  <div
+                    class="hidden font-mono text-xs underline print:visible"
+                    aria-hidden="true"
+                  >
+                    {{ getLinkDisplay(project.link!.href) }}
+                  </div>
+                } @else {
+                  <span [attr.id]="getProjectId(project.title)">
+                    {{ project.title }}
+                  </span>
+                }
+              </h3>
+              
+              <!-- Project Description -->
+              <p
+                class="text-pretty font-mono text-xs print:text-[10px] card-description"
+                aria-label="Project description"
+              >
+                {{ project.description }}
+              </p>
+            </div>
+          </div>
+          
+          <!-- Card Content -->
+          <div class="mt-auto flex card-content">
+            @if (project.techStack && project.techStack.length > 0) {
+              <ul
+                class="mt-2 flex list-none flex-wrap gap-1 p-0"
+                aria-label="Technologies used"
+              >
+                @for (tag of project.techStack; track trackByTag($index, tag)) {
+                  <li>
+                    <app-badge
+                      className="px-1 py-0 text-[10px] print:px-1 print:py-0.5 print:text-[8px] print:leading-tight"
+                      variant="secondary"
+                    >
+                      {{ tag }}
+                    </app-badge>
+                  </li>
+                }
+              </ul>
+            }
+          </div>
+        </app-card>
+      </article>
+    }
+  </div>
+</section>
