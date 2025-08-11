@@ -1,0 +1,17 @@
+<div [class]="avatarClasses()">
+  @if (showImage()) {
+    <img
+      [src]="src()"
+      [alt]="alt()"
+      [class]="imageClasses()"
+      (load)="onImageLoad()"
+      (error)="onImageError()"
+    />
+  }
+  
+  @if (showFallback()) {
+    <div [class]="fallbackClasses()">
+      {{ fallback() }}
+    </div>
+  }
+</div>

@@ -1,0 +1,25 @@
+// Badge component specific styles
+
+:host {
+  display: inline-block;
+}
+
+span {
+  cursor: default;
+  user-select: none;
+  
+  // Smooth transitions
+  transition: all 0.2s ease-in-out;
+  
+  // Hover effects for interactive badges
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  // Focus styles for accessibility
+  &:focus {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 2px;
+  }
+}
