@@ -4,3 +4,4 @@ export * from './card/card.component';
 export * from './avatar/avatar.component';
 export * from './badge/badge.component';
 export * from './skeleton/skeleton.component';
+export * from './command/command.component';

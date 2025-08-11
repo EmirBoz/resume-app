@@ -1,0 +1,68 @@
+<!-- Keyboard Shortcut Hint (Desktop Only) -->
+<p class="fixed bottom-0 left-0 right-0 hidden border-t border-t-muted bg-white p-1 text-center text-sm text-muted-foreground xl:block print:hidden">
+  Press
+  <kbd class="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
+    <span class="text-xs">{{ getKeyboardDisplay() }}</span>+K
+  </kbd>
+  to open the command menu
+</p>
+
+<!-- Mobile Command Button -->
+<app-button
+  variant="outline"
+  size="icon"
+  className="fixed bottom-4 right-4 flex rounded-full shadow-2xl xl:hidden print:hidden"
+  (click)="toggleOpen()"
+>
+  <!-- Command Icon -->
+  <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+  </svg>
+</app-button>
+
+<!-- Command Dialog -->
+<app-command-dialog 
+  [open]="isOpen()" 
+  (onOpenChange)="onOpenChange($event)"
+>
+  <!-- Command Input -->
+  <app-command-input 
+    placeholder="Type a command or search..."
+    (onSearch)="onSearch($event)"
+  />
+  
+  <!-- Command List -->
+  <app-command-list>
+    <!-- Empty State -->
+    <app-command-empty>
+      No results found.
+    </app-command-empty>
+    
+    <!-- Actions Group -->
+    <app-command-group heading="Actions">
+      <app-command-item (onSelect)="handlePrint()">
+        <svg class="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
+        </svg>
+        <span>Print</span>
+      </app-command-item>
+    </app-command-group>
+    
+    <!-- Links Group -->
+    @if (links().length > 0) {
+      <app-command-group heading="Links">
+        @for (link of links(); track link.url) {
+          <app-command-item (onSelect)="handleLinkClick(link.url)">
+            <svg class="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+            </svg>
+            <span>{{ link.title }}</span>
+          </app-command-item>
+        }
+      </app-command-group>
+    }
+    
+    <!-- Separator -->
+    <app-command-separator />
+  </app-command-list>
+</app-command-dialog>

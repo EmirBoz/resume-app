@@ -1,0 +1,195 @@
+// Command Menu component specific styles
+
+:host {
+  display: block;
+}
+
+// Keyboard shortcut hint
+p {
+  backdrop-filter: blur(8px);
+  background-color: rgba(255, 255, 255, 0.95);
+  border-top: 1px solid hsl(var(--border));
+  
+  kbd {
+    background-color: hsl(var(--muted));
+    border: 1px solid hsl(var(--border));
+    color: hsl(var(--muted-foreground));
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace;
+    
+    span {
+      font-size: 0.75rem;
+    }
+  }
+}
+
+// Mobile command button
+app-button {
+  z-index: 50;
+  
+  &:hover {
+    transform: scale(1.05);
+    transition: transform 0.2s ease-in-out;
+  }
+}
+
+// Command dialog overlay
+app-command-dialog {
+  // Dialog backdrop
+  .fixed.inset-0 {
+    backdrop-filter: blur(4px);
+    animation: fadeIn 0.2s ease-out;
+  }
+  
+  // Dialog content
+  .fixed[style*="left"] {
+    animation: slideIn 0.2s ease-out;
+    background-color: hsl(var(--background));
+    border: 1px solid hsl(var(--border));
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  }
+}
+
+// Command input styling
+app-command-input {
+  input {
+    background-color: transparent;
+    color: hsl(var(--foreground));
+    
+    &::placeholder {
+      color: hsl(var(--muted-foreground));
+    }
+    
+    &:focus {
+      outline: none;
+    }
+  }
+  
+  svg {
+    color: hsl(var(--muted-foreground));
+  }
+}
+
+// Command list styling
+app-command-list {
+  div {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--muted)) transparent;
+    
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+    
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+      background-color: hsl(var(--muted));
+      border-radius: 3px;
+    }
+  }
+}
+
+// Command group styling
+app-command-group {
+  .text-xs {
+    color: hsl(var(--muted-foreground));
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+}
+
+// Command item styling
+app-command-item {
+  div {
+    cursor: pointer;
+    transition: all 0.15s ease-in-out;
+    color: hsl(var(--foreground));
+    
+    &:hover {
+      background-color: hsl(var(--accent));
+      color: hsl(var(--accent-foreground));
+    }
+    
+    &:active {
+      transform: scale(0.98);
+    }
+    
+    svg {
+      color: hsl(var(--muted-foreground));
+      transition: color 0.15s ease-in-out;
+    }
+    
+    &:hover svg {
+      color: hsl(var(--accent-foreground));
+    }
+  }
+}
+
+// Command separator styling
+app-command-separator {
+  .h-px {
+    background-color: hsl(var(--border));
+    margin: 0.5rem 0;
+  }
+}
+
+// Animations
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -48%) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+// Print styles
+@media print {
+  :host {
+    display: none !important;
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 1279px) {
+  p {
+    display: none !important;
+  }
+}
+
+@media (min-width: 1280px) {
+  app-button {
+    display: none !important;
+  }
+}
+
+// Focus management
+app-command-dialog {
+  .fixed[style*="left"] {
+    &:focus-within {
+      outline: 2px solid hsl(var(--ring));
+      outline-offset: 2px;
+    }
+  }
+}
+
+// Dark mode support (if implemented)
+@media (prefers-color-scheme: dark) {
+  p {
+    background-color: rgba(0, 0, 0, 0.95);
+    border-top-color: hsl(var(--border));
+  }
+}

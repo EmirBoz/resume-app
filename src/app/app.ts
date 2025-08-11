@@ -8,11 +8,12 @@ import { WorkExperienceComponent } from './components/work-experience/work-exper
 import { EducationComponent } from './components/education/education.component';
 import { SkillsComponent } from './components/skills/skills.component';
 import { ProjectsComponent } from './components/projects/projects.component';
+import { CommandMenuComponent } from './components/command-menu/command-menu.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, SkeletonComponent, HeaderComponent, SummaryComponent, WorkExperienceComponent, EducationComponent, SkillsComponent, ProjectsComponent],
+  imports: [CommonModule, SkeletonComponent, HeaderComponent, SummaryComponent, WorkExperienceComponent, EducationComponent, SkillsComponent, ProjectsComponent, CommandMenuComponent],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })
