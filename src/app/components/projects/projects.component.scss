@@ -46,39 +46,34 @@ section {
       flex-direction: column;
       // overflow: hidden; // Removed to prevent cutting off badges
       border: none !important; // Remove border but keep shadow
-      padding: 0.75rem;
+      // padding: 1rem !important; // Removed - using HTML padding instead
       border-radius: 0.5rem !important; // Ensure rounded corners
       background: hsl(45 15% 96%) !important; // Match main background color
+      box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1) !important; // Only outer shadow
       transition: all 0.2s ease-in-out;
       
-      // Override any dark background from Tailwind bg-card class but keep shadow
+      // Override any dark background from Tailwind bg-card class and remove all inner shadows
       ::ng-deep div {
         background: hsl(45 15% 96%) !important; // Match main background color
         border: none !important; // Remove border from inner div
-        border-radius: 0.5rem !important; // Ensure rounded corners on inner div too
-        // Keep the default shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)
-        box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1) !important;
+        border-radius: 0 !important; // Remove all inner border radius
+        box-shadow: none !important; // Remove all inner shadows
       }
       
       &:hover {
-        // Keep hover shadow effect
+        // Enhance outer shadow on hover
+        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1) !important;
+        
+        // Remove inner shadows on hover too
         ::ng-deep div {
-          box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1) !important;
+          box-shadow: none !important;
         }
         transform: translateY(-1px); // Subtle lift on hover
       }
       
-      // Card header
-      .card-header {
-        .space-y-1 > * + * {
-          margin-top: 0.25rem;
-        }
-        
-        .card-title {
-          font-size: 1rem;
-          font-weight: 600;
-          line-height: 1.5;
-          
+      // Project content styling
+      .p-4 {
+        h3 {
           a {
             display: inline-flex;
             align-items: center;
@@ -108,24 +103,15 @@ section {
           }
         }
         
-        .card-description {
+        p {
           font-family: ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace;
-          font-size: 0.75rem;
           color: var(--text-muted, #6b7280);
           line-height: 1.4;
           text-wrap: pretty;
         }
-      }
-      
-      // Card content
-      .card-content {
-        margin-top: auto;
-        display: flex;
         
         // Technology tags
         ul {
-          margin-top: 0.5rem;
-          margin-bottom: 0.25rem; // Add bottom margin to prevent cutting
           display: flex;
           flex-wrap: wrap;
           gap: 0.25rem;
@@ -197,7 +183,7 @@ section {
     }
     
     article app-card {
-      padding: 0.5rem;
+      padding: 0.75rem; // Slightly more padding on mobile
       
       .card-header .card-title {
         font-size: 0.875rem;
