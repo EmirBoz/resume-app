@@ -1,0 +1,112 @@
+// Header component specific styles
+
+:host {
+  display: block;
+}
+
+header {
+  // Ensure proper spacing and alignment
+  gap: 1rem;
+  
+  @media (max-width: 640px) {
+    flex-direction: column;
+    text-align: center;
+    gap: 1.5rem;
+    
+    .flex-1 {
+      flex: none;
+    }
+  }
+}
+
+// Name styling
+h1 {
+  line-height: 1.2;
+  letter-spacing: -0.025em;
+}
+
+// About text styling
+p {
+  line-height: 1.5;
+}
+
+// Location link styling
+a {
+  transition: all 0.2s ease-in-out;
+  
+  &:hover {
+    color: hsl(var(--foreground));
+  }
+  
+  &:focus-visible {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 2px;
+    border-radius: 0.25rem;
+  }
+}
+
+// Contact buttons list
+ul {
+  // Ensure proper spacing
+  li {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  // Button link styling
+  a {
+    text-decoration: none;
+    border-radius: inherit;
+    
+    &:focus-visible {
+      outline: 2px solid hsl(var(--ring));
+      outline-offset: 2px;
+    }
+  }
+}
+
+// Print-specific styles
+@media print {
+  .print\:hidden {
+    display: none !important;
+  }
+  
+  .print\:flex {
+    display: flex !important;
+  }
+  
+  .print\:text-\[12px\] {
+    font-size: 12px !important;
+  }
+  
+  // Ensure links are visible in print
+  a {
+    color: inherit;
+    text-decoration: underline;
+  }
+  
+  // Remove hover effects in print
+  a:hover {
+    color: inherit;
+  }
+}
+
+// Icon styling
+lucide-angular {
+  flex-shrink: 0;
+  
+  // Ensure icons are properly aligned
+  svg {
+    display: block;
+  }
+}
+
+// Avatar positioning
+app-avatar {
+  flex-shrink: 0;
+  
+  @media (max-width: 640px) {
+    order: -1; // Show avatar first on mobile
+  }
+}

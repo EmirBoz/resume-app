@@ -39,15 +39,7 @@
         @if (isLoading()) {
           <app-skeleton [lines]="4" height="1.5rem"></app-skeleton>
         } @else {
-          <!-- Header component will be added in next task -->
-          <div class="text-center p-8 border-2 border-dashed border-muted rounded-lg">
-            <h2 class="text-lg font-semibold text-muted-foreground">
-              Header Component
-            </h2>
-            <p class="text-sm text-muted-foreground mt-2">
-              {{ resumeData().name }} - {{ resumeData().about }}
-            </p>
-          </div>
+          <app-header />
         }
       </div>
 

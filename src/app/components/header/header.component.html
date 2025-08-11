@@ -1,0 +1,175 @@
+<header class="flex items-center justify-between">
+  <!-- Left side - Personal info and contact -->
+  <div class="flex-1 space-y-1.5">
+    <!-- Name -->
+    <h1 class="text-2xl font-bold" id="resume-name">
+      {{ personalInfo().name }}
+    </h1>
+
+    <!-- About -->
+    <p class="max-w-md text-pretty font-mono text-sm text-foreground/80 print:text-[12px]">
+      {{ personalInfo().about }}
+    </p>
+
+    <!-- Location -->
+    <p class="max-w-md items-center text-pretty font-mono text-xs text-foreground">
+      <a
+        class="inline-flex gap-x-1.5 align-baseline leading-none hover:underline"
+        [href]="personalInfo().locationLink"
+        target="_blank"
+        rel="noopener noreferrer"
+        [attr.aria-label]="getLocationLabel(personalInfo().location)"
+      >
+        <lucide-angular 
+          [img]="Globe" 
+          class="size-3" 
+          aria-hidden="true">
+        </lucide-angular>
+        {{ personalInfo().location }}
+      </a>
+    </p>
+
+    <!-- Contact buttons (visible on screen) -->
+    <ul
+      class="flex list-none gap-x-1 pt-1 font-mono text-sm text-foreground/80 print:hidden"
+      aria-label="Contact links"
+    >
+      <!-- Personal website -->
+      @if (personalInfo().personalWebsiteUrl) {
+        <li>
+          <app-button
+            variant="outline"
+            size="icon"
+            className="size-8"
+            [ariaLabel]="'Personal website'"
+          >
+            <a
+              [href]="personalInfo().personalWebsiteUrl"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="flex items-center justify-center w-full h-full"
+            >
+              <lucide-angular 
+                [img]="Globe" 
+                class="size-4" 
+                aria-hidden="true">
+              </lucide-angular>
+            </a>
+          </app-button>
+        </li>
+      }
+
+      <!-- Email -->
+      @if (contactInfo().email) {
+        <li>
+          <app-button
+            variant="outline"
+            size="icon"
+            className="size-8"
+            [ariaLabel]="'Email'"
+          >
+            <a
+              [href]="getEmailHref(contactInfo().email)"
+              class="flex items-center justify-center w-full h-full"
+            >
+              <lucide-angular 
+                [img]="Mail" 
+                class="size-4" 
+                aria-hidden="true">
+              </lucide-angular>
+            </a>
+          </app-button>
+        </li>
+      }
+
+      <!-- Phone -->
+      @if (contactInfo().tel) {
+        <li>
+          <app-button
+            variant="outline"
+            size="icon"
+            className="size-8"
+            [ariaLabel]="'Phone'"
+          >
+            <a
+              [href]="getTelHref(contactInfo().tel)"
+              class="flex items-center justify-center w-full h-full"
+            >
+              <lucide-angular 
+                [img]="Phone" 
+                class="size-4" 
+                aria-hidden="true">
+              </lucide-angular>
+            </a>
+          </app-button>
+        </li>
+      }
+
+      <!-- Social links -->
+      @for (social of contactInfo().social; track social.name) {
+        <li>
+          <app-button
+            variant="outline"
+            size="icon"
+            className="size-8"
+            [ariaLabel]="social.name"
+          >
+            <a
+              [href]="social.url"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="flex items-center justify-center w-full h-full"
+            >
+              <lucide-angular 
+                [img]="getIconForSocial(social.icon)" 
+                class="size-4" 
+                aria-hidden="true">
+              </lucide-angular>
+            </a>
+          </app-button>
+        </li>
+      }
+    </ul>
+
+    <!-- Print contact info (visible only when printing) -->
+    <div class="hidden gap-x-2 font-mono text-sm text-foreground/80 print:flex print:text-[12px]">
+      @if (personalInfo().personalWebsiteUrl) {
+        <a
+          class="underline hover:text-foreground/70"
+          [href]="personalInfo().personalWebsiteUrl"
+        >
+          {{ websiteHostname() }}
+        </a>
+        <span aria-hidden="true">/</span>
+      }
+      
+      @if (contactInfo().email) {
+        <a
+          class="underline hover:text-foreground/70"
+          [href]="getEmailHref(contactInfo().email)"
+        >
+          {{ contactInfo().email }}
+        </a>
+        <span aria-hidden="true">/</span>
+      }
+      
+      @if (contactInfo().tel) {
+        <a
+          class="underline hover:text-foreground/70"
+          [href]="getTelHref(contactInfo().tel)"
+        >
+          {{ contactInfo().tel }}
+        </a>
+      }
+    </div>
+  </div>
+
+  <!-- Right side - Avatar -->
+  <app-avatar
+    className="size-28"
+    [src]="personalInfo().avatarUrl"
+    [alt]="personalInfo().name + '\'s profile picture'"
+    [fallback]="personalInfo().initials"
+    size="xl"
+  />
+</header>

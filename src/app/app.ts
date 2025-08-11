@@ -2,11 +2,12 @@ import { Component, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DataService, ThemeService } from './services';
 import { SkeletonComponent } from './components/ui';
+import { HeaderComponent } from './components/header/header.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, SkeletonComponent],
+  imports: [CommonModule, SkeletonComponent, HeaderComponent],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })
