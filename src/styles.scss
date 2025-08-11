@@ -138,3 +138,123 @@
     font-size: 12px !important;
   }
 }
+
+/* PDF Generation styles */
+.pdf-mode {
+  [class*="print:hidden"] {
+    display: none !important;
+  }
+}
+
+.pdf-generating {
+  /* Optimize for PDF generation */
+  -webkit-print-color-adjust: exact !important;
+  color-adjust: exact !important;
+  
+  /* Ensure proper rendering */
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  
+  /* Fix font rendering */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  
+  /* Ensure backgrounds are rendered */
+  background-color: #f7f5f3 !important;
+  
+  /* Fix any layout issues */
+  .container {
+    max-width: none !important;
+    width: 100% !important;
+  }
+  
+  .max-w-2xl {
+    max-width: none !important;
+  }
+  
+  /* Ensure proper spacing */
+  .space-y-8 > * + * {
+    margin-top: 2rem !important;
+  }
+  
+  .space-y-4 > * + * {
+    margin-top: 1rem !important;
+  }
+  
+  /* Fix card shadows for PDF */
+  .shadow-sm,
+  .shadow,
+  .shadow-md,
+  .shadow-lg {
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06) !important;
+  }
+  
+  /* Fix badge and inline elements */
+  .inline-flex {
+    display: inline-flex !important;
+    align-items: center !important;
+  }
+  
+  .flex-wrap {
+    flex-wrap: wrap !important;
+  }
+  
+  /* Fix text alignment issues */
+  * {
+    text-rendering: optimizeLegibility !important;
+    -webkit-font-feature-settings: "kern" 1 !important;
+    font-feature-settings: "kern" 1 !important;
+  }
+  
+  /* Fix flexbox issues in PDF */
+  .flex {
+    display: flex !important;
+  }
+  
+  .items-center {
+    align-items: center !important;
+  }
+  
+  .justify-center {
+    justify-content: center !important;
+  }
+  
+  /* Fix gap issues */
+  .gap-1 {
+    gap: 0.25rem !important;
+  }
+  
+  .gap-2 {
+    gap: 0.5rem !important;
+  }
+  
+  /* Ensure proper line heights */
+  .leading-none {
+    line-height: 1 !important;
+  }
+  
+  .leading-tight {
+    line-height: 1.25 !important;
+  }
+  
+  /* Fix small text rendering */
+  .text-xs {
+    font-size: 0.75rem !important;
+    line-height: 1.2 !important;
+  }
+  
+  .text-sm {
+    font-size: 0.875rem !important;
+    line-height: 1.25 !important;
+  }
+  
+  /* Fix rounded corners */
+  .rounded,
+  .rounded-md {
+    border-radius: 0.375rem !important;
+  }
+  
+  .rounded-lg {
+    border-radius: 0.5rem !important;
+  }
+}

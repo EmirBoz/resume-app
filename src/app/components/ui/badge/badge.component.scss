@@ -23,3 +23,59 @@ span {
     outline-offset: 2px;
   }
 }
+
+// PDF-specific fixes
+:host-context(.pdf-generating) {
+  span {
+    // Fix text alignment and positioning for PDF
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    
+    // Ensure proper text rendering
+    line-height: 1.2 !important;
+    vertical-align: baseline !important;
+    
+    // Fix font rendering
+    font-family: system-ui, -apple-system, sans-serif !important;
+    font-weight: 500 !important;
+    
+    // Remove transforms that can cause issues
+    transform: none !important;
+    
+    // Ensure proper box model
+    box-sizing: border-box !important;
+    
+    // Fix padding and spacing
+    padding: 0.25rem 0.5rem !important;
+    
+    // Ensure text doesn't overflow
+    white-space: nowrap !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    
+    // Fix background and border rendering
+    background-color: hsl(var(--secondary)) !important;
+    border: 1px solid hsl(var(--border)) !important;
+    border-radius: 0.375rem !important;
+    
+    // Ensure proper color contrast
+    color: hsl(var(--secondary-foreground)) !important;
+    
+    // Remove any shadows that might cause issues
+    box-shadow: none !important;
+  }
+  
+  // Specific fixes for different badge variants
+  span[class*="bg-secondary"] {
+    background-color: #e5e7eb !important;
+    color: #374151 !important;
+    border-color: #d1d5db !important;
+  }
+  
+  span[class*="bg-primary"] {
+    background-color: #262626 !important;
+    color: #f7f5f3 !important;
+    border-color: #404040 !important;
+  }
+}

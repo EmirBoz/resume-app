@@ -1,6 +1,6 @@
 import { Component, input, signal, effect, inject, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { DataService } from '../../services';
+import { DataService, PDFService } from '../../services';
 import { ButtonComponent } from '../ui';
 import {
   CommandDialogComponent,
@@ -37,6 +37,7 @@ interface CommandLink {
 export class CommandMenuComponent implements OnInit, OnDestroy {
   // Inject services
   private dataService = inject(DataService);
+  private pdfService = inject(PDFService);
 
   // Component state
   isOpen = signal<boolean>(false);
@@ -135,9 +136,28 @@ export class CommandMenuComponent implements OnInit, OnDestroy {
     window.print();
   }
 
+  async handlePDFExport() {
+    this.closeMenu();
+    try {
+      await this.pdfService.generateResumePDF();
+    } catch (error) {
+      console.error('PDF export failed:', error);
+      // You could show a toast notification here
+    }
+  }
+
   handleLinkClick(url: string) {
     this.closeMenu();
     window.open(url, '_blank', 'noopener,noreferrer');
+  }
+
+  // Getters for template
+  get isPDFGenerating(): boolean {
+    return this.pdfService.getLoadingState();
+  }
+
+  get pdfError(): string | null {
+    return this.pdfService.getError();
   }
 
   // Helper methods
