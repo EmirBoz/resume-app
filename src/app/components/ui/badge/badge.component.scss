@@ -51,28 +51,8 @@ span {
     overflow: visible !important;
     text-overflow: clip !important;
     
-    // Fix background and border rendering
-    background-color: hsl(var(--secondary)) !important;
-    border: 1px solid hsl(var(--border)) !important;
-    border-radius: 0.375rem !important;
-    
-    // Ensure proper color contrast
-    color: hsl(var(--secondary-foreground)) !important;
-    
     // Remove any shadows that might cause issues
     box-shadow: none !important;
   }
   
-  // Specific fixes for different badge variants
-  span[class*="bg-secondary"] {
-    background-color: #e5e7eb !important;
-    color: #374151 !important;
-    border-color: #d1d5db !important;
-  }
-  
-  span[class*="bg-primary"] {
-    background-color: #262626 !important;
-    color: #f7f5f3 !important;
-    border-color: #404040 !important;
-  }
 }
