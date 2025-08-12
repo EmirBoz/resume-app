@@ -13,17 +13,10 @@ section {
 
   // Projects grid
   .grid {
-    // Ensure proper grid layout
     display: grid;
-    
-    // Grid gaps
     gap: 0.75rem;
-    
-    // Negative margins for alignment
     margin-left: -0.75rem;
     margin-right: -0.75rem;
-    
-    // Grid columns
     grid-template-columns: repeat(1, minmax(0, 1fr));
     
     @media (min-width: 768px) {
@@ -39,91 +32,65 @@ section {
   article {
     height: 100%;
     
-    // Project card
+    // Project card - use default card styling (no overrides)
     app-card {
       height: 100%;
       display: flex;
       flex-direction: column;
-      // overflow: hidden; // Removed to prevent cutting off badges
-      border: none !important; // Remove border but keep shadow
-      // padding: 1rem !important; // Removed - using HTML padding instead
-      border-radius: 0.5rem !important; // Ensure rounded corners
-      background: hsl(45 15% 96%) !important; // Match main background color
-      box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1) !important; // Only outer shadow
-      transition: all 0.2s ease-in-out;
-      
-      // Override any dark background from Tailwind bg-card class and remove all inner shadows
-      ::ng-deep div {
-        background: hsl(45 15% 96%) !important; // Match main background color
-        border: none !important; // Remove border from inner div
-        border-radius: 0 !important; // Remove all inner border radius
-        box-shadow: none !important; // Remove all inner shadows
-      }
-      
-      &:hover {
-        // Enhance outer shadow on hover
-        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1) !important;
-        
-        // Remove inner shadows on hover too
-        ::ng-deep div {
-          box-shadow: none !important;
-        }
-        transform: translateY(-1px); // Subtle lift on hover
-      }
-      
-      // Project content styling
-      .p-4 {
-        h3 {
-          a {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.25rem;
-            text-decoration: none;
-            color: inherit;
-            
-            &:hover {
-              text-decoration: underline;
-            }
-            
-            // Active indicator
-            .size-1 {
-              width: 0.25rem;
-              height: 0.25rem;
-              border-radius: 50%;
-              background-color: #10b981;
-            }
-          }
+    }
+    
+    // Project content styling
+    .p-4 {
+      h3 {
+        a {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.25rem;
+          text-decoration: none;
+          color: inherit;
           
-          // Print link display
-          .print\\:visible {
-            display: none;
-            font-family: ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace;
-            font-size: 0.75rem;
+          &:hover {
             text-decoration: underline;
           }
-        }
-        
-        p {
-          font-family: ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace;
-          color: var(--text-muted, #6b7280);
-          line-height: 1.4;
-          text-wrap: pretty;
-        }
-        
-        // Technology tags
-        ul {
-          display: flex;
-          flex-wrap: wrap;
-          gap: 0.25rem;
-          padding: 0;
-          list-style: none;
           
-          li {
-            app-badge {
-              padding: 0 0.25rem;
-              font-size: 0.625rem;
-              line-height: 1.2;
-            }
+          // Active indicator
+          .size-1 {
+            width: 0.25rem;
+            height: 0.25rem;
+            border-radius: 50%;
+            background-color: #10b981;
+          }
+        }
+        
+        // Print link display
+        .print\\:visible {
+          display: none;
+          font-family: ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace;
+          font-size: 0.75rem;
+          text-decoration: underline;
+        }
+      }
+      
+      p {
+        font-family: ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace;
+        color: var(--text-muted, #6b7280);
+        line-height: 1.4;
+        text-wrap: pretty;
+      }
+      
+      // Technology tags
+      ul {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.25rem;
+        padding: 0;
+        list-style: none;
+        
+        li {
+          app-badge {
+            padding: 0 0.25rem;
+            font-size: 0.625rem;
+            line-height: 1.2;
           }
         }
       }
@@ -144,8 +111,6 @@ section {
     }
     
     article app-card {
-      box-shadow: none !important;
-      transform: none !important;
       page-break-inside: avoid;
       
       .card-header {
@@ -173,7 +138,7 @@ section {
 @media (max-width: 640px) {
   section {
     h2 {
-      font-size: 1.125rem; // text-lg
+      font-size: 1.125rem;
     }
     
     .grid {
@@ -183,7 +148,7 @@ section {
     }
     
     article app-card {
-      padding: 0.75rem; // Slightly more padding on mobile
+      padding: 0.75rem;
       
       .card-header .card-title {
         font-size: 0.875rem;
@@ -201,18 +166,6 @@ section {
   }
 }
 
-// Dark mode support (if implemented)
-@media (prefers-color-scheme: dark) {
-  section article app-card {
-    --border-color: #374151;
-    --card-background: #1f2937;
-    
-    .card-header .card-description {
-      --text-muted: #9ca3af;
-    }
-  }
-}
-
 // Ensure proper scroll behavior
 .scroll-mb-16 {
   scroll-margin-bottom: 4rem;
@@ -220,7 +173,6 @@ section {
 
 // Feed role styling
 [role="feed"] {
-  // Ensure proper focus management for screen readers
   &:focus-within {
     outline: 2px solid var(--focus-color, #3b82f6);
     outline-offset: 2px;

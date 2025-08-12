@@ -15,14 +15,15 @@
           <app-card-header className="print:space-y-1">
             <!-- Company name, badges, and period -->
             <div class="flex items-center justify-between gap-x-2 text-base">
-              <h3 class="inline-flex items-center justify-center gap-x-1 font-semibold leading-none print:text-sm">
+              <h3 class="flex items-center gap-x-1 font-semibold leading-none print:text-sm">
                 <!-- Company link -->
                 <a
-                  class="hover:underline"
+                  class="hover:underline text-foreground"
                   [href]="work.link"
                   target="_blank"
                   rel="noopener noreferrer"
                   [attr.aria-label]="getCompanyAriaLabel(work.company)"
+                  style="background: none !important; border: none !important; padding: 0 !important;"
                 >
                   {{ work.company }}
                 </a>
