@@ -137,27 +137,45 @@ export class PDFService {
       });
 
       // Calculate dimensions for better fit
-      const imgData = canvas.toDataURL('image/jpeg', 0.95); // JPEG with 95% quality
+      // Use PNG to avoid JPEG color shifts
+      const imgData = canvas.toDataURL('image/png');
       const pdfWidth = pdf.internal.pageSize.getWidth();
       const pdfHeight = pdf.internal.pageSize.getHeight();
       const imgWidth = canvas.width;
       const imgHeight = canvas.height;
-      
-      // Calculate scaling to fit page with margins
-      const margin = 10; // 10mm margin
-      const availableWidth = pdfWidth - (margin * 2);
-      const availableHeight = pdfHeight - (margin * 2);
+
+      // Determine exact background color from computed styles to match CV
+      // Sample the canvas background pixel to match exact rendered color
+      let bgR = 247, bgG = 245, bgB = 243;
+      try {
+        const ctx = canvas.getContext('2d');
+        if (ctx) {
+          const data = ctx.getImageData(1, 1, 1, 1).data; // avoid edge anti-alias
+          bgR = data[0];
+          bgG = data[1];
+          bgB = data[2];
+        }
+      } catch {}
+      pdf.setFillColor(bgR, bgG, bgB);
+      pdf.rect(0, 0, pdfWidth, pdfHeight, 'F');
+
+      // Fit image horizontally; leave a reasonable top margin and align towards top
+      const marginLeftRight = 6; // 6mm side margins to avoid hugging edges
+      const marginTop = 8; // 8mm top margin
+      const marginBottom = 6; // small bottom margin
+      const availableWidth = pdfWidth - (marginLeftRight * 2);
+      const availableHeight = pdfHeight - (marginTop + marginBottom);
       const ratio = Math.min(availableWidth / imgWidth, availableHeight / imgHeight);
-      
+
       const scaledWidth = imgWidth * ratio;
       const scaledHeight = imgHeight * ratio;
-      const imgX = (pdfWidth - scaledWidth) / 2;
-      const imgY = margin;
+      const imgX = (pdfWidth - scaledWidth) / 2; // center horizontally
+      const imgY = marginTop; // push content up
 
       // Add image to PDF
       pdf.addImage(
         imgData,
-        'JPEG',
+        'PNG',
         imgX,
         imgY,
         scaledWidth,
@@ -213,6 +231,28 @@ export class PDFService {
     
     const date = new Date().toISOString().split('T')[0]; // YYYY-MM-DD format
     return `${cleanName}_cv_${date}.pdf`;
+  }
+
+  /**
+   * Parse CSS color string to RGB components.
+   */
+  private parseCssColorToRgb(color: string): { r: number; g: number; b: number } | null {
+    // rgb/rgba
+    const rgbMatch = color.match(/rgba?\((\d+)\s*,\s*(\d+)\s*,\s*(\d+)/i);
+    if (rgbMatch) {
+      return { r: +rgbMatch[1], g: +rgbMatch[2], b: +rgbMatch[3] };
+    }
+    // hex #rrggbb
+    const hexMatch = color.match(/^#([0-9a-f]{6})$/i);
+    if (hexMatch) {
+      const hex = hexMatch[1];
+      return {
+        r: parseInt(hex.slice(0, 2), 16),
+        g: parseInt(hex.slice(2, 4), 16),
+        b: parseInt(hex.slice(4, 6), 16),
+      };
+    }
+    return null;
   }
 
   /**

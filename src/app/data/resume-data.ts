@@ -5,7 +5,7 @@ export const RESUME_DATA: ResumeData = {
   initials: 'EB',
   location: 'İstanbul, Turkey, GMT+3',
   locationLink: 'https://www.google.com/maps/place/İstanbul',
-  about: 'Full Stack Developer passionate about creating innovative solutions.',
+  about: 'Full Stack Developer passionate about creating innovative solutions. Experienced Full Stack Developer specializing in modern web technologies, scalable applications, and user-centered design. Passionate about clean code, performance optimization, and continuous learning.Experienced Full Stack Developer specializing in modern web technologies, scalable applications, and user-centered design. Passionate about clean code, performance optimization, and continuous learning.',
   summary: 'Experienced Full Stack Developer specializing in modern web technologies, scalable applications, and user-centered design. Passionate about clean code, performance optimization, and continuous learning.',
   avatarUrl: '/profile.jpeg',
   personalWebsiteUrl: 'https://emirboz.dev',

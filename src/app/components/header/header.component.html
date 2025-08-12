@@ -1,4 +1,4 @@
-<header class="flex items-center justify-between">
+<header class="flex items-start justify-between">
   <!-- Left side - Personal info and contact -->
   <div class="flex-1 space-y-1.5">
     <!-- Name -->
@@ -7,12 +7,12 @@
     </h1>
 
     <!-- About -->
-    <p class="max-w-md text-pretty font-mono text-sm text-foreground/80 print:text-[12px]">
+    <p class="max-w-none text-pretty font-mono text-sm text-foreground/80 print:text-[12px]">
       {{ personalInfo().about }}
     </p>
 
     <!-- Location -->
-    <p class="max-w-md items-center text-pretty font-mono text-xs text-foreground">
+    <p class="max-w-none items-center text-pretty font-mono text-xs text-foreground">
         <a
           class="inline-flex items-center gap-x-1.5 leading-none hover:underline"
         [href]="personalInfo().locationLink"

@@ -172,9 +172,14 @@
     max-width: none !important;
   }
   
+  /* In PDF, allow header texts to use full width (avoid early wraps) */
+  .max-w-md {
+    max-width: none !important;
+  }
+  
   /* Ensure proper spacing */
   .space-y-8 > * + * {
-    margin-top: 2rem !important;
+    margin-top: 1.5rem !important; /* tighten top block spacing */
   }
   
   .space-y-4 > * + * {
@@ -206,6 +211,8 @@
       display: block !important;
       visibility: visible !important;
     }
+    /* Pull avatar slightly to the left in PDF for better balance */
+    margin-right: 8mm !important;
   }
   
   .flex-wrap {
