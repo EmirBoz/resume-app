@@ -35,6 +35,8 @@ export class PDFService {
 
       // Prepare element for PDF generation
       this.prepareElementForPDF(element);
+      // Inline critical images (e.g., avatar) as data URLs to avoid CORS/lazy issues
+      await this.inlineLocalImages(element);
       
       // Wait for styles to apply and images to load
       await this.waitForImagesAndStyles();
@@ -44,7 +46,7 @@ export class PDFService {
 
       // Generate canvas from HTML element with optimized settings
       const canvas = await html2canvas(element, {
-        scale: 2, // High quality
+         scale: 2, // High quality
         useCORS: true,
         allowTaint: false,
         backgroundColor: '#f7f5f3', // CV background color
@@ -55,30 +57,72 @@ export class PDFService {
         logging: false, // Disable console logs
         imageTimeout: 15000, // 15 second timeout for images
         removeContainer: true,
-        foreignObjectRendering: false, // Better compatibility
+         // Use foreignObject rendering to better match actual browser layout (fixes inline baselines)
+         foreignObjectRendering: true,
         ignoreElements: (element) => {
           // Ignore elements that might cause issues
           return element.classList.contains('print:hidden') || 
                  (element as HTMLElement).style?.display === 'none';
         },
-        onclone: (clonedDoc) => {
+          onclone: (clonedDoc) => {
           // Fix cloned document styles
           const clonedElement = clonedDoc.getElementById(elementId);
           if (clonedElement) {
             // Ensure all text is properly aligned
-            const badges = clonedElement.querySelectorAll('[class*="badge"], .inline-flex');
-            badges.forEach(badge => {
-              (badge as HTMLElement).style.display = 'inline-flex';
-              (badge as HTMLElement).style.alignItems = 'center';
-              (badge as HTMLElement).style.justifyContent = 'center';
-              (badge as HTMLElement).style.lineHeight = '1.2';
-              (badge as HTMLElement).style.verticalAlign = 'baseline';
+            const badges = clonedElement.querySelectorAll('.app-badge');
+            badges.forEach(node => {
+              const badge = node as HTMLElement;
+              const win = clonedDoc.defaultView;
+              if (!win) return;
+              const cs = win.getComputedStyle(badge);
+              const fontSize = parseFloat(cs.fontSize || '12');
+              const paddingLeft = parseFloat(cs.paddingLeft || '0');
+              const paddingRight = parseFloat(cs.paddingRight || '0');
+              const paddingTop = parseFloat(cs.paddingTop || '0');
+              const paddingBottom = parseFloat(cs.paddingBottom || '0');
+              const borderTop = parseFloat(cs.borderTopWidth || '0');
+              const borderBottom = parseFloat(cs.borderBottomWidth || '0');
+
+              const targetHeight = Math.round(fontSize + paddingTop + paddingBottom + borderTop + borderBottom);
+              const contentHeight = Math.max(1, targetHeight - borderTop - borderBottom);
+
+              badge.style.display = 'inline-block';
+              badge.style.height = `${targetHeight}px`;
+              badge.style.lineHeight = `${contentHeight}px`;
+              badge.style.verticalAlign = 'middle';
+              badge.style.whiteSpace = 'nowrap';
+              badge.style.paddingLeft = `${paddingLeft}px`;
+              badge.style.paddingRight = `${paddingRight}px`;
+              badge.style.paddingTop = '0px';
+              badge.style.paddingBottom = '0px';
+            });
+
+            // Center inline-flex anchors (icons + text) to avoid baseline quirks
+            // Remove any transforms that can affect baseline in clone
+            const transformed = clonedElement.querySelectorAll('.app-badge, a.inline-flex, svg, .size-1, .size-2, .size-3, .size-4');
+            transformed.forEach(el => {
+              (el as HTMLElement).style.transform = 'none';
             });
             
-            // Fix any flex containers
-            const flexContainers = clonedElement.querySelectorAll('.flex');
-            flexContainers.forEach(container => {
-              (container as HTMLElement).style.display = 'flex';
+            // Ensure avatar image is visible and bypass lazy/opacity; hide fallback text
+            const avatarImgs = clonedElement.querySelectorAll('.app-avatar img');
+            avatarImgs.forEach(img => {
+              const el = img as HTMLImageElement;
+              el.style.opacity = '1';
+              el.style.display = 'block';
+              el.style.visibility = 'visible';
+              el.setAttribute('crossorigin', 'anonymous');
+              // Force absolute URL to avoid base/relative issues in clone context
+              try {
+                const url = new URL(el.src, window.location.origin);
+                el.src = url.toString();
+              } catch {}
+            });
+            const avatarFallbacks = clonedElement.querySelectorAll('.app-avatar > div');
+            avatarFallbacks.forEach(fb => {
+              (fb as HTMLElement).style.display = 'none';
+              (fb as HTMLElement).style.opacity = '0';
+              (fb as HTMLElement).style.visibility = 'hidden';
             });
           }
         }
@@ -172,6 +216,42 @@ export class PDFService {
   }
 
   /**
+   * Convert same-origin images inside the target element to data URLs
+   * to ensure html2canvas can render them reliably.
+   */
+  private async inlineLocalImages(root: HTMLElement): Promise<void> {
+    const imgs = Array.from(root.querySelectorAll('img')) as HTMLImageElement[];
+    const tasks = imgs.map(async (img) => {
+      const src = img.getAttribute('src') || '';
+      if (!src || src.startsWith('data:')) return;
+      try {
+        const absoluteUrl = new URL(src, window.location.origin).toString();
+        // Only inline same-origin images
+        const isSameOrigin = absoluteUrl.startsWith(window.location.origin);
+        if (!isSameOrigin) return;
+        const res = await fetch(absoluteUrl, { credentials: 'same-origin', cache: 'force-cache' });
+        if (!res.ok) return;
+        const blob = await res.blob();
+        const dataUrl = await new Promise<string>((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result as string);
+          reader.onerror = () => reject(new Error('Failed to read image blob'));
+          reader.readAsDataURL(blob);
+        });
+        img.setAttribute('src', dataUrl);
+        img.removeAttribute('crossorigin');
+        // Ensure visible
+        img.style.opacity = '1';
+        img.style.display = 'block';
+        img.style.visibility = 'visible';
+      } catch {
+        // Ignore failures; html2canvas will attempt normal rendering
+      }
+    });
+    await Promise.all(tasks);
+  }
+
+  /**
    * Wait for images and styles to load
    */
   private async waitForImagesAndStyles(): Promise<void> {
@@ -245,23 +325,39 @@ export class PDFService {
     document.documentElement.style.margin = '0';
     document.documentElement.style.padding = '0';
 
-    // Fix all badges specifically
-    const badges = element.querySelectorAll('[class*="badge"], .inline-flex');
-    badges.forEach(badge => {
-      const badgeEl = badge as HTMLElement;
-      badgeEl.style.display = 'inline-flex';
-      badgeEl.style.alignItems = 'center';
-      badgeEl.style.justifyContent = 'center';
-      badgeEl.style.lineHeight = '1';
+    // Fix all badges specifically (pre-capture, inline-block exact height)
+    const badges = element.querySelectorAll('.app-badge');
+    badges.forEach(node => {
+      const badgeEl = node as HTMLElement;
+      const cs = window.getComputedStyle(badgeEl);
+      const fontSize = parseFloat(cs.fontSize || '12');
+      const paddingLeft = parseFloat(cs.paddingLeft || '8');
+      const paddingRight = parseFloat(cs.paddingRight || '8');
+      const paddingTop = parseFloat(cs.paddingTop || '4');
+      const paddingBottom = parseFloat(cs.paddingBottom || '4');
+      const borderTop = parseFloat(cs.borderTopWidth || '1');
+      const borderBottom = parseFloat(cs.borderBottomWidth || '1');
+      const targetHeight = Math.round(fontSize + paddingTop + paddingBottom + borderTop + borderBottom);
+      const contentHeight = Math.max(1, targetHeight - borderTop - borderBottom);
+
+      badgeEl.style.display = 'inline-block';
+      badgeEl.style.height = `${targetHeight}px`;
+      badgeEl.style.lineHeight = `${contentHeight}px`;
       badgeEl.style.verticalAlign = 'middle';
-      badgeEl.style.padding = '0.25rem 0.5rem';
-      badgeEl.style.fontSize = '0.75rem';
-      badgeEl.style.fontWeight = '500';
       badgeEl.style.whiteSpace = 'nowrap';
-      badgeEl.style.borderRadius = '0.375rem';
-      badgeEl.style.backgroundColor = '#e5e7eb';
-      badgeEl.style.color = '#374151';
-      badgeEl.style.border = '1px solid #d1d5db';
+      badgeEl.style.paddingLeft = `${paddingLeft}px`;
+      badgeEl.style.paddingRight = `${paddingRight}px`;
+      badgeEl.style.paddingTop = '0px';
+      badgeEl.style.paddingBottom = '0px';
+    });
+
+    // Ensure avatar image not hidden by transitions
+    const avatarImgs = element.querySelectorAll('.app-avatar img');
+    avatarImgs.forEach(img => {
+      const el = img as HTMLImageElement;
+      el.style.opacity = '1';
+      el.style.display = 'block';
+      el.style.visibility = 'visible';
     });
   }
 

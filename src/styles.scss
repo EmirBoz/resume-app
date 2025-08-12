@@ -189,10 +189,23 @@
     box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06) !important;
   }
   
-  /* Fix badge and inline elements */
-  .inline-flex {
-    display: inline-flex !important;
-    align-items: center !important;
+  /* Fix only badge inline elements; do not affect generic inline-flex (icons, links, etc.) */
+  .app-badge {
+    /* return to rock-solid vertical centering in PDF */
+    display: inline-block !important;
+    vertical-align: middle !important;
+    white-space: nowrap !important;
+  }
+
+  /* Ensure avatar images render properly in html2canvas */
+  .app-avatar {
+    /* avoid any overlayed fallback when printing to canvas */
+    > div { display: none !important; }
+    img {
+      opacity: 1 !important;
+      display: block !important;
+      visibility: visible !important;
+    }
   }
   
   .flex-wrap {
@@ -228,24 +241,18 @@
     gap: 0.5rem !important;
   }
   
-  /* Ensure proper line heights */
-  .leading-none {
-    line-height: 1 !important;
-  }
-  
-  .leading-tight {
-    line-height: 1.25 !important;
-  }
-  
-  /* Fix small text rendering */
-  .text-xs {
-    font-size: 0.75rem !important;
-    line-height: 1.2 !important;
-  }
-  
-  .text-sm {
-    font-size: 0.875rem !important;
-    line-height: 1.25 !important;
+  /* Do not override Tailwind line-heights; keep defaults for stable baseline alignment */
+  /* Removed forced line-height rules for .leading-none, .leading-tight, .text-xs, .text-sm */
+
+  /* Normalize inline icon and dot alignment in PDF */
+  svg,
+  .size-1,
+  .size-2,
+  .size-3,
+  .size-4 {
+    vertical-align: middle !important;
+    display: inline-block !important;
+    transform: translateZ(0);
   }
   
   /* Fix rounded corners */

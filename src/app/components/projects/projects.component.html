@@ -20,13 +20,13 @@
                   [href]="project.link!.href"
                   target="_blank"
                   rel="noopener noreferrer"
-                  class="inline-flex items-center gap-1 hover:underline"
+                  class="inline-flex items-center gap-1 align-middle hover:underline"
                   [attr.aria-label]="getProjectAriaLabel(project.title)"
                   [attr.id]="getProjectId(project.title)"
                 >
                   {{ project.title }}
                   <span
-                    class="size-1 rounded-full bg-green-500"
+                    class="size-1 rounded-full bg-green-500 align-middle inline-block"
                     title="Active project indicator"
                     aria-hidden="true"
                   ></span>

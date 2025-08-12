@@ -1,6 +1,6 @@
-<div [class]="avatarClasses()">
+<div [class]="'app-avatar ' + avatarClasses()">
   @if (showImage()) {
-    <img
+    <img crossorigin="anonymous"
       [src]="src()"
       [alt]="alt()"
       [class]="imageClasses()"

@@ -27,14 +27,10 @@ span {
 // PDF-specific fixes
 :host-context(.pdf-generating) {
   span {
-    // Fix text alignment and positioning for PDF
-    display: inline-flex !important;
-    align-items: center !important;
-    justify-content: center !important;
+    // PDF: inline-block + exact height for stable baseline
+    display: inline-block !important;
     
-    // Ensure proper text rendering
-    line-height: 1.2 !important;
-    vertical-align: baseline !important;
+    vertical-align: middle !important;
     
     // Fix font rendering
     font-family: system-ui, -apple-system, sans-serif !important;
@@ -47,7 +43,8 @@ span {
     box-sizing: border-box !important;
     
     // Fix padding and spacing
-    padding: 0.25rem 0.5rem !important;
+    padding-block: 0.25rem !important;
+    padding-inline: 0.5rem !important;
     
     // Ensure text doesn't overflow
     white-space: nowrap !important;
