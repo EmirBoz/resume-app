@@ -131,7 +131,7 @@
       }
     </ul>
 
-    <!-- Print contact info (visible only when printing) -->
+    <!-- Print contact info (visible in print/PDF: show text links instead of icons) -->
     <div class="hidden gap-x-2 font-mono text-sm text-foreground/80 print:flex print:text-[12px]">
       @if (personalInfo().personalWebsiteUrl) {
         <a
@@ -159,6 +159,17 @@
           [href]="getTelHref(contactInfo().tel)"
         >
           {{ contactInfo().tel }}
+        </a>
+      }
+      
+      <!-- Social links as text for PDF -->
+      @for (social of contactInfo().social; track social.name) {
+        <span aria-hidden="true">/</span>
+        <a
+          class="underline hover:text-foreground/70"
+          [href]="social.url"
+        >
+          {{ social.url }}
         </a>
       }
     </div>

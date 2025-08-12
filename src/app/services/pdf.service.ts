@@ -335,6 +335,16 @@ export class PDFService {
       (el as HTMLElement).style.display = 'none';
     });
 
+    // Show elements intended only for print (textual links instead of icons)
+    const elementsToShowFlex = element.querySelectorAll('[class*="print:flex"]');
+    elementsToShowFlex.forEach(el => {
+      (el as HTMLElement).style.display = 'flex';
+    });
+    const elementsToShowBlock = element.querySelectorAll('[class*="print:visible"], [class*="print:block"]');
+    elementsToShowBlock.forEach(el => {
+      (el as HTMLElement).style.display = 'block';
+    });
+
     // Apply PDF-specific styles - remove all margins and padding
     element.style.backgroundColor = '#f7f5f3'; // CV background color
     element.style.color = '#262626'; // CV text color
