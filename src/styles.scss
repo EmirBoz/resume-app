@@ -162,14 +162,152 @@
   /* Ensure backgrounds are rendered */
   background-color: #f7f5f3 !important;
   
-  /* Fix any layout issues */
+  /* Fix any layout issues - Full width containers */
   .container {
     max-width: none !important;
     width: 100% !important;
+    margin: 0 !important;
+    padding: 1rem !important;
   }
   
   .max-w-2xl {
     max-width: none !important;
+  }
+  
+  .max-w-3xl {
+    max-width: 672px !important; /* Use max-w-2xl width for PDF */
+  }
+  
+  /* Force A4 width PDF layout */
+  #cv-content {
+    width: 794px !important; /* A4 width */
+    min-width: 794px !important;
+    max-width: 794px !important;
+    margin: 0 !important;
+    padding: 1rem !important;
+  }
+  
+  /* Inner content container should fill A4 width */
+  .max-w-3xl {
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+  }
+  
+  /* Hide screen-only elements */
+  .print\\:hidden {
+    display: none !important;
+  }
+  
+  /* Show print-only elements */
+  .print\\:flex {
+    display: flex !important;
+  }
+  
+  .print\\:visible {
+    display: block !important;
+  }
+  
+  /* Ensure print contact div is visible */
+  div.print\\:flex {
+    display: flex !important;
+    font-size: 12px !important;
+    gap: 0.5rem !important;
+    font-family: ui-monospace, monospace !important;
+    color: rgba(0, 0, 0, 0.8) !important;
+    flex-wrap: wrap !important;
+    align-items: center !important;
+    margin-top: 0.25rem !important;
+  }
+  
+  /* Style links in print contact info */
+  div.print\\:flex a {
+    color: rgba(0, 0, 0, 0.8) !important;
+    text-decoration: underline !important;
+    font-size: 12px !important;
+  }
+  
+  /* Style separators in print contact info */
+  div.print\\:flex span[aria-hidden="true"] {
+    color: rgba(0, 0, 0, 0.6) !important;
+    font-size: 12px !important;
+  }
+  
+  /* Remove hidden class from print elements */
+  .hidden.print\\:flex {
+    display: flex !important;
+  }
+  
+  /* Fix avatar positioning in PDF */
+  .app-avatar {
+    flex-shrink: 0 !important;
+    width: 7rem !important; /* size-28 equivalent */
+    height: 7rem !important;
+    max-width: 7rem !important;
+    max-height: 7rem !important;
+  }
+  
+  /* Ensure header layout doesn't break */
+  header {
+    display: flex !important;
+    align-items: flex-start !important;
+    justify-content: space-between !important;
+    gap: 1rem !important;
+  }
+  
+  /* Left side should not overflow */
+  header > div:first-child {
+    flex: 1 !important;
+    min-width: 0 !important;
+    max-width: calc(100% - 8rem) !important;
+  }
+  
+  /* Fix badge alignment in PDF - Kesin yükseklik tekniği */
+  .app-badge {
+    display: inline-block !important;
+    vertical-align: middle !important;
+    white-space: nowrap !important;
+    font-size: 10px !important;
+    
+    /* Kesin yükseklik hesaplama */
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    padding-left: 6px !important;
+    padding-right: 6px !important;
+    
+    /* Yükseklik = fontSize + padding + border */
+    height: 18px !important; /* 10px font + 4px padding + 2px border */
+    line-height: 16px !important; /* height - borders */
+    
+    /* Text ortalama */
+    text-align: center !important;
+    box-sizing: border-box !important;
+    
+    /* Border hesaplama */
+    border-width: 1px !important;
+  }
+  
+  /* Fix küçük ikonlar ve dot'lar için hizalama */
+  svg {
+    vertical-align: middle !important;
+    display: inline-block !important;
+  }
+  
+  /* Yeşil dot hizalaması */
+  .size-1 {
+    vertical-align: middle !important;
+    display: inline-block !important;
+  }
+  
+  /* Link içindeki inline-flex'ler */
+  a.inline-flex {
+    align-items: center !important;
+  }
+  
+  /* Sadece gerekli inline-flex'lere dokunalım */
+  .inline-flex.items-center {
+    align-items: center !important;
+    vertical-align: middle !important;
   }
   
   /* In PDF, allow header texts to use full width (avoid early wraps) */

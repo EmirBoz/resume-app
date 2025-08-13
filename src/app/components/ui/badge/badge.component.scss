@@ -26,15 +26,23 @@ span {
 
 // PDF-specific fixes
 :host-context(.pdf-generating) {
+  display: inline-block !important;
+  
   span {
-    // PDF: inline-block + exact height for stable baseline
     display: inline-block !important;
-    
     vertical-align: middle !important;
     
     // Fix font rendering
     font-family: system-ui, -apple-system, sans-serif !important;
     font-weight: 500 !important;
+    font-size: 10px !important;
+
+    height: 18px !important; /* fontSize(10) + padding(4) + border(2) + margin(2) */
+    line-height: 16px !important; /* height - borders */
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    padding-left: 6px !important;
+    padding-right: 6px !important;
     
     // Remove transforms that can cause issues
     transform: none !important;
@@ -42,17 +50,12 @@ span {
     // Ensure proper box model
     box-sizing: border-box !important;
     
-    // Fix padding and spacing
-    padding-block: 0.25rem !important;
-    padding-inline: 0.5rem !important;
-    
-    // Ensure text doesn't overflow
+    // Text alignment
+    text-align: center !important;
     white-space: nowrap !important;
     overflow: visible !important;
-    text-overflow: clip !important;
     
-    // Remove any shadows that might cause issues
+    // Remove any effects that might cause issues
     box-shadow: none !important;
   }
-  
 }

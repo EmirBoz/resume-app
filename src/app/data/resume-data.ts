@@ -3,92 +3,86 @@ import { ResumeData } from '../models/resume.interface';
 export const RESUME_DATA: ResumeData = {
   name: 'Emir Boz',
   initials: 'EB',
-  location: 'İstanbul, Turkey, GMT+3',
+  location: 'İstanbul, Turkey',
   locationLink: 'https://www.google.com/maps/place/İstanbul',
-  about: 'Full Stack Developer passionate about creating innovative solutions. Experienced Full Stack Developer specializing in modern web technologies, scalable applications, and user-centered design. Passionate about clean code, performance optimization, and continuous learning.Experienced Full Stack Developer specializing in modern web technologies, scalable applications, and user-centered design. Passionate about clean code, performance optimization, and continuous learning.',
-  summary: 'Experienced Full Stack Developer specializing in modern web technologies, scalable applications, and user-centered design. Passionate about clean code, performance optimization, and continuous learning.',
+  about: 'Detail-oriented Full Stack Engineer\ndedicated to building high-quality products.',
+  summary:
+    'As a passionate Frontend Developer with 3 years of experience, I specialize in building scalable, efficient, and user-friendly web applications.\n\nMy expertise lies in TypeScript, Angular, React,\nand I am also expanding my backend knowledge with Java Spring Boot,\nNodejs to become a more versatile developer.',
   avatarUrl: '/profile.jpeg',
-  personalWebsiteUrl: 'https://emirboz.dev',
+  personalWebsiteUrl: 'null',
   contact: {
-    email: 'emir@example.com',
-    tel: '+90555123456',
+    email: 'emirrbozz@gmail.com',
+    tel: '+90 505 411 14 80',
     social: [
       {
         name: 'GitHub',
-        url: 'https://github.com/emirboz',
+        url: 'https://github.com/EmirBoz',
         icon: 'github',
       },
       {
         name: 'LinkedIn',
-        url: 'https://www.linkedin.com/in/emirboz/',
+        url: 'https://www.linkedin.com/in/emir-boz/',
         icon: 'linkedin',
-      },
-      {
-        name: 'X',
-        url: 'https://x.com/emirboz',
-        icon: 'x',
       },
     ],
   },
   education: [
     {
-      school: 'İstanbul Technical University',
-      degree: 'Bachelor\'s Degree in Computer Engineering',
-      start: '2018',
-      end: '2022',
+      school: 'Gebze Technical University',
+      degree: "Bachelor's Degree in Electronics Engineering",
+      start: '',
+      end: '',
     },
   ],
   work: [
     {
-      company: 'Tech Startup',
-      link: 'https://techstartup.com/',
-      badges: ['Remote', 'Angular', 'Node.js', 'TypeScript', 'MongoDB'],
-      title: 'Senior Full Stack Developer',
-      start: '2023',
+      company: 'Vodafone via Pia',
+      link: 'https://vodafone.com.tr',
+      badges: ['Hybrid', 'Angular', 'Angular Material', 'TypeScript', 'Agile'],
+      title: 'Software Developer | Vodafone Next',
+      start: '2022/03',
       end: null,
-      description: 'Leading development of modern web applications using Angular and Node.js. Responsible for architecture decisions, code reviews, and mentoring junior developers.',
+      description:
+        'As a Frontend Developer, I contributed to Vodafone Next, a project that enables customers to manage their internet service products, ' +
+        'including purchasing, cancellation, transfer, and package changes. ' +
+        'These processes are orchestrated using Camunda and other workflow tools. ' +
+        'I worked on multiple integrated platforms within the project:\n' +
+        '- Contact Center: Customer search, personal details, product management, and service operations.\n' +
+        '- Omni-Channel: Product recommendations, dynamic cart management, order review, and checkout flows.\n' +
+        '- BackOffice: Order tracking and workflow management for post-sale processes.\n' +
+        '- Product Catalog: Product definitions, configurations, and catalog management.\n' +
+        '- Partner Portal: Order details, billing information, and customer insights with advanced filtering options.',
     },
     {
-      company: 'Digital Agency',
-      link: 'https://digitalagency.com',
-      badges: ['Hybrid', 'React', 'Next.js', 'TypeScript', 'PostgreSQL'],
-      title: 'Full Stack Developer',
-      start: '2022',
-      end: '2023',
-      description: 'Developed and maintained multiple client projects using React and Next.js. Implemented responsive designs, optimized performance, and integrated third-party APIs.',
-    },
-    {
-      company: 'Software Company',
-      link: 'https://softwarecompany.com',
-      badges: ['On Site', 'Vue.js', 'Laravel', 'PHP', 'MySQL'],
-      title: 'Frontend Developer',
-      start: '2021',
-      end: '2022',
-      description: 'Built interactive user interfaces using Vue.js and collaborated with backend team for API integration. Focused on user experience and performance optimization.',
+      company: 'Turk Telecom',
+      link: 'https://www.turktelekom.com.tr',
+      badges: ['On Site', 'C/C++'],
+      title: 'Intern Engineer',
+      start: '2019/06',
+      end: '2019/09',
+      description:
+        'I completed an internship in the Network Management Systems department at Türk Telekom. During this period, ' +
+        'I gained fundamental knowledge of network management and infrastructure. ' +
+        'I worked with network simulation tools like Cisco Packet Tracer, gaining experience in building basic network topologies and configurations.',
     },
   ],
   skills: [
-    'Angular',
-    'React',
-    'Vue.js',
+    'Angular/ Angular Material',
+    'React/ Next.js',
     'TypeScript',
-    'JavaScript',
-    'Node.js',
-    'Express.js',
-    'NestJS',
-    'MongoDB',
-    'PostgreSQL',
     'Tailwind CSS',
-    'SCSS',
+    'Design Systems',
+    'Node.js',
     'Git',
-    'Docker',
-    'AWS',
+    'Jira',
+    'Scss',
   ],
   projects: [
     {
       title: 'E-Commerce Platform',
       techStack: ['Angular', 'NestJS', 'PostgreSQL', 'Stripe', 'Docker'],
-      description: 'Full-featured e-commerce platform with payment integration, inventory management, and admin dashboard. Built with modern technologies and best practices.',
+      description:
+        'Full-featured e-commerce platform\nwith payment integration, inventory management,\nand admin dashboard.\nBuilt with modern technologies and best practices.',
       link: {
         label: 'ecommerce-demo.com',
         href: 'https://ecommerce-demo.com/',
@@ -97,7 +91,8 @@ export const RESUME_DATA: ResumeData = {
     {
       title: 'Task Management App',
       techStack: ['React', 'Node.js', 'MongoDB', 'Socket.io', 'Tailwind CSS'],
-      description: 'Real-time collaborative task management application with drag-and-drop functionality, team collaboration features, and responsive design.',
+      description:
+        'Real-time collaborative task management application\nwith drag-and-drop functionality,\nteam collaboration features, and responsive design.',
       link: {
         label: 'taskmanager-app.com',
         href: 'https://taskmanager-app.com/',
@@ -106,7 +101,38 @@ export const RESUME_DATA: ResumeData = {
     {
       title: 'Weather Dashboard',
       techStack: ['Vue.js', 'TypeScript', 'Chart.js', 'OpenWeather API'],
-      description: 'Interactive weather dashboard with detailed forecasts, historical data visualization, and location-based weather tracking.',
+      description:
+        'Interactive weather dashboard\nwith detailed forecasts, historical data visualization,\nand location-based weather tracking.',
+      link: {
+        label: 'weather-dashboard.dev',
+        href: 'https://weather-dashboard.dev/',
+      },
+    },
+    {
+      title: 'Weather Dashboard',
+      techStack: ['Vue.js', 'TypeScript', 'Chart.js', 'OpenWeather API'],
+      description:
+          'Interactive weather dashboard\nwith detailed forecasts, historical data visualization,\nand location-based weather tracking.',
+      link: {
+        label: 'weather-dashboard.dev',
+        href: 'https://weather-dashboard.dev/',
+      },
+    },
+    {
+      title: 'Weather Dashboard',
+      techStack: ['Vue.js', 'TypeScript', 'Chart.js', 'OpenWeather API'],
+      description:
+          'Interactive weather dashboard\nwith detailed forecasts, historical data visualization,\nand location-based weather tracking.',
+      link: {
+        label: 'weather-dashboard.dev',
+        href: 'https://weather-dashboard.dev/',
+      },
+    },
+    {
+      title: 'Weather Dashboard',
+      techStack: ['Vue.js', 'TypeScript', 'Chart.js', 'OpenWeather API'],
+      description:
+          'Interactive weather dashboard\nwith detailed forecasts, historical data visualization,\nand location-based weather tracking.',
       link: {
         label: 'weather-dashboard.dev',
         href: 'https://weather-dashboard.dev/',
