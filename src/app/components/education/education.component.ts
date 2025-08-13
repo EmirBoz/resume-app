@@ -25,7 +25,7 @@ export class EducationComponent {
 
   // Helper methods
   formatEducationPeriod(start: string, end: string): string {
-    return `${start} - ${end}`;
+    return start || end ? `${start} - ${end}` :  '';
   }
 
   getEducationPeriodTitle(start: string, end: string): string {
