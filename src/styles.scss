@@ -268,16 +268,16 @@
     vertical-align: middle !important;
     white-space: nowrap !important;
     font-size: 10px !important;
+
+
+    padding-top: 2px !important;
+    padding-bottom: 2px !important;
+    padding-left: 8px !important;
+    padding-right: 8px !important;
     
-    /* Kesin yükseklik hesaplama */
-    padding-top: 0 !important;
-    padding-bottom: 0 !important;
-    padding-left: 6px !important;
-    padding-right: 6px !important;
-    
-    /* Yükseklik = fontSize + padding + border */
-    height: 18px !important; /* 10px font + 4px padding + 2px border */
-    line-height: 16px !important; /* height - borders */
+
+    height: 22px !important; /* 10px font + 8px padding + 2px border + 2px extra */
+    line-height: 18px !important; /* height - borders - padding */
     
     /* Text ortalama */
     text-align: center !important;

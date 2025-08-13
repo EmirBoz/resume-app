@@ -37,12 +37,12 @@ span {
     font-weight: 500 !important;
     font-size: 10px !important;
 
-    height: 18px !important; /* fontSize(10) + padding(4) + border(2) + margin(2) */
-    line-height: 16px !important; /* height - borders */
-    padding-top: 0 !important;
-    padding-bottom: 0 !important;
-    padding-left: 6px !important;
-    padding-right: 6px !important;
+    height: 22px !important; /* fontSize(10) + padding(8) + border(2) + extra(2) */
+    line-height: 18px !important; /* height - borders - padding */
+    padding-top: 2px !important;
+    padding-bottom: 2px !important;
+    padding-left: 8px !important;
+    padding-right: 8px !important;
     
     // Remove transforms that can cause issues
     transform: none !important;

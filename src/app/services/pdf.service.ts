@@ -33,6 +33,12 @@ export class PDFService {
         throw new Error(`Element with id '${elementId}' not found`);
       }
 
+      // Show loading overlay to hide visual changes
+      this.showLoadingOverlay();
+      
+      // Minimum display time for overlay
+      await new Promise(resolve => setTimeout(resolve, 200));
+
       // Prepare element for PDF generation
       this.prepareElementForPDF(element);
       // Inline critical images (e.g., avatar) as data URLs to avoid CORS/lazy issues
@@ -53,7 +59,7 @@ export class PDFService {
       // Wait for layout to adjust
       await new Promise(resolve => setTimeout(resolve, 500));
 
-      // Generate canvas from HTML element with fixed width
+      // Generate canvas from element with fixed width
       const canvas = await html2canvas(element, {
         scale: 2, // High quality
         useCORS: true,
@@ -242,6 +248,9 @@ export class PDFService {
 
       // Save PDF
       pdf.save(filename);
+      
+      // Hide overlay immediately after PDF save
+      this.hideLoadingOverlay();
 
     } catch (error) {
       console.error('PDF generation failed:', error);
@@ -253,6 +262,9 @@ export class PDFService {
       if (element) {
         this.restoreElementAfterPDF(element);
       }
+      
+      // Hide loading overlay immediately
+      this.hideLoadingOverlay();
       this.isGenerating.set(false);
     }
   }
@@ -430,18 +442,19 @@ export class PDFService {
       const paddingBottom = parseFloat(cs.paddingBottom || '4');
       const borderTop = parseFloat(cs.borderTopWidth || '1');
       const borderBottom = parseFloat(cs.borderBottomWidth || '1');
-      const targetHeight = Math.round(fontSize + paddingTop + paddingBottom + borderTop + borderBottom);
-      const contentHeight = Math.max(1, targetHeight - borderTop - borderBottom);
+      // Use fixed dimensions for better consistency
+      const targetHeight = 22; // Fixed height for better appearance
+      const contentHeight = 18; // Fixed line-height
 
       badgeEl.style.display = 'inline-block';
       badgeEl.style.height = `${targetHeight}px`;
       badgeEl.style.lineHeight = `${contentHeight}px`;
       badgeEl.style.verticalAlign = 'middle';
       badgeEl.style.whiteSpace = 'nowrap';
-      badgeEl.style.paddingLeft = `${paddingLeft}px`;
-      badgeEl.style.paddingRight = `${paddingRight}px`;
-      badgeEl.style.paddingTop = '0px';
-      badgeEl.style.paddingBottom = '0px';
+      badgeEl.style.paddingLeft = '8px';
+      badgeEl.style.paddingRight = '8px';
+      badgeEl.style.paddingTop = '2px';
+      badgeEl.style.paddingBottom = '2px';
     });
 
     // Ensure avatar image not hidden by transitions
@@ -455,6 +468,84 @@ export class PDFService {
   }
 
   /**
+   * Show loading overlay during PDF generation
+   */
+  private showLoadingOverlay(): void {
+    // Remove any existing overlays first (but don't call hideLoadingOverlay to avoid recursion)
+    const existingOverlays = document.querySelectorAll('#pdf-loading-overlay');
+    existingOverlays.forEach(el => {
+      if (el.parentNode) {
+        el.parentNode.removeChild(el);
+      }
+    });
+    
+    const overlay = document.createElement('div');
+    overlay.id = 'pdf-loading-overlay';
+    overlay.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 999999;
+      font-family: system-ui, sans-serif;
+      font-size: 16px;
+      color: #333;
+    `;
+    overlay.innerHTML = `
+      <div style="text-align: center;">
+        <div style="margin-bottom: 16px;">Generating PDF...</div>
+        <div style="width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid #333; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto;"></div>
+      </div>
+      <style>
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+      </style>
+    `;
+    document.body.appendChild(overlay);
+    console.log('PDF loading overlay created and added to body');
+  }
+
+  /**
+   * Hide loading overlay
+   */
+  private hideLoadingOverlay(): void {
+    console.log('Attempting to remove PDF loading overlay');
+    
+    // Remove all overlays with this ID
+    const overlays = document.querySelectorAll('#pdf-loading-overlay');
+    console.log(`Found ${overlays.length} overlay(s) to remove`);
+    
+    overlays.forEach((overlay, index) => {
+      try {
+        if (overlay && overlay.parentNode) {
+          overlay.parentNode.removeChild(overlay);
+          console.log(`Removed overlay ${index + 1}`);
+        }
+      } catch (error) {
+        console.error(`Error removing overlay ${index + 1}:`, error);
+      }
+    });
+    
+    // Double check - use remove() method as fallback
+    const remainingOverlays = document.querySelectorAll('#pdf-loading-overlay');
+    remainingOverlays.forEach((overlay, index) => {
+      try {
+        overlay.remove();
+        console.log(`Force removed remaining overlay ${index + 1}`);
+      } catch (error) {
+        console.error(`Error force removing overlay ${index + 1}:`, error);
+      }
+    });
+  }
+
+  /**
    * Restore element after PDF generation
    */
   private restoreElementAfterPDF(element: HTMLElement): void {
@@ -462,11 +553,50 @@ export class PDFService {
     element.classList.remove('pdf-generating');
     document.body.classList.remove('pdf-mode');
 
+    // Restore main element styles
     element.style.width = '';
     element.style.minWidth = '';
     element.style.maxWidth = '';
     element.style.margin = '';
     element.style.padding = '';
+
+    // Force a reflow to ensure styles are applied
+    element.offsetHeight;
+
+    // Restore all print contact info elements
+    const printContactDivs = element.querySelectorAll('div');
+    printContactDivs.forEach(div => {
+      const classList = div.className;
+      if (classList.includes('print:flex')) {
+        const divEl = div as HTMLElement;
+        divEl.style.display = '';
+        divEl.style.gap = '';
+        divEl.style.fontSize = '';
+        divEl.style.fontFamily = '';
+        divEl.style.color = '';
+        divEl.style.marginTop = '';
+        divEl.style.flexWrap = '';
+        divEl.style.alignItems = '';
+        divEl.style.visibility = '';
+        divEl.style.opacity = '';
+        divEl.classList.add('hidden'); // Restore hidden class
+      }
+    });
+
+    // Restore screen contact buttons (show icons again) - use same selector as prepare
+    const screenContactButtons = element.querySelectorAll('.print\\:hidden');
+    screenContactButtons.forEach(el => {
+      const htmlEl = el as HTMLElement;
+      htmlEl.style.display = '';
+      htmlEl.style.visibility = '';
+      htmlEl.style.opacity = '';
+      console.log('Restored screen contact button:', htmlEl.tagName, htmlEl.className);
+    });
+
+    // Force reflow again after all changes
+    element.offsetHeight;
+    
+    console.log('Element restore completed');
     const containers = element.querySelectorAll('.container, .max-w-2xl');
     containers.forEach(container => {
       (container as HTMLElement).style.maxWidth = '';
