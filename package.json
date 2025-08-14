@@ -7,7 +7,10 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "serve:ssr:cv-angular": "node dist/cv-angular/server/server.mjs"
+    "serve:ssr:cv-angular": "node dist/cv-angular/server/server.mjs",
+    "graphql:server": "node server/graphql-server.js",
+    "dev": "concurrently \"npm run graphql:server\" \"npm start\"",
+    "dev:graphql": "npm run graphql:server"
   },
   "prettier": {
     "overrides": [
@@ -53,8 +56,11 @@
     "@types/jspdf": "^1.3.3",
     "@types/node": "^20.17.19",
     "autoprefixer": "^10.4.21",
+    "concurrently": "^9.2.0",
+    "cors": "^2.8.5",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.4",
+    "graphql-http": "^1.22.4",
     "jasmine-core": "~5.8.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.2.0",

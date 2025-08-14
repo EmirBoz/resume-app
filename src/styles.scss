@@ -195,21 +195,21 @@
   }
   
   /* Hide screen-only elements */
-  .print\\:hidden {
+  [class*="print:hidden"] {
     display: none !important;
   }
   
   /* Show print-only elements */
-  .print\\:flex {
+  [class*="print:flex"] {
     display: flex !important;
   }
   
-  .print\\:visible {
+  [class*="print:visible"] {
     display: block !important;
   }
   
   /* Ensure print contact div is visible */
-  div.print\\:flex {
+  div[class*="print:flex"] {
     display: flex !important;
     font-size: 12px !important;
     gap: 0.5rem !important;
@@ -221,20 +221,20 @@
   }
   
   /* Style links in print contact info */
-  div.print\\:flex a {
+  div[class*="print:flex"] a {
     color: rgba(0, 0, 0, 0.8) !important;
     text-decoration: underline !important;
     font-size: 12px !important;
   }
   
   /* Style separators in print contact info */
-  div.print\\:flex span[aria-hidden="true"] {
+  div[class*="print:flex"] span[aria-hidden="true"] {
     color: rgba(0, 0, 0, 0.6) !important;
     font-size: 12px !important;
   }
   
   /* Remove hidden class from print elements */
-  .hidden.print\\:flex {
+  .hidden[class*="print:flex"] {
     display: flex !important;
   }
   
