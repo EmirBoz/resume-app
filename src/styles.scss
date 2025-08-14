@@ -434,3 +434,34 @@
     border-radius: 0.5rem !important;
   }
 }
+/* Command Menu Button - Force Fixed Position */
+.command-menu-button {
+  position: fixed !important;
+  bottom: 1.5rem !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  z-index: 9999 !important;
+  /* Force viewport positioning */
+  margin: 0 !important;
+  /* Prevent any parent transforms from affecting this */
+  will-change: transform !important;
+}
+
+/* Ensure button stays fixed on all devices and screen sizes */
+@media (max-width: 1279px) {
+  .command-menu-button {
+    position: fixed !important;
+    bottom: 1.5rem !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    z-index: 9999 !important;
+  }
+}
+
+/* Force fixed positioning even if parent has transform */
+body .command-menu-button {
+  position: fixed !important;
+  bottom: 1.5rem !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+}

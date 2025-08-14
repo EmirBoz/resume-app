@@ -4,9 +4,7 @@ import { DataService, PDFService } from '../../services';
 import { ButtonComponent } from '../ui';
 import {
   CommandDialogComponent,
-  CommandInputComponent,
   CommandListComponent,
-  CommandEmptyComponent,
   CommandGroupComponent,
   CommandItemComponent,
   CommandSeparatorComponent
@@ -24,9 +22,7 @@ interface CommandLink {
     CommonModule,
     ButtonComponent,
     CommandDialogComponent,
-    CommandInputComponent,
     CommandListComponent,
-    CommandEmptyComponent,
     CommandGroupComponent,
     CommandItemComponent,
     CommandSeparatorComponent
@@ -41,7 +37,6 @@ export class CommandMenuComponent implements OnInit, OnDestroy {
 
   // Component state
   isOpen = signal<boolean>(false);
-  searchValue = signal<string>('');
   isMac = signal<boolean>(false);
 
   // Data
@@ -116,18 +111,10 @@ export class CommandMenuComponent implements OnInit, OnDestroy {
 
   closeMenu() {
     this.isOpen.set(false);
-    this.searchValue.set('');
   }
 
   onOpenChange(open: boolean) {
     this.isOpen.set(open);
-    if (!open) {
-      this.searchValue.set('');
-    }
-  }
-
-  onSearch(value: string) {
-    this.searchValue.set(value);
   }
 
   // Actions

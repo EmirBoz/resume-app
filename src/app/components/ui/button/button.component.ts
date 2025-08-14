@@ -46,6 +46,7 @@ export class ButtonComponent {
   disabled = input<boolean>(false);
   type = input<'button' | 'submit' | 'reset'>('button');
   ariaLabel = input<string>();
+  className = input<string>('');
 
   // Output events
   clicked = output<MouseEvent>();
@@ -55,7 +56,7 @@ export class ButtonComponent {
     return cn(buttonVariants({
       variant: this.variant(),
       size: this.size()
-    }));
+    }), this.className());
   });
 
   onClick(event: MouseEvent): void {

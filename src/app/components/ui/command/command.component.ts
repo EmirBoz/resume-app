@@ -1,12 +1,11 @@
-import { Component, input, output, computed, signal, effect, ElementRef, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
 import { cn } from '../../../../lib/utils';
 
 @Component({
   selector: 'app-command-dialog',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule],
   template: `
     @if (open()) {
       <div class="fixed inset-0 z-50 bg-black/80" (click)="onOpenChange.emit(false)">
@@ -26,43 +25,6 @@ export class CommandDialogComponent {
 }
 
 @Component({
-  selector: 'app-command-input',
-  standalone: true,
-  imports: [CommonModule, FormsModule],
-  template: `
-    <div class="flex items-center border-b px-3">
-      <svg class="mr-2 h-4 w-4 shrink-0 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m21 21-6-6m2-5a7 7 0 1 1-14 0 7 7 0 0 1 14 0z"/>
-      </svg>
-      <input
-        #inputRef
-        class="flex h-10 w-full rounded-md bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50"
-        [placeholder]="placeholder()"
-        [(ngModel)]="searchValue"
-        (ngModelChange)="onSearch.emit($event)"
-        (keydown)="onKeyDown.emit($event)"
-      />
-    </div>
-  `
-})
-export class CommandInputComponent implements AfterViewInit {
-  @ViewChild('inputRef') inputRef!: ElementRef<HTMLInputElement>;
-  
-  placeholder = input<string>('Type a command or search...');
-  onSearch = output<string>();
-  onKeyDown = output<KeyboardEvent>();
-  
-  searchValue = '';
-
-  ngAfterViewInit() {
-    // Auto focus the input
-    setTimeout(() => {
-      this.inputRef.nativeElement.focus();
-    }, 100);
-  }
-}
-
-@Component({
   selector: 'app-command-list',
   standalone: true,
   imports: [CommonModule],
@@ -72,19 +34,7 @@ export class CommandInputComponent implements AfterViewInit {
     </div>
   `
 })
-export class CommandListComponent {}
-
-@Component({
-  selector: 'app-command-empty',
-  standalone: true,
-  imports: [CommonModule],
-  template: `
-    <div class="py-6 text-center text-sm">
-      <ng-content></ng-content>
-    </div>
-  `
-})
-export class CommandEmptyComponent {}
+export class CommandListComponent { }
 
 @Component({
   selector: 'app-command-group',
@@ -132,4 +82,4 @@ export class CommandItemComponent {
     <div class="-mx-1 h-px bg-border"></div>
   `
 })
-export class CommandSeparatorComponent {}
+export class CommandSeparatorComponent { }
