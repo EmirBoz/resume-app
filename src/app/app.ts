@@ -1,6 +1,7 @@
-import { Component, inject, signal, computed } from '@angular/core';
+import { Component, inject, signal, computed, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DataService, ThemeService } from './services';
+import { MetaService } from './services/meta.service';
 import { SkeletonComponent } from './components/ui';
 import { HeaderComponent } from './components/header/header.component';
 import { SummaryComponent } from './components/summary/summary.component';
@@ -17,10 +18,11 @@ import { CommandMenuComponent } from './components/command-menu/command-menu.com
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })
-export class App {
+export class App implements OnInit {
   // Inject services
   private dataService = inject(DataService);
   private themeService = inject(ThemeService);
+  private metaService = inject(MetaService);
 
   // Expose data for template
   resumeData = this.dataService.resumeData;
@@ -45,6 +47,11 @@ export class App {
       document.body.classList.remove('dark');
       document.body.classList.add('light');
     }
+  }
+
+  ngOnInit() {
+    // Update page meta tags with resume data
+    this.metaService.updatePageMeta();
   }
 
   // Error boundary-like functionality
