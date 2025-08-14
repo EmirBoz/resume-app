@@ -1,6 +1,6 @@
 <!-- CV Application Main Template -->
 <main 
-  class="container relative mx-auto scroll-my-12 overflow-auto p-4 print:p-11 md:p-16"
+  class="container relative mx-auto scroll-my-12 overflow-auto px-4 py-6 sm:px-6 sm:py-8 md:px-8 md:py-12 lg:px-16 lg:py-16 print:p-11"
   id="cv-content"
   role="main"
   [attr.aria-label]="resumeData().name + ' Resume'"
@@ -32,7 +32,7 @@
   } @else {
     <!-- Main CV Content -->
     <section
-      class="mx-auto w-full max-w-3xl space-y-8 print:space-y-4"
+      class="mx-auto w-full max-w-3xl space-y-6 sm:space-y-8 print:space-y-4"
       aria-label="Resume Content"
       style="background-color: transparent !important; color: hsl(0 0% 15%) !important;"
     >
@@ -46,7 +46,7 @@
       </div>
 
       <!-- Content Sections -->
-      <div class="space-y-8 print:space-y-4">
+      <div class="space-y-6 sm:space-y-8 print:space-y-4">
         <!-- Summary Section -->
         <div>
           @if (isLoading()) {

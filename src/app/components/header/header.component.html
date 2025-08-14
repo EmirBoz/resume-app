@@ -1,13 +1,13 @@
-<header class="flex items-start justify-between">
+<header class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between print:flex-row print:items-start print:justify-between">
   <!-- Left side - Personal info and contact -->
-  <div class="flex-1 space-y-1.5">
+  <div class="flex-1 space-y-1.5 min-w-0">
     <!-- Name -->
-    <h1 class="text-2xl font-bold" id="resume-name">
+    <h1 class="text-xl sm:text-2xl font-bold print:text-2xl" id="resume-name">
       {{ personalInfo().name }}
     </h1>
 
     <!-- About -->
-    <p class="max-w-none text-pretty font-mono text-sm text-foreground/80 print:text-[12px]">
+    <p class="max-w-none text-pretty font-mono text-xs sm:text-sm text-foreground/80 print:text-[12px]">
       {{ personalInfo().about }}
     </p>
 
@@ -31,7 +31,7 @@
 
     <!-- Contact buttons (visible on screen) -->
     <ul
-      class="flex list-none gap-x-1 pt-1 font-mono text-sm text-foreground/80 print:hidden"
+      class="flex list-none gap-x-2 pt-1 font-mono text-sm text-foreground/80 print:hidden"
       aria-label="Contact links"
     >
       <!-- Personal website -->
@@ -40,7 +40,7 @@
           <app-button
             variant="outline"
             size="icon"
-            className="size-8"
+            className="size-10 sm:size-8 print:size-8"
             [ariaLabel]="'Personal website'"
           >
             <a
@@ -51,7 +51,7 @@
             >
               <lucide-angular 
                 [img]="Globe" 
-                class="size-4" 
+                class="size-5 sm:size-4 print:size-4" 
                 aria-hidden="true">
               </lucide-angular>
             </a>
@@ -65,7 +65,7 @@
           <app-button
             variant="outline"
             size="icon"
-            className="size-8"
+            className="size-10 sm:size-8 print:size-8"
             [ariaLabel]="'Email'"
           >
             <a
@@ -74,7 +74,7 @@
             >
               <lucide-angular 
                 [img]="Mail" 
-                class="size-4" 
+                class="size-5 sm:size-4 print:size-4" 
                 aria-hidden="true">
               </lucide-angular>
             </a>
@@ -88,7 +88,7 @@
           <app-button
             variant="outline"
             size="icon"
-            className="size-8"
+            className="size-10 sm:size-8 print:size-8"
             [ariaLabel]="'Phone'"
           >
             <a
@@ -97,7 +97,7 @@
             >
               <lucide-angular 
                 [img]="Phone" 
-                class="size-4" 
+                class="size-5 sm:size-4 print:size-4" 
                 aria-hidden="true">
               </lucide-angular>
             </a>
@@ -111,7 +111,7 @@
           <app-button
             variant="outline"
             size="icon"
-            className="size-8"
+            className="size-10 sm:size-8 print:size-8"
             [ariaLabel]="social.name"
           >
             <a
@@ -122,7 +122,7 @@
             >
               <lucide-angular 
                 [img]="getIconForSocial(social.icon)" 
-                class="size-4" 
+                class="size-5 sm:size-4 print:size-4" 
                 aria-hidden="true">
               </lucide-angular>
             </a>
@@ -177,7 +177,7 @@
 
   <!-- Right side - Avatar -->
   <app-avatar
-    className="size-28"
+    className="size-20 sm:size-24 md:size-28 print:size-28 mx-auto sm:mx-0"
     [src]="personalInfo().avatarUrl"
     [alt]="personalInfo().name + '\'s profile picture'"
     [fallback]="personalInfo().initials"

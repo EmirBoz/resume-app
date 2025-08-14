@@ -1,5 +1,5 @@
 <section class="flex min-h-0 flex-col gap-y-3 print:gap-y-1">
-  <h2 class="text-xl font-bold" id="work-experience">
+  <h2 class="text-lg sm:text-xl font-bold print:text-xl" id="work-experience">
     Work Experience
   </h2>
   
@@ -14,8 +14,9 @@
           <!-- Card Header -->
           <app-card-header className="print:space-y-1">
             <!-- Company name, badges, and period -->
-            <div class="flex items-center justify-between gap-x-2 text-base">
-              <h3 class="flex items-center gap-x-1 font-semibold leading-none print:text-sm">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-base">
+              <div class="flex flex-col sm:flex-row sm:items-center gap-2">
+                <h3 class="flex items-center gap-x-1 font-semibold leading-none text-sm sm:text-base print:text-sm">
                 <!-- Company link -->
                 <a
                   class="hover:underline text-foreground"
@@ -28,9 +29,11 @@
                   {{ work.company }}
                 </a>
                 
+                </h3>
+                
                 <!-- Desktop badges (hidden on mobile) -->
                 <ul
-                  class="hidden gap-x-1 sm:inline-flex list-none p-0"
+                  class="hidden sm:inline-flex gap-x-1 list-none p-0 print:inline-flex"
                   aria-label="Technologies used"
                 >
                   @for (badge of work.badges; track trackByBadge($index, badge)) {
@@ -44,11 +47,11 @@
                     </li>
                   }
                 </ul>
-              </h3>
+              </div>
               
               <!-- Work period -->
               <div
-                class="text-sm tabular-nums text-gray-500"
+                class="text-xs sm:text-sm tabular-nums text-gray-500 print:text-sm"
                 [attr.title]="getWorkPeriodTitle(work.start, work.end)"
               >
                 {{ formatWorkPeriod(work.start, work.end) }}
@@ -56,7 +59,7 @@
             </div>
 
             <!-- Job title -->
-            <h4 class="font-mono text-sm font-semibold leading-none print:text-[12px]">
+            <h4 class="font-mono text-xs sm:text-sm font-semibold leading-none print:text-[12px]">
               {{ work.title }}
             </h4>
           </app-card-header>
@@ -69,16 +72,16 @@
             </div>
             
             <!-- Mobile badges (visible only on mobile) -->
-            <div class="mt-2">
+            <div class="mt-2 sm:hidden print:hidden">
               <ul
-                class="-mx-2 flex-wrap gap-1 sm:hidden inline-flex list-none p-0"
+                class="flex flex-wrap gap-1 list-none p-0"
                 aria-label="Technologies used"
               >
                 @for (badge of work.badges; track trackByBadge($index, badge)) {
                   <li>
                     <app-badge
                       variant="secondary"
-                      className="align-middle text-xs print:px-1 print:py-0.5 print:text-[8px] print:leading-tight"
+                      className="align-middle text-xs"
                     >
                       {{ badge }}
                     </app-badge>

@@ -262,29 +262,18 @@
     max-width: calc(100% - 8rem) !important;
   }
   
-  /* Fix badge alignment in PDF - Kesin yükseklik tekniği */
+  /* Fix badge alignment in PDF */
   .app-badge {
     display: inline-block !important;
-    vertical-align: middle !important;
+    vertical-align: baseline !important;
     white-space: nowrap !important;
     font-size: 10px !important;
-
-
-    padding-top: 2px !important;
-    padding-bottom: 2px !important;
-    padding-left: 8px !important;
-    padding-right: 8px !important;
-    
-
-    height: 22px !important; /* 10px font + 8px padding + 2px border + 2px extra */
-    line-height: 18px !important; /* height - borders - padding */
-    
-    /* Text ortalama */
+    line-height: 1.2 !important;
+    padding: 2px 6px !important;
+    border-radius: 4px !important;
     text-align: center !important;
     box-sizing: border-box !important;
-    
-    /* Border hesaplama */
-    border-width: 1px !important;
+    margin: 0 1px !important;
   }
   
   /* Fix küçük ikonlar ve dot'lar için hizalama */
@@ -342,15 +331,50 @@
 
   /* Ensure avatar images render properly in html2canvas */
   .app-avatar {
-    /* avoid any overlayed fallback when printing to canvas */
-    > div { display: none !important; }
+    /* Force avatar container to be visible */
+    opacity: 1 !important;
+    visibility: visible !important;
+    display: flex !important;
+    
+    /* Hide fallback text completely during PDF generation */
+    > div { 
+      display: none !important; 
+      opacity: 0 !important;
+      visibility: hidden !important;
+    }
+    
+    /* Force avatar image to be visible */
     img {
       opacity: 1 !important;
       display: block !important;
       visibility: visible !important;
+      object-fit: cover !important;
+      border-radius: 50% !important;
+      width: 100% !important;
+      height: 100% !important;
     }
+    
     /* Pull avatar slightly to the left in PDF for better balance */
     margin-right: 8mm !important;
+  }
+  
+  /* Only ensure critical elements are visible during PDF generation */
+  header {
+    opacity: 1 !important;
+    visibility: visible !important;
+    display: flex !important;
+  }
+  
+  /* Ensure main content sections are visible */
+  section {
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+  
+  /* Ensure headings are visible */
+  h1, h2, h3 {
+    opacity: 1 !important;
+    visibility: visible !important;
   }
   
   .flex-wrap {

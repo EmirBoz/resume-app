@@ -1,10 +1,10 @@
 <section class="scroll-mb-16 print:space-y-4">
-  <h2 class="text-xl font-bold" id="side-projects">
+  <h2 class="text-lg sm:text-xl font-bold print:text-xl" id="side-projects">
     Side projects
   </h2>
   
   <div
-    class="-mx-3 grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3 print:grid-cols-3 print:gap-2"
+    class="-mx-3 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 print:grid-cols-3 print:gap-2"
     role="feed"
     [attr.aria-labelledby]="'side-projects'"
   >
@@ -14,7 +14,7 @@
           <!-- Project Content -->
           <div class="p-4">
             <!-- Project Title -->
-            <h3 class="text-base font-semibold mb-2">
+            <h3 class="text-sm sm:text-base font-semibold mb-2 print:text-base">
               @if (project.link?.href) {
                 <a
                   [href]="project.link!.href"
