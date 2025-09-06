@@ -5,9 +5,9 @@ export const RESUME_DATA: ResumeData = {
   initials: 'EB',
   location: 'İstanbul, Turkey',
   locationLink: 'https://www.google.com/maps/place/İstanbul',
-  about: 'Detail-oriented Full Stack Engineer\ndedicated to building high-quality products.',
+  about: 'A proactive Frontend Developer with 3+ years of experience in building scalable and user-friendly web applications. Passionate about continuous learning and exploring modern technologies to deliver high-quality solutions.',
   summary:
-    'As a passionate Frontend Developer with 3 years of experience, I specialize in building scalable, efficient, and user-friendly web applications.\n\nMy expertise lies in TypeScript, Angular, React,\nand I am also expanding my backend knowledge with Java Spring Boot,\nNodejs to become a more versatile developer.',
+    'I specialize in creating scalable and user-friendly applications using TypeScript and Angular. While my primary focus is frontend, I continuously explore other technologies such as React, Java Spring Boot, and .NET to become a more versatile engineer. I am passionate about solving complex challenges and contributing to impactful projects.',
   avatarUrl: '/profile.jpeg',
   personalWebsiteUrl: 'null',
   contact: {
@@ -38,20 +38,25 @@ export const RESUME_DATA: ResumeData = {
     {
       company: 'Vodafone via Pia',
       link: 'https://vodafone.com.tr',
-      badges: ['Hybrid', 'Angular', 'Angular Material', 'TypeScript', 'Agile'],
+      badges: ['Hybrid', 'Agile', 'Angular', 'Angular Material', 'TypeScript'],
       title: 'Software Developer | Vodafone Next',
       start: '2022/03',
       end: null,
       description:
-        'As a Frontend Developer, I contributed to Vodafone Next, a project that enables customers to manage their internet service products, ' +
-        'including purchasing, cancellation, transfer, and package changes. ' +
-        'These processes are orchestrated using Camunda and other workflow tools. ' +
-        'I worked on multiple integrated platforms within the project:\n' +
-        '- Contact Center: Customer search, personal details, product management, and service operations.\n' +
-        '- Omni-Channel: Product recommendations, dynamic cart management, order review, and checkout flows.\n' +
-        '- BackOffice: Order tracking and workflow management for post-sale processes.\n' +
-        '- Product Catalog: Product definitions, configurations, and catalog management.\n' +
-        '- Partner Portal: Order details, billing information, and customer insights with advanced filtering options.',
+        'Contributed as a Frontend Developer to Vodafone Next, a large-scale customer and sales management platform built on Dnext, a microservice-based digital interaction framework. ' +
+        'The platform is used by Vodafone’s sales representatives and customer agents to manage internet services, corporate solutions, and cloud-based products for both individual and enterprise customers.\n' +
+        '\n- Worked across multiple integrated modules including CRM, OmniChannel, BackOffice, Product Catalog, Partner Portal, and Common libraries, contributing to both new feature development and production defect resolution.' +
+        '\n- Developed and optimized customer lifecycle management flows (creation, search, updates, transfers, cancellations, package migrations, and add-on products) in the CRM module.' +
+        '\n- Enhanced the OmniChannel checkout and order orchestration system, implementing dynamic rendering of product characteristics, conditional validations, and step-based workflows integrated with Camunda BPM.' +
+        '\n- Contributed to the Product Catalog by building configuration rule management, package change workflows, and document validation rules, enabling flexible and scalable product definitions.' +
+        '\n- Delivered improvements in the BackOffice module, including dashboards and job management features for order tracking and workflow visibility.' +
+        '\n- Implemented role-based access control using Keycloak, ensuring secure and compliant user authorization across the platform.' +
+        '\n- Collaborated with senior developers in an Agile environment, initially supporting the Defect Team to gain cross-platform knowledge, later transitioning into feature delivery teams to implement end-to-end solutions.\n' +
+        '\nTechnologies: Angular, TypeScript, Angular Material, RxJS, Keycloak, Camunda, REST APIs, Microservice architecture\n' +
+        '\nImpact:\n' +
+        '- Improved customer service efficiency by enhancing order tracking and product operation flows.\n' +
+        '- Reduced operational errors by implementing dynamic validation and condition-based rendering for product configurations.\n' +
+        '- Contributed to the platform’s scalability and adaptability, supporting Vodafone’s transition to a next-generation digital customer management ecosystem.',
     },
     {
       company: 'Turk Telecom',
@@ -61,82 +66,60 @@ export const RESUME_DATA: ResumeData = {
       start: '2019/06',
       end: '2019/09',
       description:
-        'I completed an internship in the Network Management Systems department at Türk Telekom. During this period, ' +
-        'I gained fundamental knowledge of network management and infrastructure. ' +
-        'I worked with network simulation tools like Cisco Packet Tracer, gaining experience in building basic network topologies and configurations.',
+        'Completed an internship in the Network Management Systems department at Türk Telekom, gaining practical exposure to large-scale telecommunication infrastructure and operations.\n' +
+        '\n- Assisted in monitoring and analyzing network performance metrics, learning the fundamentals of fault detection and service continuity.\n' +
+        '- Worked with simulation tools such as Cisco Packet Tracer to design and configure basic network topologies.\n' +
+        '- Observed real-world implementations of network management platforms, gaining insight into enterprise-scale system reliability and scalability.\n' +
+        '- Collaborated with engineers to document processes and enhance understanding of telecom-grade network architectures.\n' +
+        '\nImpact:\n' +
+        '- Built a strong foundation in networking concepts, which later supported my transition into software development.\n' +
+        '- Developed problem-solving and analytical skills through hands-on exposure to real network environments and scenarios.',
+
     },
   ],
   skills: [
-    'Angular/ Angular Material',
-    'React/ Next.js',
+    // Frontend
+    'Angular / Angular Material',
+    'React / Next.js',
     'TypeScript',
+    'JavaScript (ES6+)',
+    'HTML5 / CSS3 / SCSS',
     'Tailwind CSS',
     'Design Systems',
-    'Node.js',
-    'Git',
-    'Jira',
-    'Scss',
+
+    // Backend & Databases
+    'Node.js (learning)',
+    'Java Spring Boot (learning)',
+    '.NET (learning)',
+    'PostgreSQL',
+    'MongoDB',
+
+    // Tools & Practices
+    'Git / GitHub / Bitbucket',
+    'Jira / Agile Methodologies',
+    'RESTful APIs',
+    'CI/CD basics'
   ],
+
   projects: [
     {
-      title: 'E-Commerce Platform',
-      techStack: ['Angular', 'NestJS', 'PostgreSQL', 'Stripe', 'Docker'],
+      title: 'CV/Resume Web Application',
+      techStack: [
+        'Angular 20',
+        'Tailwind CSS',
+        'SCSS',
+        'Angular Signals',
+        'GraphQL (Apollo Client)',
+        'jsPDF',
+        'html2canvas'
+      ],
       description:
-        'Full-featured e-commerce platform\nwith payment integration, inventory management,\nand admin dashboard.\nBuilt with modern technologies and best practices.',
+        'A minimalist, print-friendly single-page CV/Resume app built with Angular 20.\n' +
+        'Features include dynamic data with GraphQL, PDF export, and a custom UI component library for consistent design.',
       link: {
-        label: 'ecommerce-demo.com',
-        href: 'https://ecommerce-demo.com/',
-      },
-    },
-    {
-      title: 'Task Management App',
-      techStack: ['React', 'Node.js', 'MongoDB', 'Socket.io', 'Tailwind CSS'],
-      description:
-        'Real-time collaborative task management application\nwith drag-and-drop functionality,\nteam collaboration features, and responsive design.',
-      link: {
-        label: 'taskmanager-app.com',
-        href: 'https://taskmanager-app.com/',
-      },
-    },
-    {
-      title: 'Weather Dashboard',
-      techStack: ['Vue.js', 'TypeScript', 'Chart.js', 'OpenWeather API'],
-      description:
-        'Interactive weather dashboard\nwith detailed forecasts, historical data visualization,\nand location-based weather tracking.',
-      link: {
-        label: 'weather-dashboard.dev',
-        href: 'https://weather-dashboard.dev/',
-      },
-    },
-    {
-      title: 'Weather Dashboard',
-      techStack: ['Vue.js', 'TypeScript', 'Chart.js', 'OpenWeather API'],
-      description:
-          'Interactive weather dashboard\nwith detailed forecasts, historical data visualization,\nand location-based weather tracking.',
-      link: {
-        label: 'weather-dashboard.dev',
-        href: 'https://weather-dashboard.dev/',
-      },
-    },
-    {
-      title: 'Weather Dashboard',
-      techStack: ['Vue.js', 'TypeScript', 'Chart.js', 'OpenWeather API'],
-      description:
-          'Interactive weather dashboard\nwith detailed forecasts, historical data visualization,\nand location-based weather tracking.',
-      link: {
-        label: 'weather-dashboard.dev',
-        href: 'https://weather-dashboard.dev/',
-      },
-    },
-    {
-      title: 'Weather Dashboard',
-      techStack: ['Vue.js', 'TypeScript', 'Chart.js', 'OpenWeather API'],
-      description:
-          'Interactive weather dashboard\nwith detailed forecasts, historical data visualization,\nand location-based weather tracking.',
-      link: {
-        label: 'weather-dashboard.dev',
-        href: 'https://weather-dashboard.dev/',
-      },
-    },
+        label: 'GitHub Repository',
+        href: 'https://github.com/EmirBoz'
+      }
+    }
   ],
 } as const;
