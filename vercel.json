@@ -1,22 +1,12 @@
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "server/src/server.ts",
-      "use": "@vercel/node",
-      "config": {
-        "maxLambdaSize": "50mb"
-      }
-    },
-    {
-      "src": "package.json", 
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "dist/cv-angular/browser"
-      }
-    }
-  ],
+  "buildCommand": "npm run build:prod",
+  "outputDirectory": "dist/cv-angular/browser",
   "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "/server/src/server.ts"
+    },
     {
       "src": "/graphql",
       "dest": "/server/src/server.ts",
@@ -29,7 +19,7 @@
     },
     {
       "src": "/(.*)",
-      "dest": "/dist/cv-angular/browser/index.html",
+      "dest": "/index.html",
       "headers": {
         "X-Content-Type-Options": "nosniff",
         "X-Frame-Options": "DENY",
@@ -42,6 +32,7 @@
   },
   "functions": {
     "server/src/server.ts": {
+      "runtime": "nodejs20.x",
       "maxDuration": 30
     }
   },
