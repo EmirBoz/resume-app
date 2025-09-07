@@ -3,10 +3,129 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-// MongoDB connection
-if (!mongoose.connection.readyState) {
-  mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/cv-development');
-}
+// MongoDB connection with proper async handling
+let isConnected = false;
+
+const connectToDatabase = async () => {
+  if (isConnected && mongoose.connection.readyState === 1) {
+    return;
+  }
+
+  try {
+    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/cv-development', {
+      maxPoolSize: 1, // Maintain up to 1 socket connection
+      serverSelectionTimeoutMS: 5000, // Keep trying to send operations for 5 seconds
+      socketTimeoutMS: 45000, // Close sockets after 45 seconds of inactivity
+      bufferCommands: false, // Disable mongoose buffering
+      bufferMaxEntries: 0 // Disable mongoose buffering
+    });
+    isConnected = true;
+    console.log('MongoDB connected successfully');
+    
+    // Seed default data if database is empty
+    await seedDefaultData();
+  } catch (error) {
+    console.error('MongoDB connection error:', error);
+    throw error;
+  }
+};
+
+// Default sample data for seeding
+const defaultResumeData = {
+  personalInfo: {
+    name: 'Emir Boz',
+    initials: 'EB',
+    title: 'Frontend Developer',
+    location: 'İstanbul, Turkey',
+    locationLink: 'https://www.google.com/maps/place/İstanbul',
+    about: 'A proactive Frontend Developer with 3+ years of experience in building scalable and user-friendly web applications. Passionate about continuous learning and exploring modern technologies to deliver high-quality solutions.',
+    summary: 'I specialize in creating scalable and user-friendly applications using TypeScript and Angular. While my primary focus is frontend, I continuously explore other technologies such as React, Java Spring Boot, and .NET to become a more versatile engineer.',
+    avatarUrl: '/profile.jpeg',
+    personalWebsiteUrl: 'https://emirboz.dev',
+    email: 'emirrbozz@gmail.com',
+    tel: '+90 505 411 14 80',
+    phone: '+90 505 411 14 80'
+  },
+  workExperience: [
+    {
+      id: '1',
+      company: 'Vodafone',
+      link: 'https://vodafone.com.tr',
+      badges: ['Hybrid', 'Angular', 'TypeScript'],
+      title: 'Software Developer',
+      position: 'Software Developer',
+      start: '2022/03',
+      startDate: '2022/03',
+      end: null,
+      endDate: null,
+      description: 'Developing modern web applications using Angular and TypeScript.',
+      current: true
+    }
+  ],
+  education: [
+    {
+      id: '1',
+      institution: 'University Example',
+      school: 'University Example',
+      degree: 'Computer Science',
+      field: 'Computer Science',
+      start: '2018',
+      startDate: '2018',
+      end: '2022',
+      endDate: '2022',
+      current: false
+    }
+  ],
+  skills: ['TypeScript', 'Angular', 'React', 'Node.js', 'MongoDB'],
+  projects: [
+    {
+      id: '1',
+      name: 'Resume Application',
+      title: 'Resume Application',
+      description: 'A modern resume application built with Angular and GraphQL.',
+      technologies: ['Angular', 'GraphQL', 'TypeScript'],
+      techStack: ['Angular', 'GraphQL', 'TypeScript'],
+      url: 'https://example.com',
+      github: 'https://github.com/EmirBoz',
+      link: {
+        label: 'View Project',
+        href: 'https://example.com'
+      }
+    }
+  ],
+  socialLinks: [
+    {
+      name: 'GitHub',
+      platform: 'GitHub',
+      url: 'https://github.com/EmirBoz',
+      username: 'EmirBoz',
+      icon: 'github'
+    },
+    {
+      name: 'LinkedIn',
+      platform: 'LinkedIn',
+      url: 'https://www.linkedin.com/in/emir-boz/',
+      username: 'emir-boz',
+      icon: 'linkedin'
+    }
+  ]
+};
+
+// Function to seed default data
+const seedDefaultData = async () => {
+  try {
+    const existingData = await ResumeData.findOne();
+    if (!existingData) {
+      console.log('No resume data found, creating default data...');
+      const newResumeData = new ResumeData(defaultResumeData);
+      await newResumeData.save();
+      console.log('Default resume data created successfully');
+    }
+  } catch (error) {
+    console.log('Error seeding default data:', error.message);
+    // Don't throw error, just log it - seeding is optional
+  }
+};
 
 // MongoDB Schema definitions
 const userSchema = new mongoose.Schema({
@@ -284,7 +403,14 @@ const resolvers = {
   Query: {
     getResumeData: async (_, __, context) => {
       try {
+        // Ensure database connection
+        await connectToDatabase();
+        
         const resumeData = await ResumeData.findOne().exec();
+        if (!resumeData) {
+          console.log('No resume data found in database');
+          return null;
+        }
         return resumeData;
       } catch (error) {
         console.error('Error fetching resume data:', error);
@@ -292,14 +418,21 @@ const resolvers = {
       }
     },
     me: async (_, __, context) => {
-      const authHeader = context.headers.authorization;
-      if (!authHeader) return null;
-      
-      const token = authHeader.replace('Bearer ', '');
-      const decoded = getUserFromToken(token);
-      if (!decoded) return null;
-      
-      return await User.findById(decoded.userId);
+      try {
+        await connectToDatabase();
+        
+        const authHeader = context.headers.authorization;
+        if (!authHeader) return null;
+        
+        const token = authHeader.replace('Bearer ', '');
+        const decoded = getUserFromToken(token);
+        if (!decoded) return null;
+        
+        return await User.findById(decoded.userId);
+      } catch (error) {
+        console.error('Error in me query:', error);
+        return null;
+      }
     }
   },
   ResumeData: {
@@ -363,6 +496,8 @@ const resolvers = {
   Mutation: {
     login: async (_, { username, password }) => {
       try {
+        await connectToDatabase();
+        
         const user = await User.findOne({ username });
         if (!user) {
           throw new Error('Invalid credentials');
@@ -394,6 +529,8 @@ const resolvers = {
       }
     },
     updatePersonalInfo: async (_, { personalInfo }, context) => {
+      await connectToDatabase();
+      
       const authHeader = context.headers.authorization;
       if (!authHeader) throw new Error('Not authenticated');
       
@@ -411,6 +548,8 @@ const resolvers = {
       return await resumeData.save();
     },
     updateSummary: async (_, { summary }, context) => {
+      await connectToDatabase();
+      
       const authHeader = context.headers.authorization;
       if (!authHeader) throw new Error('Not authenticated');
       
@@ -428,6 +567,8 @@ const resolvers = {
       return await resumeData.save();
     },
     updateWorkExperience: async (_, { workExperience }, context) => {
+      await connectToDatabase();
+      
       const authHeader = context.headers.authorization;
       if (!authHeader) throw new Error('Not authenticated');
       
@@ -445,6 +586,8 @@ const resolvers = {
       return await resumeData.save();
     },
     updateEducation: async (_, { education }, context) => {
+      await connectToDatabase();
+      
       const authHeader = context.headers.authorization;
       if (!authHeader) throw new Error('Not authenticated');
       
@@ -462,6 +605,8 @@ const resolvers = {
       return await resumeData.save();
     },
     updateSkills: async (_, { skills }, context) => {
+      await connectToDatabase();
+      
       const authHeader = context.headers.authorization;
       if (!authHeader) throw new Error('Not authenticated');
       
@@ -479,6 +624,8 @@ const resolvers = {
       return await resumeData.save();
     },
     updateProjects: async (_, { projects }, context) => {
+      await connectToDatabase();
+      
       const authHeader = context.headers.authorization;
       if (!authHeader) throw new Error('Not authenticated');
       
@@ -496,6 +643,8 @@ const resolvers = {
       return await resumeData.save();
     },
     updateSocialLinks: async (_, { socialLinks }, context) => {
+      await connectToDatabase();
+      
       const authHeader = context.headers.authorization;
       if (!authHeader) throw new Error('Not authenticated');
       
