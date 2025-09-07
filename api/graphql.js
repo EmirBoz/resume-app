@@ -1,5 +1,4 @@
 const { ApolloServer } = require('@apollo/server');
-const { startServerAndCreateHandler } = require('@apollo/server/integrations/vercel');
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
@@ -410,11 +409,56 @@ const server = new ApolloServer({
   plugins: []
 });
 
-// Create and export the request handler
-module.exports = startServerAndCreateHandler(server, {
-  context: async ({ req }) => {
-    return {
-      headers: req.headers,
-    };
-  },
-});
+// Manual Vercel handler
+module.exports = async (req, res) => {
+  // Set CORS headers
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  
+  // Handle preflight
+  if (req.method === 'OPTIONS') {
+    res.status(200).end();
+    return;
+  }
+  
+  // Only allow POST and GET
+  if (req.method !== 'POST' && req.method !== 'GET') {
+    res.status(405).json({ error: 'Method not allowed' });
+    return;
+  }
+  
+  try {
+    // Start server if not started
+    await server.start();
+    
+    // Get query and variables
+    let query, variables;
+    if (req.method === 'POST') {
+      query = req.body.query;
+      variables = req.body.variables;
+    } else {
+      query = req.query.query;
+      variables = req.query.variables ? JSON.parse(req.query.variables) : undefined;
+    }
+    
+    // Execute GraphQL
+    const result = await server.executeOperation(
+      { query, variables },
+      { 
+        contextValue: {
+          headers: req.headers
+        }
+      }
+    );
+    
+    // Send response
+    res.status(200).json(result);
+    
+  } catch (error) {
+    console.error('GraphQL Error:', error);
+    res.status(500).json({ 
+      errors: [{ message: 'Internal server error', details: error.message }] 
+    });
+  }
+};
