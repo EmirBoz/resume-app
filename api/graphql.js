@@ -409,6 +409,9 @@ const server = new ApolloServer({
   plugins: []
 });
 
+// Start server immediately at module load
+const serverStartPromise = server.start();
+
 // Manual Vercel handler
 module.exports = async (req, res) => {
   // Set CORS headers
@@ -429,8 +432,8 @@ module.exports = async (req, res) => {
   }
   
   try {
-    // Start server if not started
-    await server.start();
+    // Wait for server to start (no-op if already started)
+    await serverStartPromise;
     
     // Get query and variables
     let query, variables;
