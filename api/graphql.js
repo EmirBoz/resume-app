@@ -1,29 +1,23 @@
-const { VercelRequest, VercelResponse } = require('@vercel/node');
 const { ApolloServer } = require('@apollo/server');
 const { startServerAndCreateHandler } = require('@apollo/server/integrations/vercel');
 const mongoose = require('mongoose');
-const dotenv = require('dotenv');
-const { gql } = require('graphql-tag');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-
-// Load environment variables
-dotenv.config();
 
 // MongoDB connection
 if (!mongoose.connection.readyState) {
   mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/cv-development');
 }
 
-// Define schemas inline for Vercel compatibility
-const User = mongoose.models.User || mongoose.model('User', new mongoose.Schema({
+// MongoDB Schema definitions
+const userSchema = new mongoose.Schema({
   username: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   email: { type: String },
   role: { type: String, default: 'user' }
-}));
+});
 
-const ResumeData = mongoose.models.ResumeData || mongoose.model('ResumeData', new mongoose.Schema({
+const resumeDataSchema = new mongoose.Schema({
   userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   personalInfo: {
     name: String,
@@ -71,10 +65,13 @@ const ResumeData = mongoose.models.ResumeData || mongoose.model('ResumeData', ne
     url: String,
     username: String
   }]
-}));
+});
 
-// GraphQL Type Definitions
-const typeDefs = gql`
+const User = mongoose.models.User || mongoose.model('User', userSchema);
+const ResumeData = mongoose.models.ResumeData || mongoose.model('ResumeData', resumeDataSchema);
+
+// GraphQL Type Definitions (inline string)
+const typeDefs = `
   type PersonalInfo {
     name: String
     title: String
