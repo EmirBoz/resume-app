@@ -1,58 +1,113 @@
-# CvAngular
+# CV Project - Full Stack Application
+
+A modern, professional CV/Resume web application built with Angular 20 frontend and Node.js/GraphQL backend.
+
+## Project Structure
+
+```
+cv-angular/
+├── src/                    # Angular frontend source
+├── server/                 # Node.js/GraphQL backend
+├── public/                 # Static assets
+└── dist/                   # Build output
+```
+
+## Frontend (Angular)
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.1.5.
 
-## Development server
+### Development server
 
-To start a local development server, run:
+To start the frontend development server:
 
 ```bash
+npm install
 ng serve
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+Navigate to `http://localhost:4200/`. The application will automatically reload when you modify source files.
 
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
+### Building the frontend
 
 ```bash
 ng build
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+## Backend (Node.js/GraphQL)
 
-## Running unit tests
+The backend provides GraphQL API for CV data management with authentication.
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+### Setup backend
 
+```bash
+cd server
+npm install
+cp .env.example .env
+# Configure your environment variables in .env
+```
+
+### Development server
+
+```bash
+cd server
+npm run dev
+```
+
+The GraphQL server will be available at `http://localhost:4000/graphql`
+
+### Building the backend
+
+```bash
+cd server
+npm run build
+```
+
+## Features
+
+- **Responsive Design**: Mobile-first, print-friendly CV layout
+- **Admin Panel**: Authentication-protected content management
+- **GraphQL API**: Modern, efficient data fetching
+- **Form Management**: Dynamic forms for CV sections
+- **PDF Export**: Generate PDF versions of the CV
+- **Real-time Updates**: Live preview of changes
+
+## Technology Stack
+
+### Frontend
+- Angular 20.1.5
+- TypeScript
+- Tailwind CSS
+- Apollo GraphQL Client
+- Angular Signals
+
+### Backend
+- Node.js
+- GraphQL with Apollo Server
+- MongoDB
+- JWT Authentication
+- TypeScript
+
+## Running Tests
+
+### Frontend tests
 ```bash
 ng test
 ```
 
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
+### End-to-end tests
 ```bash
 ng e2e
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+## Deployment
+
+See [DEPLOYMENT.md](DEPLOYMENT.md) for detailed deployment instructions.
+
+## Development Workflow
+
+1. **Frontend Development**: Use `ng serve` for live reload during development
+2. **Backend Development**: Use `cd server && npm run dev` for GraphQL server
+3. **Full Stack**: Run both servers simultaneously for complete development environment
 
 ## Additional Resources
 

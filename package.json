@@ -10,7 +10,7 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "serve:ssr:cv-angular": "node dist/cv-angular/server/server.mjs",
-    "graphql:server": "node server/graphql-server.js",
+    "graphql:server": "cd server && npm run dev",
     "dev": "concurrently \"npm run graphql:server\" \"npm start\"",
     "dev:graphql": "npm run graphql:server",
     "preview": "ng build --configuration production && npx http-server dist/cv-angular/browser -p 4200",

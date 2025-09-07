@@ -40,3 +40,19 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
+
+# Server specific
+server/node_modules/
+server/dist/
+server/.env
+server/logs/
+
+# Logs
+logs
+*.log
+
+# Environment files
+.env
+.env.local
+.env.production
+.env.test
