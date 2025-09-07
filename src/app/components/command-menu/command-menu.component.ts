@@ -1,6 +1,8 @@
 import { Component, input, signal, effect, inject, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DataService, PDFService } from '../../services';
+import { AdminService } from '../../services/admin.service';
+import { AuthService } from '../../services/auth.service';
 import { ButtonComponent } from '../ui';
 import {
   CommandDialogComponent,
@@ -34,6 +36,8 @@ export class CommandMenuComponent implements OnInit, OnDestroy {
   // Inject services
   private dataService = inject(DataService);
   private pdfService = inject(PDFService);
+  private adminService = inject(AdminService);
+  private authService = inject(AuthService);
 
   // Component state
   isOpen = signal<boolean>(false);
@@ -44,6 +48,10 @@ export class CommandMenuComponent implements OnInit, OnDestroy {
 
   // Computed properties
   links = signal<CommandLink[]>([]);
+  
+  // Admin state
+  isAuthenticated = this.authService.isAuthenticated;
+  currentUser = this.authService.currentUser;
 
   constructor() {
     // Detect Mac
@@ -136,6 +144,22 @@ export class CommandMenuComponent implements OnInit, OnDestroy {
   handleLinkClick(url: string) {
     this.closeMenu();
     window.open(url, '_blank', 'noopener,noreferrer');
+  }
+
+  // Admin actions
+  handleAdminLogin() {
+    this.closeMenu();
+    this.adminService.openAdminLogin();
+  }
+
+  handleAdminPanel() {
+    this.closeMenu();
+    this.adminService.openAdminPanel();
+  }
+
+  handleAdminLogout() {
+    this.closeMenu();
+    this.adminService.onLogout();
   }
 
   // Getters for template

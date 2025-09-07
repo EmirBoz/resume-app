@@ -10,11 +10,14 @@ import { EducationComponent } from './components/education/education.component';
 import { SkillsComponent } from './components/skills/skills.component';
 import { ProjectsComponent } from './components/projects/projects.component';
 import { CommandMenuComponent } from './components/command-menu/command-menu.component';
+import { AdminLoginComponent } from './components/admin/admin-login/admin-login.component';
+import { AdminPanelComponent } from './components/admin/admin-panel/admin-panel';
+import { AdminService } from './services/admin.service';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, SkeletonComponent, HeaderComponent, SummaryComponent, WorkExperienceComponent, EducationComponent, SkillsComponent, ProjectsComponent, CommandMenuComponent],
+  imports: [CommonModule, SkeletonComponent, HeaderComponent, SummaryComponent, WorkExperienceComponent, EducationComponent, SkillsComponent, ProjectsComponent, CommandMenuComponent, AdminLoginComponent, AdminPanelComponent],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })
@@ -23,6 +26,7 @@ export class App implements OnInit {
   private dataService = inject(DataService);
   private themeService = inject(ThemeService);
   private metaService = inject(MetaService);
+  private adminService = inject(AdminService);
 
   // Expose data for template
   resumeData = this.dataService.resumeData;
@@ -35,6 +39,10 @@ export class App implements OnInit {
 
   // Computed properties
   pageTitle = computed(() => `${this.resumeData().name} - Resume`);
+  
+  // Admin state
+  showAdminLogin = this.adminService.showAdminLogin;
+  showAdminPanel = this.adminService.showAdminPanel;
   
   constructor() {
     // Force light theme for CV - CVs should always be readable
@@ -52,6 +60,9 @@ export class App implements OnInit {
   ngOnInit() {
     // Update page meta tags with resume data
     this.metaService.updatePageMeta();
+    
+    // Initialize admin service
+    this.adminService.initialize();
   }
 
   // Error boundary-like functionality

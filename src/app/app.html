@@ -97,6 +97,15 @@
     <!-- Command Menu -->
     <app-command-menu />
   }
+
+  <!-- Admin Modals -->
+  @if (showAdminLogin()) {
+    <app-admin-login />
+  }
+  
+  @if (showAdminPanel()) {
+    <app-admin-panel />
+  }
 </main>
 
 
