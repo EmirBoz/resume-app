@@ -56,10 +56,21 @@ if (config.isProduction) {
     process.exit(1);
   }
   
+  if (config.adminUsername === 'admin') {
+    console.error('🚨 SECURITY WARNING: Using default admin username "admin" in production!');
+    console.error('💡 Recommendation: Use a secure, unique admin username.');
+  }
+  
+  if (config.jwtSecret.length < 32) {
+    console.error('🚨 SECURITY WARNING: JWT secret is too short for production!');
+    console.error('💡 Recommendation: Use at least 64 characters for JWT secret.');
+  }
+  
   if (config.mongodbUri.includes('localhost')) {
     console.error('❌ CRITICAL: Use MongoDB Atlas in production, not localhost!');
     process.exit(1);
   }
   
   console.log('✅ Production environment validation passed');
+  console.log('🛡️ Security checks completed successfully');
 }
