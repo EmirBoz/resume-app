@@ -18,6 +18,8 @@
     "preview": "ng build --configuration production && npx http-server dist/cv-angular/browser -p 4200",
     "deploy:build": "npm run build:prod",
     "deploy:vercel": "vercel --prod",
+    "deploy:production": "./scripts/deploy-production.sh",
+    "security:check": "cd server && npx tsc --noEmit && cd .. && npm audit",
     "postinstall": "cd server && npm install"
   },
   "prettier": {

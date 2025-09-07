@@ -112,17 +112,27 @@ For comprehensive production deployment guide, see [DEPLOYMENT.md](./DEPLOYMENT.
 
 ### Quick Deploy Options:
 
-1. **Vercel (Recommended - Zero Config)**:
+1. **🔧 Automated Production Deployment (Recommended)**:
+   ```bash
+   npm run deploy:production
+   ```
+
+2. **⚡ Vercel Quick Deploy**:
    ```bash
    npm run deploy:vercel
    ```
 
-2. **Railway**:
+3. **🔍 Security Check**:
+   ```bash
+   npm run security:check
+   ```
+
+4. **Railway**:
    - Connect GitHub repo
    - Set environment variables
    - Auto-deploy on push
 
-3. **DigitalOcean App Platform**:
+5. **DigitalOcean App Platform**:
    - Monorepo support
    - Managed databases
    - Automatic SSL

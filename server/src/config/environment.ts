@@ -44,4 +44,22 @@ if (config.isProduction) {
     console.error('❌ Missing required environment variables:', missingVars);
     process.exit(1);
   }
+  
+  // Production security validations
+  if (config.jwtSecret === 'fallback-secret-change-in-production') {
+    console.error('❌ CRITICAL: JWT_SECRET must be changed in production!');
+    process.exit(1);
+  }
+  
+  if (config.adminPassword === 'admin123') {
+    console.error('❌ CRITICAL: ADMIN_PASSWORD must be changed from default!');
+    process.exit(1);
+  }
+  
+  if (config.mongodbUri.includes('localhost')) {
+    console.error('❌ CRITICAL: Use MongoDB Atlas in production, not localhost!');
+    process.exit(1);
+  }
+  
+  console.log('✅ Production environment validation passed');
 }

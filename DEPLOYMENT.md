@@ -16,8 +16,29 @@
    ```
 
 3. **Network Access Ayarları**
-   - IP Whitelist'e `0.0.0.0/0` ekleyin (tüm IP'ler için geçici)
-   - Production'da specific IP'ler ekleyeceksiniz
+   - ❌ **ASLA** `0.0.0.0/0` kullanmayın (Tüm dünyaya açık - Tehlikeli!)
+   - ✅ **Platform-specific IP'leri** kullanın:
+   
+   **Vercel için:**
+   ```
+   76.76.19.0/24
+   76.223.126.0/24
+   ```
+   
+   **Railway için:**
+   ```
+   34.102.136.180/32
+   ```
+   
+   **DigitalOcean için:**
+   ```
+   46.101.0.0/16
+   ```
+   
+   **Kendi NAT Gateway (En Güvenli):**
+   ```
+   YOUR_STATIC_IP/32
+   ```
 
 4. **Connection String Alın**
    ```
