@@ -1,11 +1,11 @@
-import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { ApolloServer } from '@apollo/server';
-import { startServerAndCreateHandler } from '@apollo/server/integrations/vercel';
-import mongoose from 'mongoose';
-import dotenv from 'dotenv';
-import { gql } from 'graphql-tag';
-import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
+const { VercelRequest, VercelResponse } = require('@vercel/node');
+const { ApolloServer } = require('@apollo/server');
+const { startServerAndCreateHandler } = require('@apollo/server/integrations/vercel');
+const mongoose = require('mongoose');
+const dotenv = require('dotenv');
+const { gql } = require('graphql-tag');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 // Load environment variables
 dotenv.config();
@@ -218,9 +218,9 @@ const typeDefs = gql`
 `;
 
 // Helper function to get user from JWT
-const getUserFromToken = (token: string) => {
+const getUserFromToken = (token) => {
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'fallback-secret') as any;
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'fallback-secret');
     return decoded;
   } catch (error) {
     return null;
@@ -230,7 +230,7 @@ const getUserFromToken = (token: string) => {
 // Resolvers
 const resolvers = {
   Query: {
-    getResumeData: async (_: any, __: any, context: any) => {
+    getResumeData: async (_, __, context) => {
       try {
         const resumeData = await ResumeData.findOne().exec();
         return resumeData;
@@ -239,7 +239,7 @@ const resolvers = {
         throw new Error('Failed to fetch resume data');
       }
     },
-    me: async (_: any, __: any, context: any) => {
+    me: async (_, __, context) => {
       const authHeader = context.headers.authorization;
       if (!authHeader) return null;
       
@@ -251,7 +251,7 @@ const resolvers = {
     }
   },
   Mutation: {
-    login: async (_: any, { username, password }: { username: string; password: string }) => {
+    login: async (_, { username, password }) => {
       try {
         const user = await User.findOne({ username });
         if (!user) {
@@ -283,7 +283,7 @@ const resolvers = {
         throw error;
       }
     },
-    updatePersonalInfo: async (_: any, { personalInfo }: any, context: any) => {
+    updatePersonalInfo: async (_, { personalInfo }, context) => {
       const authHeader = context.headers.authorization;
       if (!authHeader) throw new Error('Not authenticated');
       
@@ -300,7 +300,7 @@ const resolvers = {
       
       return await resumeData.save();
     },
-    updateSummary: async (_: any, { summary }: any, context: any) => {
+    updateSummary: async (_, { summary }, context) => {
       const authHeader = context.headers.authorization;
       if (!authHeader) throw new Error('Not authenticated');
       
@@ -317,7 +317,7 @@ const resolvers = {
       
       return await resumeData.save();
     },
-    updateWorkExperience: async (_: any, { workExperience }: any, context: any) => {
+    updateWorkExperience: async (_, { workExperience }, context) => {
       const authHeader = context.headers.authorization;
       if (!authHeader) throw new Error('Not authenticated');
       
@@ -334,7 +334,7 @@ const resolvers = {
       
       return await resumeData.save();
     },
-    updateEducation: async (_: any, { education }: any, context: any) => {
+    updateEducation: async (_, { education }, context) => {
       const authHeader = context.headers.authorization;
       if (!authHeader) throw new Error('Not authenticated');
       
@@ -351,7 +351,7 @@ const resolvers = {
       
       return await resumeData.save();
     },
-    updateSkills: async (_: any, { skills }: any, context: any) => {
+    updateSkills: async (_, { skills }, context) => {
       const authHeader = context.headers.authorization;
       if (!authHeader) throw new Error('Not authenticated');
       
@@ -368,7 +368,7 @@ const resolvers = {
       
       return await resumeData.save();
     },
-    updateProjects: async (_: any, { projects }: any, context: any) => {
+    updateProjects: async (_, { projects }, context) => {
       const authHeader = context.headers.authorization;
       if (!authHeader) throw new Error('Not authenticated');
       
@@ -385,7 +385,7 @@ const resolvers = {
       
       return await resumeData.save();
     },
-    updateSocialLinks: async (_: any, { socialLinks }: any, context: any) => {
+    updateSocialLinks: async (_, { socialLinks }, context) => {
       const authHeader = context.headers.authorization;
       if (!authHeader) throw new Error('Not authenticated');
       
@@ -414,8 +414,8 @@ const server = new ApolloServer({
 });
 
 // Create and export the request handler
-export default startServerAndCreateHandler(server, {
-  context: async ({ req }: { req: VercelRequest }) => {
+module.exports = startServerAndCreateHandler(server, {
+  context: async ({ req }) => {
     return {
       headers: req.headers,
     };
