@@ -9,7 +9,9 @@ cv-angular/
 ├── src/                    # Angular frontend source
 ├── server/                 # Node.js/GraphQL backend
 ├── public/                 # Static assets
-└── dist/                   # Build output
+├── dist/                   # Build output
+├── DEPLOYMENT.md          # Production deployment guide
+└── vercel.json            # Vercel deployment config
 ```
 
 ## Frontend (Angular)
@@ -98,6 +100,48 @@ ng test
 ```bash
 ng e2e
 ```
+
+## 🚀 Production Deployment
+
+**⚠️ Critical Security Note**: 
+- **NEVER** commit `.env` files to Git!
+- **ALWAYS** use strong, unique passwords in production
+- **CHANGE** default admin credentials (`admin/admin123`)
+
+For comprehensive production deployment guide, see [DEPLOYMENT.md](./DEPLOYMENT.md)
+
+### Quick Deploy Options:
+
+1. **Vercel (Recommended - Zero Config)**:
+   ```bash
+   npm run deploy:vercel
+   ```
+
+2. **Railway**:
+   - Connect GitHub repo
+   - Set environment variables
+   - Auto-deploy on push
+
+3. **DigitalOcean App Platform**:
+   - Monorepo support
+   - Managed databases
+   - Automatic SSL
+
+### Required Environment Variables for Production:
+```bash
+MONGODB_URI=mongodb+srv://user:pass@cluster.mongodb.net/cv-app
+JWT_SECRET=super-secure-random-string-production
+ADMIN_USERNAME=your_secure_admin_username  
+ADMIN_PASSWORD=Very$ecure9assw0rd2024!
+CORS_ORIGINS=https://yourdomain.com,https://www.yourdomain.com
+```
+
+### 🛡️ Security Checklist:
+- ✅ Strong admin password set
+- ✅ JWT secret changed from default
+- ✅ MongoDB Atlas with restricted IP access
+- ✅ HTTPS enabled (automatic with most platforms)
+- ✅ Environment variables set on platform
 
 ## Deployment
 

@@ -7,6 +7,8 @@
     "build": "ng build",
     "build:prod": "ng build --configuration production",
     "build:analyze": "ng build --configuration production --stats-json && npx webpack-bundle-analyzer dist/cv-angular/stats.json",
+    "build:server": "cd server && npm run build",
+    "start:prod": "cd server && npm start",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "serve:ssr:cv-angular": "node dist/cv-angular/server/server.mjs",
@@ -14,7 +16,9 @@
     "dev": "concurrently \"npm run graphql:server\" \"npm start\"",
     "dev:graphql": "npm run graphql:server",
     "preview": "ng build --configuration production && npx http-server dist/cv-angular/browser -p 4200",
-    "deploy:build": "npm run build:prod"
+    "deploy:build": "npm run build:prod",
+    "deploy:vercel": "vercel --prod",
+    "postinstall": "cd server && npm install"
   },
   "prettier": {
     "overrides": [

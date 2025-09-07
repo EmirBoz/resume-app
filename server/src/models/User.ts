@@ -1,11 +1,13 @@
-import mongoose, { Schema, Document } from 'mongoose';
+import mongoose, { Schema, Document, Types } from 'mongoose';
 import { User } from '../types';
 
 export interface UserDocument extends Document {
+  _id: Types.ObjectId;
   username: string;
   passwordHash: string;
   createdAt: Date;
   updatedAt: Date;
+  toObject(): any;
 }
 
 const userSchema = new Schema<UserDocument>({

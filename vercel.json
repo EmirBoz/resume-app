@@ -1,0 +1,29 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "server/src/server.ts",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "package.json", 
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "dist/cv-angular/browser"
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/graphql",
+      "dest": "/server/src/server.ts"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/dist/cv-angular/browser/index.html"
+    }
+  ],
+  "env": {
+    "NODE_ENV": "production"
+  }
+}
