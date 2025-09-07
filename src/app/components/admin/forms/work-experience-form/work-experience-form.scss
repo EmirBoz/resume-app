@@ -1,0 +1,17 @@
+:host {
+  display: block;
+}
+
+/* Custom focus styles */
+input:focus, textarea:focus {
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Form validation styles */
+.ng-invalid.ng-touched {
+  border-color: #ef4444;
+}
+
+.ng-valid.ng-touched {
+  border-color: #10b981;
+}

@@ -1,0 +1,191 @@
+<div class="space-y-6">
+  <!-- Form Header -->
+  <div class="flex items-center justify-between">
+    <div>
+      <h3 class="text-lg font-medium text-gray-900">Projects</h3>
+    </div>
+    
+    <!-- Save Status -->
+    <div class="flex items-center space-x-2">
+      @if (isSaving()) {
+        <div class="flex items-center text-blue-600 text-sm">
+          <svg class="animate-spin w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="m4 12a8 8 0 818-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 714 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          Saving...
+        </div>
+      } @else if (lastSaved()) {
+        <div class="flex items-center text-green-600 text-sm">
+          <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+          </svg>
+          Saved Successfully - Panel closing...
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- Error Message -->
+  @if (errorMessage()) {
+    <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+      <div class="flex">
+        <svg class="w-5 h-5 text-red-400 mr-3 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
+        <div>
+          <h4 class="text-sm font-medium text-red-800">Error saving changes</h4>
+          <p class="text-sm text-red-700 mt-1">{{ errorMessage() }}</p>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Form -->
+  <form [formGroup]="projectsForm" (ngSubmit)="onSubmit()" class="space-y-6">
+    <div formArrayName="projects" class="space-y-6">
+      @for (projectControl of projectsArray.controls; track $index; let i = $index) {
+        <div [formGroupName]="i" class="bg-white border border-gray-200 rounded-lg p-6">
+          <!-- Project Header -->
+          <div class="flex items-center justify-between mb-4">
+            <h4 class="text-md font-medium text-gray-900">
+              Project {{ i + 1 }}
+            </h4>
+            @if (projectsArray.length > 1) {
+              <button
+                type="button"
+                (click)="removeProject(i)"
+                class="text-red-600 hover:text-red-800 text-sm font-medium"
+              >
+                Remove
+              </button>
+            }
+          </div>
+
+          <div class="space-y-4">
+            <!-- Project Title -->
+            <div>
+              <label [for]="'title-' + i" class="block text-sm font-medium text-gray-700 mb-1">
+                Project Title *
+              </label>
+              <input
+                type="text"
+                [id]="'title-' + i"
+                formControlName="title"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                placeholder="e.g., E-commerce Platform"
+              />
+              @if (projectControl.get('title')?.invalid && projectControl.get('title')?.touched) {
+                <p class="text-red-600 text-sm mt-1">Project title is required</p>
+              }
+            </div>
+
+            <!-- Tech Stack -->
+            <div>
+              <label [for]="'techStack-' + i" class="block text-sm font-medium text-gray-700 mb-1">
+                Technology Stack *
+              </label>
+              <input
+                type="text"
+                [id]="'techStack-' + i"
+                formControlName="techStackString"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                placeholder="Angular, TypeScript, Node.js (comma separated)"
+              />
+              @if (projectControl.get('techStackString')?.invalid && projectControl.get('techStackString')?.touched) {
+                <p class="text-red-600 text-sm mt-1">Technology stack is required</p>
+              }
+              <p class="text-xs text-gray-500 mt-1">Separate multiple technologies with commas</p>
+            </div>
+
+            <!-- Project Description -->
+            <div>
+              <label [for]="'description-' + i" class="block text-sm font-medium text-gray-700 mb-1">
+                Project Description *
+              </label>
+              <textarea
+                [id]="'description-' + i"
+                formControlName="description"
+                rows="4"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                placeholder="Describe the project, your role, achievements, and impact..."
+              ></textarea>
+              @if (projectControl.get('description')?.invalid && projectControl.get('description')?.touched) {
+                <p class="text-red-600 text-sm mt-1">Project description is required</p>
+              }
+            </div>
+
+            <!-- Project Link -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label [for]="'linkLabel-' + i" class="block text-sm font-medium text-gray-700 mb-1">
+                  Link Label
+                </label>
+                <input
+                  type="text"
+                  [id]="'linkLabel-' + i"
+                  formControlName="linkLabel"
+                  class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="e.g., GitHub, Live Demo"
+                />
+              </div>
+              <div>
+                <label [for]="'linkHref-' + i" class="block text-sm font-medium text-gray-700 mb-1">
+                  Link URL
+                </label>
+                <input
+                  type="url"
+                  [id]="'linkHref-' + i"
+                  formControlName="linkHref"
+                  class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="https://github.com/..."
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- Add Project Button -->
+    <div class="flex justify-center">
+      <button
+        type="button"
+        (click)="addProject()"
+        class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+      >
+        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+        </svg>
+        Add Project
+      </button>
+    </div>
+
+    <!-- Form Actions -->
+    <div class="flex justify-end space-x-3 pt-4 border-t border-gray-200">
+      <button
+        type="button"
+        (click)="resetForm()"
+        class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+      >
+        Reset
+      </button>
+      
+      <button
+        type="submit"
+        [disabled]="projectsForm.invalid || isSaving()"
+        class="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        @if (isSaving()) {
+          <svg class="animate-spin w-4 h-4 mr-2 inline" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="m4 12a8 8 0 818-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 714 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          Saving...
+        } @else {
+          Save Changes
+        }
+      </button>
+    </div>
+  </form>
+</div>

@@ -1,0 +1,223 @@
+<div class="space-y-6">
+  <!-- Form Header -->
+  <div class="flex items-center justify-between">
+    <div>
+      <h3 class="text-lg font-medium text-gray-900">Work Experience</h3>
+    </div>
+    
+    <!-- Save Status -->
+    <div class="flex items-center space-x-2">
+      @if (isSaving()) {
+        <div class="flex items-center text-blue-600 text-sm">
+          <svg class="animate-spin w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="m4 12a8 8 0 818-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 714 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          Saving...
+        </div>
+      } @else if (lastSaved()) {
+        <div class="flex items-center text-green-600 text-sm">
+          <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+          </svg>
+          Saved Successfully - Panel closing...
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- Error Message -->
+  @if (errorMessage()) {
+    <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+      <div class="flex">
+        <svg class="w-5 h-5 text-red-400 mr-3 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
+        <div>
+          <h4 class="text-sm font-medium text-red-800">Error saving changes</h4>
+          <p class="text-sm text-red-700 mt-1">{{ errorMessage() }}</p>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Form -->
+  <form [formGroup]="workExperienceForm" (ngSubmit)="onSubmit()" class="space-y-6">
+    <div formArrayName="workExperiences" class="space-y-6">
+      @for (workControl of workExperiencesArray.controls; track $index; let i = $index) {
+        <div [formGroupName]="i" class="bg-white border border-gray-200 rounded-lg p-6">
+          <!-- Work Experience Header -->
+          <div class="flex items-center justify-between mb-4">
+            <h4 class="text-md font-medium text-gray-900">
+              Work Experience {{ i + 1 }}
+            </h4>
+            @if (workExperiencesArray.length > 1) {
+              <button
+                type="button"
+                (click)="removeWorkExperience(i)"
+                class="text-red-600 hover:text-red-800 text-sm font-medium"
+              >
+                Remove
+              </button>
+            }
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Company -->
+            <div>
+              <label [for]="'company-' + i" class="block text-sm font-medium text-gray-700 mb-1">
+                Company *
+              </label>
+              <input
+                type="text"
+                [id]="'company-' + i"
+                formControlName="company"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                placeholder="e.g., Google Inc."
+              />
+              @if (workControl.get('company')?.invalid && workControl.get('company')?.touched) {
+                <p class="text-red-600 text-sm mt-1">Company is required</p>
+              }
+            </div>
+
+            <!-- Company Link -->
+            <div>
+              <label [for]="'link-' + i" class="block text-sm font-medium text-gray-700 mb-1">
+                Company Website
+              </label>
+              <input
+                type="url"
+                [id]="'link-' + i"
+                formControlName="link"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                placeholder="https://company.com"
+              />
+            </div>
+
+            <!-- Job Title -->
+            <div>
+              <label [for]="'title-' + i" class="block text-sm font-medium text-gray-700 mb-1">
+                Job Title *
+              </label>
+              <input
+                type="text"
+                [id]="'title-' + i"
+                formControlName="title"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                placeholder="e.g., Senior Software Developer"
+              />
+              @if (workControl.get('title')?.invalid && workControl.get('title')?.touched) {
+                <p class="text-red-600 text-sm mt-1">Job title is required</p>
+              }
+            </div>
+
+            <!-- Badges -->
+            <div>
+              <label [for]="'badges-' + i" class="block text-sm font-medium text-gray-700 mb-1">
+                Skills/Tags
+              </label>
+              <input
+                type="text"
+                [id]="'badges-' + i"
+                formControlName="badgesString"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                placeholder="Angular, TypeScript, React (comma separated)"
+              />
+              <p class="text-xs text-gray-500 mt-1">Separate multiple skills with commas</p>
+            </div>
+
+            <!-- Start Date -->
+            <div>
+              <label [for]="'start-' + i" class="block text-sm font-medium text-gray-700 mb-1">
+                Start Date *
+              </label>
+              <input
+                type="text"
+                [id]="'start-' + i"
+                formControlName="start"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                placeholder="2023/01 or January 2023"
+              />
+              @if (workControl.get('start')?.invalid && workControl.get('start')?.touched) {
+                <p class="text-red-600 text-sm mt-1">Start date is required</p>
+              }
+            </div>
+
+            <!-- End Date -->
+            <div>
+              <label [for]="'end-' + i" class="block text-sm font-medium text-gray-700 mb-1">
+                End Date
+              </label>
+              <input
+                type="text"
+                [id]="'end-' + i"
+                formControlName="end"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                placeholder="2024/03 or Current"
+              />
+              <p class="text-xs text-gray-500 mt-1">Leave empty if current position</p>
+            </div>
+          </div>
+
+          <!-- Description -->
+          <div class="mt-4">
+            <label [for]="'description-' + i" class="block text-sm font-medium text-gray-700 mb-1">
+              Job Description *
+            </label>
+            <textarea
+              [id]="'description-' + i"
+              formControlName="description"
+              rows="6"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              placeholder="Describe your responsibilities, achievements, and impact..."
+            ></textarea>
+            @if (workControl.get('description')?.invalid && workControl.get('description')?.touched) {
+              <p class="text-red-600 text-sm mt-1">Job description is required</p>
+            }
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- Add Work Experience Button -->
+    <div class="flex justify-center">
+      <button
+        type="button"
+        (click)="addWorkExperience()"
+        class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+      >
+        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+        </svg>
+        Add Work Experience
+      </button>
+    </div>
+
+    <!-- Form Actions -->
+    <div class="flex justify-end space-x-3 pt-4 border-t border-gray-200">
+      <button
+        type="button"
+        (click)="resetForm()"
+        class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+      >
+        Reset
+      </button>
+      
+      <button
+        type="submit"
+        [disabled]="workExperienceForm.invalid || isSaving()"
+        class="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        @if (isSaving()) {
+          <svg class="animate-spin w-4 h-4 mr-2 inline" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="m4 12a8 8 0 818-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 714 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          Saving...
+        } @else {
+          Save Changes
+        }
+      </button>
+    </div>
+  </form>
+</div>
