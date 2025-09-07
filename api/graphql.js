@@ -183,7 +183,7 @@ const typeDefs = `
     workExperience: [WorkExperience]
     work: [WorkExperience]
     education: [Education]
-    skills: [Skill]
+    skills: [String]  # Changed to simple string array
     projects: [Project]
     socialLinks: [SocialLink]
     social: [SocialLink]
@@ -305,7 +305,15 @@ const resolvers = {
   ResumeData: {
     // Alias support for different field names
     work: (parent) => parent.workExperience,
-    social: (parent) => parent.socialLinks
+    social: (parent) => parent.socialLinks,
+    // Convert skills objects to simple strings
+    skills: (parent) => {
+      if (!parent.skills) return [];
+      return parent.skills.map(skill => {
+        if (typeof skill === 'string') return skill;
+        return skill.name || skill.category || skill.level || skill;
+      });
+    }
   },
   PersonalInfo: {
     // Map alternative field names
