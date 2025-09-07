@@ -1,0 +1,117 @@
+<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
+     (click)="onBackdropClick($event)">
+  
+  <!-- Modal Container -->
+  <div class="relative w-full max-w-6xl h-[90vh] mx-4 bg-white rounded-lg shadow-2xl overflow-hidden"
+       (click)="$event.stopPropagation()">
+    
+    <!-- Header -->
+    <div class="flex items-center justify-between p-6 border-b border-gray-200 bg-gray-50">
+      <div class="flex items-center space-x-3">
+        <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+          <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                  d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+          </svg>
+        </div>
+        <div>
+          <h2 class="text-xl font-semibold text-gray-900">CV Admin Panel</h2>
+          <p class="text-sm text-gray-500">Manage your resume content</p>
+        </div>
+      </div>
+      
+      <div class="flex items-center space-x-2">
+        <!-- Save Status Indicator -->
+        <div class="flex items-center space-x-2 text-sm">
+          @if (isSaving()) {
+            <div class="flex items-center text-blue-600">
+              <svg class="animate-spin w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="m4 12a8 8 0 818-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 714 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              Saving...
+            </div>
+          } @else {
+            <div class="flex items-center text-green-600">
+              <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+              </svg>
+              Saved
+            </div>
+          }
+        </div>
+        
+        <!-- Close Button -->
+        <button (click)="closePanel()" 
+                class="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+    
+    <!-- Content Area -->
+    <div class="flex h-[calc(100%-80px)]">
+      
+      <!-- Sidebar Navigation -->
+      <div class="w-64 bg-gray-50 border-r border-gray-200 overflow-y-auto">
+        <nav class="p-4 space-y-1">
+          @for (section of sections; track section.id) {
+            <button (click)="setActiveSection(section.id)"
+                    [class]="getSectionButtonClass(section.id)"
+                    class="w-full flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors">
+              <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" [attr.d]="section.icon"></path>
+              </svg>
+              {{ section.label }}
+            </button>
+          }
+        </nav>
+      </div>
+      
+      <!-- Main Content -->
+      <div class="flex-1 overflow-y-auto">
+        <div class="p-6">
+          
+          <!-- Section Header -->
+          <div class="mb-6">
+            <h3 class="text-lg font-semibold text-gray-900">{{ currentSection().label }}</h3>
+            <p class="text-sm text-gray-500 mt-1">{{ currentSection().description }}</p>
+          </div>
+          
+          <!-- Dynamic Content Area -->
+          <div class="space-y-6">
+            @switch (activeSection()) {
+              @case ('personal') {
+                <app-personal-info-form />
+              }
+              @case ('work') {
+                <app-work-experience-form />
+              }
+              @case ('education') {
+                <app-education-form />
+              }
+              @case ('skills') {
+                <app-skills-form />
+              }
+              @case ('projects') {
+                <app-projects-form />
+              }
+              @case ('social') {
+                <app-social-links-form />
+              }
+              @case ('backup') {
+                <app-backup-export-form />
+              }
+            }
+          </div>
+          
+        </div>
+      </div>
+      
+    </div>
+    
+  </div>
+</div>
