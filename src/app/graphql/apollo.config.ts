@@ -1,9 +1,11 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { ApolloClientOptions, InMemoryCache, from } from '@apollo/client/core';
 import { HttpLink } from 'apollo-angular/http';
 import { onError } from '@apollo/client/link/error';
 import { RetryLink } from '@apollo/client/link/retry';
+import { setContext } from '@apollo/client/link/context';
 import { environment } from '../../environments/environment';
+import { AuthService } from '../services/auth.service';
 
 @Injectable({
   providedIn: 'root'

@@ -3,24 +3,19 @@ import { gql } from 'apollo-angular';
 // Main resume query
 export const GET_RESUME = gql`
   query GetResume {
-    me {
+    getResumeData {
       id
-      name
-      initials
-      location
-      locationLink
-      about
-      summary
-      avatarUrl
-      personalWebsiteUrl
-      contact {
+      personalInfo {
+        name
+        initials
+        location
+        locationLink
+        about
+        summary
+        avatarUrl
+        personalWebsiteUrl
         email
         tel
-        social {
-          name
-          url
-          icon
-        }
       }
       education {
         id
@@ -50,6 +45,11 @@ export const GET_RESUME = gql`
           href
         }
       }
+      social {
+        name
+        url
+        icon
+      }
     }
   }
 `;
@@ -57,10 +57,12 @@ export const GET_RESUME = gql`
 // Subscription for real-time updates
 export const RESUME_UPDATED = gql`
   subscription ResumeUpdated {
-    resumeUpdated {
+    resumeDataUpdated {
       id
-      name
-      about
+      personalInfo {
+        name
+        about
+      }
       work {
         id
         company

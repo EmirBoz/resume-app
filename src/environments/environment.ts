@@ -1,6 +1,6 @@
 export const environment = {
   production: false,
   graphqlEndpoint: 'http://localhost:4000/graphql',
-  enableGraphQL: false,
-  fallbackToStaticData: true
+  enableGraphQL: true,
+  fallbackToStaticData: false
 };

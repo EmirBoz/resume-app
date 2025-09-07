@@ -18,6 +18,7 @@ export type Scalars = {
 export type Query = {
   __typename?: 'Query';
   me: User;
+  getResumeData: ResumeData;
 };
 
 export type Mutation = {
@@ -136,6 +137,31 @@ export type ProjectLink = {
   href: Scalars['String'];
 };
 
+export type ResumeData = {
+  __typename?: 'ResumeData';
+  id: Scalars['ID'];
+  personalInfo: PersonalInfo;
+  work: Array<WorkExperience>;
+  education: Array<Education>;
+  skills: Array<Scalars['String']>;
+  projects: Array<Project>;
+  social: Array<SocialLink>;
+};
+
+export type PersonalInfo = {
+  __typename?: 'PersonalInfo';
+  name: Scalars['String'];
+  initials: Scalars['String'];
+  location: Scalars['String'];
+  locationLink: Scalars['String'];
+  about: Scalars['String'];
+  summary: Scalars['String'];
+  avatarUrl: Scalars['String'];
+  personalWebsiteUrl: Scalars['String'];
+  email: Scalars['String'];
+  tel: Scalars['String'];
+};
+
 export enum IconType {
   Github = 'GITHUB',
   Linkedin = 'LINKEDIN',
@@ -182,27 +208,21 @@ export type ProjectLinkInput = {
 // Query result types
 export type GetResumeQuery = {
   __typename?: 'Query';
-  me: {
-    __typename?: 'User';
+  getResumeData: {
+    __typename?: 'ResumeData';
     id: string;
-    name: string;
-    initials: string;
-    location: string;
-    locationLink: string;
-    about: string;
-    summary: string;
-    avatarUrl: string;
-    personalWebsiteUrl: string;
-    contact: {
-      __typename?: 'Contact';
+    personalInfo: {
+      __typename?: 'PersonalInfo';
+      name: string;
+      initials: string;
+      location: string;
+      locationLink: string;
+      about: string;
+      summary: string;
+      avatarUrl: string;
+      personalWebsiteUrl: string;
       email: string;
       tel: string;
-      social: Array<{
-        __typename?: 'SocialLink';
-        name: string;
-        url: string;
-        icon: IconType;
-      }>;
     };
     education: Array<{
       __typename?: 'Education';
@@ -235,6 +255,12 @@ export type GetResumeQuery = {
         label: string;
         href: string;
       } | null;
+    }>;
+    social: Array<{
+      __typename?: 'SocialLink';
+      name: string;
+      url: string;
+      icon: string;
     }>;
   };
 };

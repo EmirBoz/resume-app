@@ -1,4 +1,4 @@
-import { Injectable, signal, computed, inject, effect } from '@angular/core';
+import { Injectable, signal, computed, inject, effect, DestroyRef } from '@angular/core';
 import { ResumeData } from '../models/resume.interface';
 import { RESUME_DATA } from '../data/resume-data';
 import { GraphQLService } from './graphql.service';
@@ -10,8 +10,9 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 })
 export class DataService {
   private graphqlService = inject(GraphQLService);
+  private destroyRef = inject(DestroyRef);
   
-  // Private signal for resume data
+  // Private signal for resume data - start with empty data, will be updated from GraphQL
   private resumeDataSignal = signal<ResumeData>(RESUME_DATA);
   
   // Loading and error states
@@ -44,7 +45,7 @@ export class DataService {
     this.isLoading.set(true);
     
     this.graphqlService.getResumeData()
-      .pipe(takeUntilDestroyed())
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (data) => {
           this.isLoading.set(false);
@@ -76,20 +77,24 @@ export class DataService {
    * Setup real-time updates via GraphQL subscriptions
    */
   private setupRealtimeUpdates(): void {
-    this.graphqlService.subscribeToResumeUpdates()
-      .pipe(takeUntilDestroyed())
-      .subscribe({
-        next: (updatedData) => {
-          if (updatedData) {
-            console.log('Received real-time resume update:', updatedData);
-            // Refresh full data when updates are received
-            this.refreshFromGraphQL();
-          }
-        },
-        error: (error) => {
-          console.error('Real-time updates subscription failed:', error);
-        }
-      });
+    // Temporarily disabled subscriptions
+    console.log('Real-time updates disabled - subscriptions not implemented yet');
+    
+    // TODO: Implement subscriptions when server supports them
+    // this.graphqlService.subscribeToResumeUpdates()
+    //   .pipe(takeUntilDestroyed())
+    //   .subscribe({
+    //     next: (updatedData) => {
+    //       if (updatedData) {
+    //         console.log('Received real-time resume update:', updatedData);
+    //         // Refresh full data when updates are received
+    //         this.refreshFromGraphQL();
+    //       }
+    //     },
+    //     error: (error) => {
+    //       console.error('Real-time updates subscription failed:', error);
+    //     }
+    //   });
   }
   
   /**
@@ -103,7 +108,7 @@ export class DataService {
     this.isLoading.set(true);
     
     this.graphqlService.refetchData()
-      .pipe(takeUntilDestroyed())
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (data) => {
           this.isLoading.set(false);

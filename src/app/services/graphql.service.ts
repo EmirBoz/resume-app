@@ -3,6 +3,7 @@ import { Apollo } from 'apollo-angular';
 import { Observable, map, catchError, of, BehaviorSubject, from, switchMap } from 'rxjs';
 import { ApolloQueryResult, FetchResult } from '@apollo/client/core';
 import { ResumeData, WorkExperience, Project } from '../models/resume.interface';
+import { IconType as FrontendIconType } from '../models/resume.interface';
 import { 
   GET_RESUME, 
   RESUME_UPDATED, 
@@ -73,9 +74,10 @@ export class GraphQLService {
           return null;
         }
 
-        if (result.data?.me) {
+        if (result.data?.getResumeData) {
           this.isConnected.set(true);
-          return this.transformGraphQLToResumeData(result.data.me);
+          const transformedData = this.transformGraphQLToResumeData(result.data.getResumeData);
+          return transformedData;
         }
 
         return null;
@@ -93,23 +95,23 @@ export class GraphQLService {
   /**
    * Transform GraphQL response to ResumeData format
    */
-  private transformGraphQLToResumeData(graphqlData: GetResumeQuery['me']): ResumeData {
+  private transformGraphQLToResumeData(graphqlData: GetResumeQuery['getResumeData']): ResumeData {
     return {
-      name: graphqlData.name,
-      initials: graphqlData.initials,
-      location: graphqlData.location,
-      locationLink: graphqlData.locationLink,
-      about: graphqlData.about,
-      summary: graphqlData.summary,
-      avatarUrl: graphqlData.avatarUrl,
-      personalWebsiteUrl: graphqlData.personalWebsiteUrl,
+      name: graphqlData.personalInfo.name,
+      initials: graphqlData.personalInfo.initials,
+      location: graphqlData.personalInfo.location,
+      locationLink: graphqlData.personalInfo.locationLink,
+      about: graphqlData.personalInfo.about,
+      summary: graphqlData.personalInfo.summary,
+      avatarUrl: graphqlData.personalInfo.avatarUrl,
+      personalWebsiteUrl: graphqlData.personalInfo.personalWebsiteUrl,
       contact: {
-        email: graphqlData.contact.email,
-        tel: graphqlData.contact.tel,
-        social: graphqlData.contact.social.map(social => ({
+        email: graphqlData.personalInfo.email,
+        tel: graphqlData.personalInfo.tel,
+        social: graphqlData.social.map(social => ({
           name: social.name,
           url: social.url,
-          icon: this.mapIconTypeToString(social.icon),
+          icon: this.mapBackendIconToFrontend(social.icon),
         })),
       },
       education: graphqlData.education.map(edu => ({
@@ -138,6 +140,36 @@ export class GraphQLService {
         } : undefined,
       })),
     };
+  }
+
+  /**
+   * Map backend icon format to frontend format
+   */
+  private mapBackendIconToFrontend(backendIcon: string): FrontendIconType {
+    const iconMapping: Record<string, FrontendIconType> = {
+      'GITHUB': 'github',
+      'github': 'github',
+      'LINKEDIN': 'linkedin',
+      'linkedin': 'linkedin',
+      'X': 'x',
+      'x': 'x',
+      'TWITTER': 'x',
+      'twitter': 'x',
+      'GLOBE': 'globe',
+      'globe': 'globe',
+      'WEBSITE': 'globe',
+      'website': 'globe',
+      'MAIL': 'mail',
+      'mail': 'mail',
+      'EMAIL': 'mail',
+      'email': 'mail',
+      'PHONE': 'phone',
+      'phone': 'phone',
+      'TEL': 'phone',
+      'tel': 'phone'
+    };
+    
+    return iconMapping[backendIcon] || 'globe';
   }
 
   /**
