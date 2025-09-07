@@ -20,28 +20,45 @@ const resumeDataSchema = new mongoose.Schema({
   userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   personalInfo: {
     name: String,
+    initials: String,
     title: String,
     email: String,
     phone: String,
+    tel: String,
     location: String,
+    locationLink: String,
     website: String,
+    personalWebsiteUrl: String,
     linkedin: String,
-    github: String
+    github: String,
+    about: String,
+    summary: String,
+    avatarUrl: String
   },
   summary: String,
   workExperience: [{
+    id: String,
     company: String,
+    link: String,
+    badges: [String],
+    title: String,
     position: String,
+    start: String,
     startDate: String,
+    end: String,
     endDate: String,
     description: String,
     current: Boolean
   }],
   education: [{
+    id: String,
     institution: String,
+    school: String,
     degree: String,
     field: String,
+    start: String,
     startDate: String,
+    end: String,
     endDate: String,
     current: Boolean
   }],
@@ -51,18 +68,27 @@ const resumeDataSchema = new mongoose.Schema({
     category: String
   }],
   projects: [{
+    id: String,
     name: String,
+    title: String,
     description: String,
     technologies: [String],
+    techStack: [String],
     url: String,
     github: String,
+    link: {
+      label: String,
+      href: String
+    },
     startDate: String,
     endDate: String
   }],
   socialLinks: [{
+    name: String,
     platform: String,
     url: String,
-    username: String
+    username: String,
+    icon: String
   }]
 });
 
@@ -73,29 +99,46 @@ const ResumeData = mongoose.models.ResumeData || mongoose.model('ResumeData', re
 const typeDefs = `
   type PersonalInfo {
     name: String
+    initials: String
     title: String
     email: String
     phone: String
+    tel: String
     location: String
+    locationLink: String
     website: String
+    personalWebsiteUrl: String
     linkedin: String
     github: String
+    about: String
+    summary: String
+    avatarUrl: String
   }
 
   type WorkExperience {
+    id: String
     company: String
+    link: String
+    badges: [String]
+    title: String
     position: String
+    start: String
     startDate: String
+    end: String
     endDate: String
     description: String
     current: Boolean
   }
 
   type Education {
+    id: String
     institution: String
+    school: String
     degree: String
     field: String
+    start: String
     startDate: String
+    end: String
     endDate: String
     current: Boolean
   }
@@ -106,20 +149,31 @@ const typeDefs = `
     category: String
   }
 
+  type ProjectLink {
+    label: String
+    href: String
+  }
+
   type Project {
+    id: String
     name: String
+    title: String
     description: String
     technologies: [String]
+    techStack: [String]
     url: String
     github: String
+    link: ProjectLink
     startDate: String
     endDate: String
   }
 
   type SocialLink {
+    name: String
     platform: String
     url: String
     username: String
+    icon: String
   }
 
   type ResumeData {
@@ -127,10 +181,12 @@ const typeDefs = `
     personalInfo: PersonalInfo
     summary: String
     workExperience: [WorkExperience]
+    work: [WorkExperience]
     education: [Education]
     skills: [Skill]
     projects: [Project]
     socialLinks: [SocialLink]
+    social: [SocialLink]
   }
 
   type User {
@@ -245,6 +301,56 @@ const resolvers = {
       
       return await User.findById(decoded.userId);
     }
+  },
+  ResumeData: {
+    // Alias support for different field names
+    work: (parent) => parent.workExperience,
+    social: (parent) => parent.socialLinks
+  },
+  PersonalInfo: {
+    // Map alternative field names
+    tel: (parent) => parent.phone || parent.tel,
+    personalWebsiteUrl: (parent) => parent.website || parent.personalWebsiteUrl,
+    locationLink: (parent) => parent.locationLink || parent.location
+  },
+  WorkExperience: {
+    // Generate ID if not present
+    id: (parent) => parent.id || parent._id || `work-${Date.now()}-${Math.random()}`,
+    // Map alternative field names
+    title: (parent) => parent.position || parent.title,
+    start: (parent) => parent.startDate || parent.start,
+    end: (parent) => parent.endDate || parent.end
+  },
+  Education: {
+    // Generate ID if not present
+    id: (parent) => parent.id || parent._id || `edu-${Date.now()}-${Math.random()}`,
+    // Map alternative field names
+    school: (parent) => parent.institution || parent.school,
+    start: (parent) => parent.startDate || parent.start,
+    end: (parent) => parent.endDate || parent.end
+  },
+  Project: {
+    // Generate ID if not present
+    id: (parent) => parent.id || parent._id || `proj-${Date.now()}-${Math.random()}`,
+    // Map alternative field names
+    title: (parent) => parent.name || parent.title,
+    techStack: (parent) => parent.technologies || parent.techStack,
+    // Create link object if needed
+    link: (parent) => {
+      if (parent.link) return parent.link;
+      if (parent.url) {
+        return {
+          label: parent.name || parent.title || 'View Project',
+          href: parent.url
+        };
+      }
+      return null;
+    }
+  },
+  SocialLink: {
+    // Map alternative field names
+    name: (parent) => parent.platform || parent.name,
+    icon: (parent) => parent.icon || parent.platform
   },
   Mutation: {
     login: async (_, { username, password }) => {
