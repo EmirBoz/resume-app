@@ -586,7 +586,7 @@ const resolvers = {
     id: (parent) => parent.id || parent._id || `proj-${Date.now()}-${Math.random()}`,
     // Map alternative field names
     title: (parent) => parent.name || parent.title,
-    techStack: (parent) => parent.technologies || parent.techStack,
+    techStack: (parent) => parent.techStack || parent.technologies,
     // Create link object if needed
     link: (parent) => {
       if (parent.link) return parent.link;
@@ -814,6 +814,8 @@ const resolvers = {
       const decoded = getUserFromToken(token);
       if (!decoded) throw new Error('Invalid token');
 
+      console.log('UpdateProjects - Received projects data:', JSON.stringify(projects, null, 2));
+
       let resumeData = await ResumeData.findOne({ userId: decoded.userId });
       if (!resumeData) {
         resumeData = new ResumeData({ userId: decoded.userId, projects });
@@ -821,7 +823,10 @@ const resolvers = {
         resumeData.projects = projects;
       }
       
-      return await resumeData.save();
+      const savedData = await resumeData.save();
+      console.log('UpdateProjects - Saved projects data:', JSON.stringify(savedData.projects, null, 2));
+      
+      return savedData;
     },
     updateSocialLinks: async (_, { socialLinks }, context) => {
       await connectToDatabase();
