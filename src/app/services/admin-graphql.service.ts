@@ -464,13 +464,16 @@ export class AdminGraphQLService {
             mutation UpdateWorkExperience($workExperience: [WorkExperienceInput!]!) {
               updateWorkExperience(workExperience: $workExperience) {
                 id
-                company
-                link
-                badges
-                title
-                start
-                end
-                description
+                work {
+                  id
+                  company
+                  link
+                  badges
+                  title
+                  start
+                  end
+                  description
+                }
               }
             }
           `,
@@ -568,10 +571,13 @@ export class AdminGraphQLService {
             mutation UpdateEducation($education: [EducationInput!]!) {
               updateEducation(education: $education) {
                 id
-                school
-                degree
-                start
-                end
+                education {
+                  id
+                  school
+                  degree
+                  start
+                  end
+                }
               }
             }
           `,
@@ -667,7 +673,10 @@ export class AdminGraphQLService {
         body: JSON.stringify({
           query: `
             mutation UpdateSkills($skills: [String!]!) {
-              updateSkills(skills: $skills)
+              updateSkills(skills: $skills) {
+                id
+                skills
+              }
             }
           `,
           variables: { skills: input }
@@ -764,12 +773,15 @@ export class AdminGraphQLService {
             mutation UpdateProjects($projects: [ProjectInput!]!) {
               updateProjects(projects: $projects) {
                 id
-                title
-                techStack
-                description
-                link {
-                  label
-                  href
+                projects {
+                  id
+                  title
+                  techStack
+                  description
+                  link {
+                    label
+                    href
+                  }
                 }
               }
             }
@@ -867,9 +879,12 @@ export class AdminGraphQLService {
           query: `
             mutation UpdateSocialLinks($socialLinks: [SocialLinkInput!]!) {
               updateSocialLinks(socialLinks: $socialLinks) {
-                name
-                url
-                icon
+                id
+                social {
+                  name
+                  url
+                  icon
+                }
               }
             }
           `,
