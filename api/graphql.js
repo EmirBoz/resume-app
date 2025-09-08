@@ -215,11 +215,7 @@ const resumeDataSchema = new mongoose.Schema({
     endDate: String,
     current: Boolean
   }],
-  skills: [{
-    name: String,
-    level: String,
-    category: String
-  }],
+  skills: [{type: String}],  // Changed from object to simple string array
   projects: [{
     id: String,
     name: String,
@@ -533,7 +529,7 @@ const resolvers = {
     // Alias support for different field names
     work: (parent) => parent.workExperience,
     social: (parent) => parent.socialLinks,
-    // Convert skills objects to simple strings
+    // Convert skills objects to simple strings or keep as strings
     skills: (parent) => {
       if (!parent.skills) return [];
       return parent.skills.map(skill => {
