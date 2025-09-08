@@ -372,19 +372,29 @@ const typeDefs = `
   }
 
   input WorkExperienceInput {
+    id: String
     company: String
+    link: String
+    badges: [String]
+    title: String
     position: String
+    start: String
     startDate: String
+    end: String
     endDate: String
     description: String
     current: Boolean
   }
 
   input EducationInput {
+    id: String
     institution: String
+    school: String
     degree: String
     field: String
+    start: String
     startDate: String
+    end: String
     endDate: String
     current: Boolean
   }
@@ -395,20 +405,31 @@ const typeDefs = `
     category: String
   }
 
+  input ProjectLinkInput {
+    label: String
+    href: String
+  }
+
   input ProjectInput {
+    id: String
     name: String
+    title: String
     description: String
     technologies: [String]
+    techStack: [String]
     url: String
     github: String
+    link: ProjectLinkInput
     startDate: String
     endDate: String
   }
 
   input SocialLinkInput {
+    name: String
     platform: String
     url: String
     username: String
+    icon: String
   }
 
   type Query {
@@ -424,7 +445,7 @@ const typeDefs = `
     updateSummary(summary: String!): ResumeData
     updateWorkExperience(workExperience: [WorkExperienceInput!]!): ResumeData
     updateEducation(education: [EducationInput!]!): ResumeData
-    updateSkills(skills: [SkillInput!]!): ResumeData
+    updateSkills(skills: [String!]!): ResumeData
     updateProjects(projects: [ProjectInput!]!): ResumeData
     updateSocialLinks(socialLinks: [SocialLinkInput!]!): ResumeData
     seedDefaultData: String
