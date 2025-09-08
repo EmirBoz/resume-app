@@ -455,7 +455,7 @@ const resolvers = {
         // Ensure database connection
         await connectToDatabase();
         
-        const resumeData = await ResumeData.findOne().exec();
+        let resumeData = await ResumeData.findOne().exec();
         console.log('Resume data query result:', {
           found: !!resumeData,
           id: resumeData?._id,
@@ -463,13 +463,17 @@ const resolvers = {
         });
         
         if (!resumeData) {
-          console.log('No resume data found, attempting to seed...');
-          await seedDefaultData();
-          // Try again after seeding
-          const newResumeData = await ResumeData.findOne().exec();
-          console.log('After seeding, resume data found:', !!newResumeData);
-          return newResumeData;
+          console.log('No resume data found, creating default data automatically...');
+          try {
+            const newResumeData = new ResumeData(defaultResumeData);
+            resumeData = await newResumeData.save();
+            console.log('Default resume data created successfully with ID:', resumeData._id);
+          } catch (seedError) {
+            console.error('Failed to create default data:', seedError);
+            throw new Error('No resume data found and failed to create default data: ' + seedError.message);
+          }
         }
+        
         return resumeData;
       } catch (error) {
         console.error('Error fetching resume data:', error);
