@@ -1,7 +1,7 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import { Observable, map, catchError, of, BehaviorSubject, from, switchMap } from 'rxjs';
-import { ApolloQueryResult, FetchResult } from '@apollo/client/core';
+import { ApolloQueryResult, FetchResult, WatchQueryFetchPolicy } from '@apollo/client/core';
 import { ResumeData, WorkExperience, Project } from '../models/resume.interface';
 import { IconType as FrontendIconType } from '../models/resume.interface';
 import { 
@@ -60,27 +60,60 @@ export class GraphQLService {
     this.isLoading.set(true);
     this.clearError();
 
-    return this.apollo.watchQuery<GetResumeQuery>({
-      query: GET_RESUME,
-      fetchPolicy: 'cache-first',
-      errorPolicy: 'all'
-    }).valueChanges.pipe(
-      map((result: ApolloQueryResult<GetResumeQuery>) => {
-        this.isLoading.set(false);
+    console.log('Starting GraphQL query with:', {
+      query: GET_RESUME.loc?.source?.body || 'Query source not available',
+      endpoint: environment.graphqlEndpoint
+    });
+
+    // Apollo Client bypass - direkt fetch kullan
+    return from(this.fetchGraphQLDirectly()).pipe(
+      switchMap((directResult) => {
+        if (directResult) {
+          console.log('Direct fetch successful, using that data');
+          return of(directResult);
+        }
         
-        if (result.errors && result.errors.length > 0) {
-          console.error('GraphQL errors:', result.errors);
-          this.setError('GraphQL query failed: ' + result.errors[0].message);
-          return null;
-        }
+        // Apollo Client fallback
+        console.log('Trying Apollo Client as backup...');
+        return this.apollo.watchQuery<GetResumeQuery>({
+          query: GET_RESUME,
+          fetchPolicy: 'no-cache' as WatchQueryFetchPolicy,
+          errorPolicy: 'all',
+          notifyOnNetworkStatusChange: true
+        }).valueChanges.pipe(
+          map((result: ApolloQueryResult<GetResumeQuery>) => {
+            this.isLoading.set(false);
+            
+            console.log('Apollo Client Result:', {
+              data: result.data,
+              errors: result.errors,
+              loading: result.loading,
+              networkStatus: result.networkStatus
+            });
+            
+            if (result.errors && result.errors.length > 0) {
+              console.error('GraphQL errors:', result.errors);
+              this.setError('GraphQL query failed: ' + result.errors[0].message);
+              if (result.data?.getResumeData) {
+                this.isConnected.set(true);
+                console.log('Data found despite errors, transforming...');
+                return this.transformGraphQLToResumeData(result.data.getResumeData);
+              }
+              return null;
+            }
 
-        if (result.data?.getResumeData) {
-          this.isConnected.set(true);
-          const transformedData = this.transformGraphQLToResumeData(result.data.getResumeData);
-          return transformedData;
-        }
+            if (result.data?.getResumeData) {
+              this.isConnected.set(true);
+              console.log('Raw GraphQL data:', result.data.getResumeData);
+              const transformedData = this.transformGraphQLToResumeData(result.data.getResumeData);
+              console.log('GraphQL data successfully transformed:', transformedData?.name);
+              return transformedData;
+            }
 
-        return null;
+            console.log('No data received from GraphQL - result.data:', result.data);
+            return null;
+          })
+        );
       }),
       catchError(error => {
         console.error('GraphQL request failed:', error);
@@ -90,6 +123,125 @@ export class GraphQLService {
         return of(null);
       })
     );
+  }
+
+  /**
+   * Direct GraphQL fetch bypass Apollo Client
+   */
+  private async fetchGraphQLDirectly(): Promise<ResumeData | null> {
+    try {
+      console.log('Attempting direct GraphQL fetch to:', environment.graphqlEndpoint);
+      
+      // Production endpoint için tam URL oluştur
+      const endpoint = environment.production && !environment.graphqlEndpoint.startsWith('http')
+        ? window.location.origin + environment.graphqlEndpoint
+        : environment.graphqlEndpoint;
+        
+      console.log('Resolved endpoint URL:', endpoint);
+      
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          query: GET_RESUME.loc?.source?.body || `
+            query GetResume {
+              getResumeData {
+                id
+                personalInfo {
+                  name
+                  initials
+                  location
+                  locationLink
+                  about
+                  summary
+                  avatarUrl
+                  personalWebsiteUrl
+                  email
+                  tel
+                }
+                education {
+                  id
+                  school
+                  degree
+                  start
+                  end
+                }
+                work {
+                  id
+                  company
+                  link
+                  badges
+                  title
+                  start
+                  end
+                  description
+                }
+                skills
+                projects {
+                  id
+                  title
+                  techStack
+                  description
+                  link {
+                    label
+                    href
+                  }
+                }
+                social {
+                  name
+                  url
+                  icon
+                }
+              }
+            }
+          `
+        }),
+      });
+
+      console.log('Direct fetch response status:', response.status, response.statusText);
+      
+      if (!response.ok) {
+        console.error('Direct fetch HTTP error:', response.status, response.statusText);
+        const errorText = await response.text();
+        console.error('Error response body:', errorText);
+        return null;
+      }
+
+      const result = await response.json();
+      console.log('Direct fetch raw result:', result);
+
+      // Vercel GraphQL response format handling (from memory)
+      let graphqlResult;
+      if (result.body && result.body.singleResult) {
+        // Vercel wrapper format: { body: { singleResult: { data: ... } } }
+        graphqlResult = result.body.singleResult;
+        console.log('Detected Vercel response format, extracting data from singleResult...');
+      } else {
+        // Standard GraphQL format
+        graphqlResult = result;
+        console.log('Using standard GraphQL response format');
+      }
+
+      if (graphqlResult.errors) {
+        console.error('Direct fetch GraphQL errors:', graphqlResult.errors);
+        return null;
+      }
+
+      if (graphqlResult.data?.getResumeData) {
+        this.isLoading.set(false);
+        this.isConnected.set(true);
+        console.log('Direct fetch successful, transforming data:', graphqlResult.data.getResumeData.personalInfo?.name);
+        return this.transformGraphQLToResumeData(graphqlResult.data.getResumeData);
+      }
+
+      console.log('Direct fetch: No data in response, graphqlResult.data:', graphqlResult.data);
+      return null;
+    } catch (error) {
+      console.error('Direct fetch failed with error:', error);
+      return null;
+    }
   }
 
   /**

@@ -58,23 +58,18 @@ export class ApolloConfigService {
       http
     ]);
 
-    // Cache configuration
+    // Cache configuration - Basitleştirilmiş versiyıon
     const cache = new InMemoryCache({
+      addTypename: true,
       typePolicies: {
-        User: {
+        Query: {
           fields: {
-            work: {
-              merge(existing = [], incoming) {
-                return incoming;
-              }
-            },
-            projects: {
-              merge(existing = [], incoming) {
-                return incoming;
-              }
-            },
-            skills: {
-              merge(existing = [], incoming) {
+            getResumeData: {
+              // Cache'i devre dışı bırak bu query için
+              read(existing, { canRead }) {
+                return existing;
+              },
+              merge(existing, incoming) {
                 return incoming;
               }
             }
@@ -89,14 +84,21 @@ export class ApolloConfigService {
       defaultOptions: {
         watchQuery: {
           errorPolicy: 'all',
-          fetchPolicy: 'cache-first'
+          fetchPolicy: 'cache-first',
+          notifyOnNetworkStatusChange: true
         },
         query: {
           errorPolicy: 'all',
           fetchPolicy: 'cache-first'
+        },
+        mutate: {
+          errorPolicy: 'all'
         }
       },
-      connectToDevTools: !environment.production
+      // Development mod'da devtools'ı aktif et
+      connectToDevTools: !environment.production,
+      // Cache'ı sıkıntıda varsayılan değerlere döndür
+      assumeImmutableResults: false
     };
   }
 }

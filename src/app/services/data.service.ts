@@ -44,6 +44,8 @@ export class DataService {
 
     this.isLoading.set(true);
     
+    console.log('Initializing data with GraphQL endpoint:', environment.graphqlEndpoint);
+    
     this.graphqlService.getResumeData()
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
@@ -54,11 +56,16 @@ export class DataService {
             // Successfully loaded from GraphQL
             this.resumeDataSignal.set(data);
             this.dataSource.set('graphql');
-            console.log('Resume data loaded from GraphQL');
-          } else if (environment.fallbackToStaticData) {
-            // Fallback to static data
-            this.dataSource.set('static');
-            console.log('Falling back to static resume data');
+            console.log('Resume data loaded from GraphQL:', data.name);
+          } else {
+            console.warn('No data received from GraphQL');
+            if (environment.fallbackToStaticData) {
+              // Fallback to static data
+              this.dataSource.set('static');
+              console.log('Falling back to static resume data');
+            } else {
+              console.error('No GraphQL data and fallback disabled');
+            }
           }
         },
         error: (error) => {
@@ -68,6 +75,8 @@ export class DataService {
           if (environment.fallbackToStaticData) {
             this.dataSource.set('static');
             console.log('Error occurred, falling back to static resume data');
+          } else {
+            console.error('GraphQL failed and fallback disabled');
           }
         }
       });
@@ -173,6 +182,19 @@ export class DataService {
     } else {
       this.resumeDataSignal.set(RESUME_DATA);
       this.dataSource.set('static');
+    }
+  }
+  
+  /**
+   * Clear Apollo cache and reinitialize
+   */
+  clearCacheAndReload(): void {
+    if (environment.enableGraphQL) {
+      this.graphqlService.clearCache();
+      console.log('Apollo cache cleared, reloading data...');
+      setTimeout(() => {
+        this.initializeData();
+      }, 100);
     }
   }
   

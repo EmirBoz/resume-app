@@ -108,6 +108,15 @@ ng e2e
 - **ALWAYS** use strong, unique passwords in production
 - **CHANGE** default admin credentials (`admin/admin123`)
 
+### GraphQL API Test
+
+After deployment, test your GraphQL API at: `https://yourdomain.com/test-graphql.html`
+
+This test page helps diagnose:
+- GraphQL endpoint connectivity
+- Resume data loading
+- Database seeding
+
 For comprehensive production deployment guide, see [DEPLOYMENT.md](./DEPLOYMENT.md)
 
 ### Quick Deploy Options:

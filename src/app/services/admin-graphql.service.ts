@@ -308,30 +308,94 @@ export class AdminGraphQLService {
     this.isLoading.set(true);
     this.error.set(null);
 
-    return this.apollo.mutate<{ updatePersonalInfo: any }>({
-      mutation: UPDATE_PERSONAL_INFO,
-      variables: { input },
-      context: {
-        headers: this.authService.getAuthHeaders()
-      }
-    }).pipe(
-      map(result => {
-        this.isLoading.set(false);
-        
-        if (result.errors && result.errors.length > 0) {
+    // Use direct fetch for Vercel compatibility
+    return new Observable(observer => {
+      this.updatePersonalInfoWithDirectFetch(input)
+        .then(success => {
+          this.isLoading.set(false);
+          observer.next(success);
+          observer.complete();
+        })
+        .catch(error => {
+          this.isLoading.set(false);
           this.error.set('Failed to update personal info');
-          return false;
-        }
-        
-        return !!result.data?.updatePersonalInfo;
-      }),
-      catchError(error => {
-        this.isLoading.set(false);
-        this.error.set('Failed to update personal info');
-        console.error('Update personal info failed:', error);
-        return of(false);
-      })
-    );
+          console.error('Update personal info failed:', error);
+          observer.next(false);
+          observer.complete();
+        });
+    });
+  }
+
+  /**
+   * Direct fetch for updatePersonalInfo - Vercel compatibility
+   */
+  private async updatePersonalInfoWithDirectFetch(input: any): Promise<boolean> {
+    try {
+      console.log('Attempting direct updatePersonalInfo fetch...');
+      
+      const token = this.authService.getToken();
+      if (!token) {
+        throw new Error('No authentication token');
+      }
+
+      const response = await fetch('/graphql', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          query: `
+            mutation UpdatePersonalInfo($input: PersonalInfoInput!) {
+              updatePersonalInfo(input: $input) {
+                name
+                initials
+                location
+                locationLink
+                about
+                summary
+                avatarUrl
+                personalWebsiteUrl
+                email
+                tel
+              }
+            }
+          `,
+          variables: { input }
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error: ${response.status}`);
+      }
+
+      const result = await response.json();
+      console.log('Direct updatePersonalInfo result:', result);
+
+      // Handle Vercel response format
+      let graphqlResult;
+      if (result.body && result.body.singleResult) {
+        graphqlResult = result.body.singleResult;
+        console.log('Detected Vercel response format for updatePersonalInfo');
+      } else {
+        graphqlResult = result;
+      }
+
+      if (graphqlResult.errors) {
+        console.error('UpdatePersonalInfo GraphQL errors:', graphqlResult.errors);
+        throw new Error(graphqlResult.errors[0].message || 'Update failed');
+      }
+
+      if (!graphqlResult.data?.updatePersonalInfo) {
+        throw new Error('No update data in response');
+      }
+
+      console.log('Personal info update successful:', graphqlResult.data.updatePersonalInfo.name);
+      return true;
+    } catch (error) {
+      console.error('Direct updatePersonalInfo fetch failed:', error);
+      throw error;
+    }
   }
 
   /**

@@ -376,29 +376,42 @@ export class PersonalInfoFormComponent implements OnInit, OnDestroy {
     
     try {
       const formValue = this.personalInfoForm.value;
+      console.log('Saving personal info with data:', formValue);
       
-      // Call GraphQL mutation
-      const success = await this.adminGraphQLService.updatePersonalInfo(formValue).toPromise();
-      
-      if (!success) {
-        throw new Error('Failed to save personal information');
-      }
-      
-      // Update success state
-      this.lastSaved.set(this.formatTime(new Date()));
-      
-      // Refresh data service to update UI
-      this.dataService.refreshFromGraphQL();
-      
-      // Close admin panel after successful save
-      setTimeout(() => {
-        this.adminService.closeAdminPanel();
-      }, 500); // Small delay to show success message
+      // Call GraphQL mutation with proper subscription handling
+      this.adminGraphQLService.updatePersonalInfo(formValue).subscribe({
+        next: (success) => {
+          console.log('Update personal info result:', success);
+          
+          if (success) {
+            // Update success state
+            this.lastSaved.set(this.formatTime(new Date()));
+            
+            // Refresh data service to update UI
+            this.dataService.refreshFromGraphQL();
+            
+            // Close admin panel after successful save
+            setTimeout(() => {
+              this.adminService.closeAdminPanel();
+            }, 500); // Small delay to show success message
+            
+            console.log('Personal info updated successfully');
+          } else {
+            throw new Error('Update returned false');
+          }
+          
+          this.isSaving.set(false);
+        },
+        error: (error) => {
+          console.error('Error saving personal info:', error);
+          this.errorMessage.set(error.message || 'Failed to save changes. Please try again.');
+          this.isSaving.set(false);
+        }
+      });
       
     } catch (error: any) {
-      console.error('Error saving personal info:', error);
+      console.error('Error in savePersonalInfo:', error);
       this.errorMessage.set(error.message || 'Failed to save changes. Please try again.');
-    } finally {
       this.isSaving.set(false);
     }
   }

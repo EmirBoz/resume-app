@@ -15,9 +15,7 @@ const connectToDatabase = async () => {
     await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/cv-development', {
       maxPoolSize: 1, // Maintain up to 1 socket connection
       serverSelectionTimeoutMS: 5000, // Keep trying to send operations for 5 seconds
-      socketTimeoutMS: 45000, // Close sockets after 45 seconds of inactivity
-      bufferCommands: false, // Disable mongoose buffering
-      bufferMaxEntries: 0 // Disable mongoose buffering
+      socketTimeoutMS: 45000 // Close sockets after 45 seconds of inactivity
     });
     isConnected = true;
     console.log('MongoDB connected successfully');
@@ -76,7 +74,13 @@ const defaultResumeData = {
       current: false
     }
   ],
-  skills: ['TypeScript', 'Angular', 'React', 'Node.js', 'MongoDB'],
+  skills: [
+    { name: 'TypeScript', level: 'Advanced', category: 'Frontend' },
+    { name: 'Angular', level: 'Advanced', category: 'Frontend' },
+    { name: 'React', level: 'Intermediate', category: 'Frontend' },
+    { name: 'Node.js', level: 'Intermediate', category: 'Backend' },
+    { name: 'MongoDB', level: 'Intermediate', category: 'Database' }
+  ],
   projects: [
     {
       id: '1',
@@ -114,15 +118,18 @@ const defaultResumeData = {
 // Function to seed default data
 const seedDefaultData = async () => {
   try {
+    console.log('Checking for existing resume data...');
     const existingData = await ResumeData.findOne();
     if (!existingData) {
       console.log('No resume data found, creating default data...');
       const newResumeData = new ResumeData(defaultResumeData);
-      await newResumeData.save();
-      console.log('Default resume data created successfully');
+      const savedData = await newResumeData.save();
+      console.log('Default resume data created successfully with ID:', savedData._id);
+    } else {
+      console.log('Existing resume data found with ID:', existingData._id);
     }
   } catch (error) {
-    console.log('Error seeding default data:', error.message);
+    console.error('Error seeding default data:', error);
     // Don't throw error, just log it - seeding is optional
   }
 };
@@ -133,6 +140,8 @@ const userSchema = new mongoose.Schema({
   password: { type: String, required: true },
   email: { type: String },
   role: { type: String, default: 'user' }
+}, {
+  timestamps: true // createdAt ve updatedAt otomatik eklenir
 });
 
 const resumeDataSchema = new mongoose.Schema({
@@ -313,22 +322,32 @@ const typeDefs = `
     username: String!
     email: String
     role: String
+    createdAt: String
+    updatedAt: String
   }
 
   type AuthPayload {
     token: String!
     user: User!
+    expiresAt: String
   }
 
   input PersonalInfoInput {
     name: String
+    initials: String
     title: String
     email: String
     phone: String
+    tel: String
     location: String
+    locationLink: String
     website: String
+    personalWebsiteUrl: String
     linkedin: String
     github: String
+    about: String
+    summary: String
+    avatarUrl: String
   }
 
   input WorkExperienceInput {
@@ -374,17 +393,20 @@ const typeDefs = `
   type Query {
     getResumeData: ResumeData
     me: User
+    getServerInfo: String
+    clearAllData: String
   }
 
   type Mutation {
     login(username: String!, password: String!): AuthPayload
-    updatePersonalInfo(personalInfo: PersonalInfoInput!): ResumeData
+    updatePersonalInfo(input: PersonalInfoInput!): PersonalInfo
     updateSummary(summary: String!): ResumeData
     updateWorkExperience(workExperience: [WorkExperienceInput!]!): ResumeData
     updateEducation(education: [EducationInput!]!): ResumeData
     updateSkills(skills: [SkillInput!]!): ResumeData
     updateProjects(projects: [ProjectInput!]!): ResumeData
     updateSocialLinks(socialLinks: [SocialLinkInput!]!): ResumeData
+    seedDefaultData: String
   }
 `;
 
@@ -403,18 +425,30 @@ const resolvers = {
   Query: {
     getResumeData: async (_, __, context) => {
       try {
+        console.log('getResumeData resolver called');
+        
         // Ensure database connection
         await connectToDatabase();
         
         const resumeData = await ResumeData.findOne().exec();
+        console.log('Resume data query result:', {
+          found: !!resumeData,
+          id: resumeData?._id,
+          hasPersonalInfo: !!resumeData?.personalInfo
+        });
+        
         if (!resumeData) {
-          console.log('No resume data found in database');
-          return null;
+          console.log('No resume data found, attempting to seed...');
+          await seedDefaultData();
+          // Try again after seeding
+          const newResumeData = await ResumeData.findOne().exec();
+          console.log('After seeding, resume data found:', !!newResumeData);
+          return newResumeData;
         }
         return resumeData;
       } catch (error) {
         console.error('Error fetching resume data:', error);
-        throw new Error('Failed to fetch resume data');
+        throw new Error('Failed to fetch resume data: ' + error.message);
       }
     },
     me: async (_, __, context) => {
@@ -432,6 +466,37 @@ const resolvers = {
       } catch (error) {
         console.error('Error in me query:', error);
         return null;
+      }
+    },
+    getServerInfo: async (_, __, context) => {
+      // IP adresini log etmek için yardımcı query
+      const ip = context.headers['x-forwarded-for'] || 
+                 context.headers['x-real-ip'] || 
+                 context.headers['cf-connecting-ip'] || 
+                 'unknown';
+      console.log('Server IP Info:', {
+        'x-forwarded-for': context.headers['x-forwarded-for'],
+        'x-real-ip': context.headers['x-real-ip'],
+        'cf-connecting-ip': context.headers['cf-connecting-ip'],
+        'user-agent': context.headers['user-agent']
+      });
+      return `Server IP: ${ip}`;
+    },
+    clearAllData: async () => {
+      try {
+        await connectToDatabase();
+        
+        console.log('Clearing all resume data from database...');
+        const result = await ResumeData.deleteMany({});
+        console.log('Deleted documents:', result.deletedCount);
+        
+        // Seed new default data
+        await seedDefaultData();
+        
+        return `Cleared ${result.deletedCount} documents and seeded new data`;
+      } catch (error) {
+        console.error('Clear data error:', error);
+        throw new Error('Failed to clear data: ' + error.message);
       }
     }
   },
@@ -498,6 +563,46 @@ const resolvers = {
       try {
         await connectToDatabase();
         
+        // Admin credentials check
+        if (username === process.env.ADMIN_USERNAME && password === process.env.ADMIN_PASSWORD) {
+          // Create or find admin user
+          let adminUser = await User.findOne({ username });
+          if (!adminUser) {
+            const hashedPassword = await bcrypt.hash(password, 12);
+            adminUser = new User({ 
+              username, 
+              password: hashedPassword,
+              email: process.env.ADMIN_EMAIL || 'admin@example.com',
+              role: 'admin'
+            });
+            await adminUser.save();
+          }
+
+          const token = jwt.sign(
+            { userId: adminUser._id, username: adminUser.username },
+            process.env.JWT_SECRET || 'fallback-secret',
+            { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
+          );
+
+          // Calculate expiration date  
+          const expiresAt = new Date();
+          expiresAt.setDate(expiresAt.getDate() + 7);
+
+          return {
+            token,
+            expiresAt: expiresAt.toISOString(),
+            user: {
+              id: adminUser._id,
+              username: adminUser.username,
+              email: adminUser.email,
+              role: adminUser.role,
+              createdAt: adminUser.createdAt ? adminUser.createdAt.toISOString() : new Date().toISOString(),
+              updatedAt: adminUser.updatedAt ? adminUser.updatedAt.toISOString() : new Date().toISOString()
+            }
+          };
+        }
+
+        // Regular user authentication
         const user = await User.findOne({ username });
         if (!user) {
           throw new Error('Invalid credentials');
@@ -514,13 +619,19 @@ const resolvers = {
           { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
         );
 
+        const expiresAt = new Date();
+        expiresAt.setDate(expiresAt.getDate() + 7);
+
         return {
           token,
+          expiresAt: expiresAt.toISOString(),
           user: {
             id: user._id,
             username: user.username,
             email: user.email,
-            role: user.role
+            role: user.role,
+            createdAt: user.createdAt ? user.createdAt.toISOString() : new Date().toISOString(),
+            updatedAt: user.updatedAt ? user.updatedAt.toISOString() : new Date().toISOString()
           }
         };
       } catch (error) {
@@ -528,7 +639,7 @@ const resolvers = {
         throw error;
       }
     },
-    updatePersonalInfo: async (_, { personalInfo }, context) => {
+    updatePersonalInfo: async (_, { input }, context) => {
       await connectToDatabase();
       
       const authHeader = context.headers.authorization;
@@ -540,12 +651,15 @@ const resolvers = {
 
       let resumeData = await ResumeData.findOne({ userId: decoded.userId });
       if (!resumeData) {
-        resumeData = new ResumeData({ userId: decoded.userId, personalInfo });
+        resumeData = new ResumeData({ userId: decoded.userId, personalInfo: input });
       } else {
-        resumeData.personalInfo = personalInfo;
+        resumeData.personalInfo = { ...resumeData.personalInfo, ...input };
       }
       
-      return await resumeData.save();
+      await resumeData.save();
+      
+      // Return PersonalInfo type
+      return resumeData.personalInfo;
     },
     updateSummary: async (_, { summary }, context) => {
       await connectToDatabase();
@@ -660,6 +774,25 @@ const resolvers = {
       }
       
       return await resumeData.save();
+    },
+    seedDefaultData: async () => {
+      try {
+        await connectToDatabase();
+        
+        console.log('Manual seed triggered...');
+        const existingData = await ResumeData.findOne();
+        if (existingData) {
+          return 'Data already exists in database';
+        }
+        
+        const newResumeData = new ResumeData(defaultResumeData);
+        const savedData = await newResumeData.save();
+        console.log('Manual seed completed with ID:', savedData._id);
+        return 'Default data created successfully';
+      } catch (error) {
+        console.error('Manual seed error:', error);
+        throw new Error('Failed to seed data: ' + error.message);
+      }
     }
   }
 };
@@ -695,6 +828,16 @@ module.exports = async (req, res) => {
   }
   
   try {
+    // Debug environment variables
+    console.log('GraphQL Handler - Environment Check:', {
+      hasMongoUri: !!process.env.MONGODB_URI,
+      mongoUri: process.env.MONGODB_URI ? process.env.MONGODB_URI.substring(0, 20) + '...' : 'Not set',
+      hasJwtSecret: !!process.env.JWT_SECRET,
+      hasAdminCredentials: !!(process.env.ADMIN_USERNAME && process.env.ADMIN_PASSWORD),
+      method: req.method,
+      url: req.url
+    });
+    
     // Wait for server to start (no-op if already started)
     await serverStartPromise;
     
@@ -708,6 +851,8 @@ module.exports = async (req, res) => {
       variables = req.query.variables ? JSON.parse(req.query.variables) : undefined;
     }
     
+    console.log('GraphQL Query:', query ? query.substring(0, 100) + '...' : 'No query');
+    
     // Execute GraphQL
     const result = await server.executeOperation(
       { query, variables },
@@ -718,11 +863,17 @@ module.exports = async (req, res) => {
       }
     );
     
+    console.log('GraphQL Result:', {
+      hasData: !!result.body?.singleResult?.data,
+      hasErrors: !!result.body?.singleResult?.errors,
+      kind: result.body?.kind
+    });
+    
     // Send response
     res.status(200).json(result);
     
   } catch (error) {
-    console.error('GraphQL Error:', error);
+    console.error('GraphQL Handler Error:', error);
     res.status(500).json({ 
       errors: [{ message: 'Internal server error', details: error.message }] 
     });

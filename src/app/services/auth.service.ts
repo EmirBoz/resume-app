@@ -70,34 +70,95 @@ export class AuthService {
   login(username: string, password: string): Observable<AuthPayload> {
     this._isLoading.set(true);
     
-    return this.apollo.mutate<{ login: AuthPayload }>({
-      mutation: this.LOGIN_MUTATION,
-      variables: { username, password }
-    }).pipe(
-      map(result => {
-        if (!result.data?.login) {
-          throw new Error('Invalid response from server');
-        }
-        return result.data.login;
-      }),
-      tap(authPayload => {
-        // Store token (only in browser)
-        if (typeof localStorage !== 'undefined') {
-          localStorage.setItem(this.tokenKey, authPayload.token);
-        }
-        
-        // Update state
-        this._isAuthenticated.set(true);
-        this._currentUser.set(authPayload.user);
-        this._isLoading.set(false);
-      }),
-      catchError(error => {
-        this._isLoading.set(false);
-        this._isAuthenticated.set(false);
-        this._currentUser.set(null);
-        throw error;
-      })
-    );
+    // Direct fetch approach for Vercel compatibility
+    return new Observable(observer => {
+      this.loginWithDirectFetch(username, password)
+        .then(authPayload => {
+          // Store token (only in browser)
+          if (typeof localStorage !== 'undefined') {
+            localStorage.setItem(this.tokenKey, authPayload.token);
+          }
+          
+          // Update state
+          this._isAuthenticated.set(true);
+          this._currentUser.set(authPayload.user);
+          this._isLoading.set(false);
+          
+          observer.next(authPayload);
+          observer.complete();
+        })
+        .catch(error => {
+          console.error('Login failed:', error);
+          this._isLoading.set(false);
+          this._isAuthenticated.set(false);
+          this._currentUser.set(null);
+          observer.error(new Error('Invalid credentials'));
+        });
+    });
+  }
+
+  /**
+   * Direct fetch login for Vercel compatibility
+   */
+  private async loginWithDirectFetch(username: string, password: string): Promise<AuthPayload> {
+    try {
+      console.log('Attempting direct login fetch...');
+      
+      const response = await fetch('/graphql', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          query: `
+            mutation Login($username: String!, $password: String!) {
+              login(username: $username, password: $password) {
+                token
+                expiresAt
+                user {
+                  id
+                  username
+                  createdAt
+                  updatedAt
+                }
+              }
+            }
+          `,
+          variables: { username, password }
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error: ${response.status}`);
+      }
+
+      const result = await response.json();
+      console.log('Direct login result:', result);
+
+      // Handle Vercel response format
+      let graphqlResult;
+      if (result.body && result.body.singleResult) {
+        graphqlResult = result.body.singleResult;
+        console.log('Detected Vercel login response format');
+      } else {
+        graphqlResult = result;
+      }
+
+      if (graphqlResult.errors) {
+        console.error('Login GraphQL errors:', graphqlResult.errors);
+        throw new Error(graphqlResult.errors[0].message || 'Login failed');
+      }
+
+      if (!graphqlResult.data?.login) {
+        throw new Error('No login data in response');
+      }
+
+      console.log('Login successful:', graphqlResult.data.login.user.username);
+      return graphqlResult.data.login;
+    } catch (error) {
+      console.error('Direct login fetch failed:', error);
+      throw error;
+    }
   }
 
   /**

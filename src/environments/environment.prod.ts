@@ -1,9 +1,9 @@
 export const environment = {
   production: true,
-  graphqlEndpoint: '/graphql',
-  enableGraphQL: true,
-  fallbackToStaticData: true,
+  graphqlEndpoint: '/api/graphql',
+  enableGraphQL: true, // GraphQL'i aktif et
+  fallbackToStaticData: true, // Fallback mekanizması aktif
   enableServiceWorker: true,
   enableAnalytics: false,
-  apiTimeout: 10000
+  apiTimeout: 15000
 };

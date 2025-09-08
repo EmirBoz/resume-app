@@ -63,6 +63,13 @@ export class App implements OnInit {
     
     // Initialize admin service
     this.adminService.initialize();
+    
+    // Debug GraphQL configuration in production
+    console.log('App initialized with GraphQL config:', {
+      enableGraphQL: this.dataService.isGraphQLEnabled(),
+      dataSource: this.dataService.dataSource(),
+      isProduction: window.location.hostname !== 'localhost'
+    });
   }
 
   // Error boundary-like functionality
