@@ -37,9 +37,9 @@ const defaultResumeData = {
     location: 'İstanbul, Turkey',
     locationLink: 'https://www.google.com/maps/place/İstanbul',
     about: 'A proactive Frontend Developer with 3+ years of experience in building scalable and user-friendly web applications. Passionate about continuous learning and exploring modern technologies to deliver high-quality solutions.',
-    summary: 'I specialize in creating scalable and user-friendly applications using TypeScript and Angular. While my primary focus is frontend, I continuously explore other technologies such as React, Java Spring Boot, and .NET to become a more versatile engineer.',
+    summary: 'I specialize in creating scalable and user-friendly applications using TypeScript and Angular. While my primary focus is frontend, I continuously explore other technologies such as React, Java Spring Boot, and .NET to become a more versatile engineer. I am passionate about solving complex challenges and contributing to impactful projects.',
     avatarUrl: '/profile.jpeg',
-    personalWebsiteUrl: 'https://emirboz.dev',
+    personalWebsiteUrl: 'null',
     email: 'emirrbozz@gmail.com',
     tel: '+90 505 411 14 80',
     phone: '+90 505 411 14 80'
@@ -47,53 +47,78 @@ const defaultResumeData = {
   workExperience: [
     {
       id: '1',
-      company: 'Vodafone',
+      company: 'Vodafone via Pia',
       link: 'https://vodafone.com.tr',
-      badges: ['Hybrid', 'Angular', 'TypeScript'],
-      title: 'Software Developer',
-      position: 'Software Developer',
+      badges: ['Hybrid', 'Agile', 'Angular', 'Angular Material', 'TypeScript'],
+      title: 'Software Developer | Vodafone Next',
+      position: 'Software Developer | Vodafone Next',
       start: '2022/03',
       startDate: '2022/03',
       end: null,
       endDate: null,
-      description: 'Developing modern web applications using Angular and TypeScript.',
+      description: 'Contributed as a Frontend Developer to Vodafone Next, a large-scale customer and sales management platform built on Dnext, a microservice-based digital interaction framework. The platform is used by Vodafone\'s sales representatives and customer agents to manage internet services, corporate solutions, and cloud-based products for both individual and enterprise customers.\n\n- Worked across multiple integrated modules including CRM, OmniChannel, BackOffice, Product Catalog, Partner Portal, and Common libraries, contributing to both new feature development and production defect resolution.\n- Developed and optimized customer lifecycle management flows (creation, search, updates, transfers, cancellations, package migrations, and add-on products) in the CRM module.\n- Enhanced the OmniChannel checkout and order orchestration system, implementing dynamic rendering of product characteristics, conditional validations, and step-based workflows integrated with Camunda BPM.\n- Contributed to the Product Catalog by building configuration rule management, package change workflows, and document validation rules, enabling flexible and scalable product definitions.\n- Delivered improvements in the BackOffice module, including dashboards and job management features for order tracking and workflow visibility.\n- Implemented role-based access control using Keycloak, ensuring secure and compliant user authorization across the platform.\n- Collaborated with senior developers in an Agile environment, initially supporting the Defect Team to gain cross-platform knowledge, later transitioning into feature delivery teams to implement end-to-end solutions.\n\nTechnologies: Angular, TypeScript, Angular Material, RxJS, Keycloak, Camunda, REST APIs, Microservice architecture\n\nImpact:\n- Improved customer service efficiency by enhancing order tracking and product operation flows.\n- Reduced operational errors by implementing dynamic validation and condition-based rendering for product configurations.\n- Contributed to the platform\'s scalability and adaptability, supporting Vodafone\'s transition to a next-generation digital customer management ecosystem.',
       current: true
+    },
+    {
+      id: '2',
+      company: 'Turk Telecom',
+      link: 'https://www.turktelekom.com.tr',
+      badges: ['On Site', 'C/C++'],
+      title: 'Intern Engineer',
+      position: 'Intern Engineer',
+      start: '2019/06',
+      startDate: '2019/06',
+      end: '2019/09',
+      endDate: '2019/09',
+      description: 'Completed an internship in the Network Management Systems department at Türk Telekom, gaining practical exposure to large-scale telecommunication infrastructure and operations.\n\n- Assisted in monitoring and analyzing network performance metrics, learning the fundamentals of fault detection and service continuity.\n- Worked with simulation tools such as Cisco Packet Tracer to design and configure basic network topologies.\n- Observed real-world implementations of network management platforms, gaining insight into enterprise-scale system reliability and scalability.\n- Collaborated with engineers to document processes and enhance understanding of telecom-grade network architectures.\n\nImpact:\n- Built a strong foundation in networking concepts, which later supported my transition into software development.\n- Developed problem-solving and analytical skills through hands-on exposure to real network environments and scenarios.',
+      current: false
     }
   ],
   education: [
     {
       id: '1',
-      institution: 'University Example',
-      school: 'University Example',
-      degree: 'Computer Science',
-      field: 'Computer Science',
-      start: '2018',
-      startDate: '2018',
-      end: '2022',
-      endDate: '2022',
+      institution: 'Gebze Technical University',
+      school: 'Gebze Technical University',
+      degree: "Bachelor's Degree in Electronics Engineering",
+      field: 'Electronics Engineering',
+      start: '',
+      startDate: '',
+      end: '',
+      endDate: '',
       current: false
     }
   ],
   skills: [
-    { name: 'TypeScript', level: 'Advanced', category: 'Frontend' },
-    { name: 'Angular', level: 'Advanced', category: 'Frontend' },
-    { name: 'React', level: 'Intermediate', category: 'Frontend' },
-    { name: 'Node.js', level: 'Intermediate', category: 'Backend' },
-    { name: 'MongoDB', level: 'Intermediate', category: 'Database' }
+    'Angular / Angular Material',
+    'React / Next.js',
+    'TypeScript',
+    'JavaScript (ES6+)',
+    'HTML5 / CSS3 / SCSS',
+    'Tailwind CSS',
+    'Design Systems',
+    'Node.js (learning)',
+    'Java Spring Boot (learning)',
+    '.NET (learning)',
+    'PostgreSQL',
+    'MongoDB',
+    'Git / GitHub / Bitbucket',
+    'Jira / Agile Methodologies',
+    'RESTful APIs',
+    'CI/CD basics'
   ],
   projects: [
     {
       id: '1',
-      name: 'Resume Application',
-      title: 'Resume Application',
-      description: 'A modern resume application built with Angular and GraphQL.',
-      technologies: ['Angular', 'GraphQL', 'TypeScript'],
-      techStack: ['Angular', 'GraphQL', 'TypeScript'],
-      url: 'https://example.com',
+      name: 'CV/Resume Web Application',
+      title: 'CV/Resume Web Application',
+      description: 'A minimalist, print-friendly single-page CV/Resume app built with Angular 20.\nFeatures include dynamic data with GraphQL, PDF export, and a custom UI component library for consistent design.',
+      technologies: ['Angular 20', 'Tailwind CSS', 'SCSS', 'Angular Signals', 'GraphQL (Apollo Client)', 'jsPDF', 'html2canvas'],
+      techStack: ['Angular 20', 'Tailwind CSS', 'SCSS', 'Angular Signals', 'GraphQL (Apollo Client)', 'jsPDF', 'html2canvas'],
+      url: 'https://github.com/EmirBoz',
       github: 'https://github.com/EmirBoz',
       link: {
-        label: 'View Project',
-        href: 'https://example.com'
+        label: 'GitHub Repository',
+        href: 'https://github.com/EmirBoz'
       }
     }
   ],
