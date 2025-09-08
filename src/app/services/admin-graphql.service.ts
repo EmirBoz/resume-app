@@ -2,6 +2,7 @@ import { Injectable, inject, signal } from '@angular/core';
 import { Apollo, gql } from 'apollo-angular';
 import { Observable, map, catchError, of } from 'rxjs';
 import { AuthService } from './auth.service';
+import { DataService } from './data.service';
 
 // Admin-specific GraphQL operations
 const GET_RESUME_DATA = gql`
@@ -255,6 +256,7 @@ export interface AdminResumeData {
 export class AdminGraphQLService {
   private apollo = inject(Apollo);
   private authService = inject(AuthService);
+  private dataService = inject(DataService);
   
   // Loading states
   isLoading = signal<boolean>(false);
@@ -298,7 +300,7 @@ export class AdminGraphQLService {
   }
 
   /**
-   * Update personal information
+   * Update personal information with refetch
    */
   updatePersonalInfo(input: any): Observable<boolean> {
     if (!this.authService.isLoggedIn()) {
@@ -311,8 +313,15 @@ export class AdminGraphQLService {
     // Use direct fetch for Vercel compatibility
     return new Observable(observer => {
       this.updatePersonalInfoWithDirectFetch(input)
-        .then(success => {
+        .then(async success => {
           this.isLoading.set(false);
+          
+          if (success) {
+            // Trigger data refetch in DataService
+            console.log('Personal info updated, triggering data refetch...');
+            this.dataService.refreshFromGraphQL();
+          }
+          
           observer.next(success);
           observer.complete();
         })

@@ -674,14 +674,35 @@ const resolvers = {
       const decoded = getUserFromToken(token);
       if (!decoded) throw new Error('Invalid token');
 
+      console.log('UpdatePersonalInfo - User ID:', decoded.userId);
+      
+      // First try to find by user ID, then try to find any existing record
       let resumeData = await ResumeData.findOne({ userId: decoded.userId });
+      
       if (!resumeData) {
-        resumeData = new ResumeData({ userId: decoded.userId, personalInfo: input });
+        console.log('No data found for user ID, checking for any existing data...');
+        // Try to find existing data without user association
+        const existingData = await ResumeData.findOne({});
+        
+        if (existingData) {
+          console.log('Found existing data without user association, updating...');
+          // Associate existing data with current user
+          existingData.userId = decoded.userId;
+          existingData.personalInfo = { ...existingData.personalInfo, ...input };
+          await existingData.save();
+          return existingData.personalInfo;
+        } else {
+          console.log('No existing data found, creating new record...');
+          // Create new record
+          resumeData = new ResumeData({ userId: decoded.userId, personalInfo: input });
+        }
       } else {
+        console.log('Found data for user, updating personalInfo...');
         resumeData.personalInfo = { ...resumeData.personalInfo, ...input };
       }
       
       await resumeData.save();
+      console.log('PersonalInfo updated successfully');
       
       // Return PersonalInfo type
       return resumeData.personalInfo;
