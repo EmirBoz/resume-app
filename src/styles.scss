@@ -161,13 +161,18 @@
   
   /* Ensure backgrounds are rendered */
   background-color: #f7f5f3 !important;
+
+  /* Enhance typography for better page fill in PDF */
+  font-size: 12.8px !important;
+  line-height: 1.45 !important;
   
   /* Fix any layout issues - Full width containers */
   .container {
     max-width: none !important;
     width: 100% !important;
     margin: 0 !important;
-    padding: 1rem !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
   }
   
   .max-w-2xl {
@@ -184,14 +189,28 @@
     min-width: 794px !important;
     max-width: 794px !important;
     margin: 0 !important;
-    padding: 1rem !important;
+    padding: 0 !important; /* override print:p-11 */
+    overflow: visible !important;
+    height: auto !important;
   }
   
   /* Inner content container should fill A4 width */
   .max-w-3xl {
     width: 100% !important;
     max-width: none !important;
-    margin: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  /* Force inner sections/paragraphs to use full available width in PDF */
+  /* Expand only inside the cloned PDF context via class flag, not live app */
+  &.pdf-mode {
+    section[aria-label="Resume Content"],
+    section[aria-label="Resume Content"] * {
+      max-width: none !important;
+    }
   }
   
   /* Hide screen-only elements */
@@ -303,15 +322,29 @@
   .max-w-md {
     max-width: none !important;
   }
+
+  /* Paragraphs and lists should not have max-width caps */
+  p, li, ul, ol {
+    max-width: none !important;
+  }
   
   /* Ensure proper spacing */
   .space-y-8 > * + * {
-    margin-top: 1.5rem !important; /* tighten top block spacing */
+    margin-top: 1.75rem !important;
   }
   
   .space-y-4 > * + * {
-    margin-top: 1rem !important;
+    margin-top: 1.25rem !important;
   }
+
+  /* Cards: balanced padding for visual density */
+  .p-6 { padding: 1.5rem !important; }
+  .p-4 { padding: 1rem !important; }
+
+  /* Headings: slightly larger for readability */
+  h1 { font-size: 24px !important; }
+  h2 { font-size: 18px !important; }
+  h3 { font-size: 14px !important; }
   
   /* Fix card shadows for PDF */
   .shadow-sm,
@@ -369,6 +402,7 @@
   section {
     opacity: 1 !important;
     visibility: visible !important;
+    overflow: visible !important;
   }
   
   /* Ensure headings are visible */

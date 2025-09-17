@@ -50,11 +50,44 @@ export class PDFService {
       // Extra wait for PDF-specific styles to apply
       await new Promise(resolve => setTimeout(resolve, 500));
 
-      // Force element to A4 width for capture
-      const a4WidthPx = 794; // A4 width at 96 DPI
-      element.style.width = `${a4WidthPx}px`;
-      element.style.minWidth = `${a4WidthPx}px`;
-      element.style.maxWidth = `${a4WidthPx}px`;
+      // Compute target aspect ratio (A4 with inner margin) and tune capture width so content height fills page
+      const pdfTemp = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+      const marginMmTune = 6; // same as render
+      const availWmm = pdfTemp.internal.pageSize.getWidth() - marginMmTune * 2;
+      const availHmm = pdfTemp.internal.pageSize.getHeight() - marginMmTune * 2;
+      const targetAspect = availHmm / availWmm; // desired height/width
+
+      // Prepare element layout for measurement
+      const originalDisplay = element.style.display;
+      const originalWidth = element.style.width;
+      const originalMinWidth = element.style.minWidth;
+      const originalMaxWidth = element.style.maxWidth;
+      element.style.display = 'block';
+      element.style.minWidth = '0';
+      element.style.maxWidth = 'none';
+
+      // Binary search capture width to approximate target aspect by reflowing text
+      const initialWidth = Math.max(600, element.scrollWidth);
+      let low = Math.max(420, Math.floor(initialWidth * 0.55));
+      let high = Math.max(600, Math.floor(initialWidth * 1.0));
+      let bestWidth = high;
+      for (let i = 0; i < 6; i++) {
+        const mid = Math.floor((low + high) / 2);
+        element.style.width = mid + 'px';
+        // reflow
+        await new Promise(r => setTimeout(r, 50));
+        const aspect = element.scrollHeight / mid;
+        if (aspect < targetAspect) {
+          // too short -> narrow more to increase aspect
+          high = mid - 10;
+        } else {
+          bestWidth = mid;
+          low = mid + 10;
+        }
+        if (high <= low) break;
+      }
+
+      const contentWidthPx = Math.max(420, bestWidth);
 
       // Wait for layout to adjust
       await new Promise(resolve => setTimeout(resolve, 500));
@@ -65,7 +98,7 @@ export class PDFService {
         useCORS: true,
         allowTaint: false,
         backgroundColor: '#f7f5f3', // CV background color
-        width: a4WidthPx,
+        width: contentWidthPx,
         height: element.scrollHeight,
         scrollX: 0,
         scrollY: 0,
@@ -82,6 +115,93 @@ export class PDFService {
           // Fix cloned document styles
           const clonedElement = clonedDoc.getElementById(elementId);
           if (clonedElement) {
+            // Mark root for scoping
+            clonedElement.classList.add('pdf-capture-root');
+
+            // Inject hard override styles scoped to the cloned root only
+            try {
+              const style = clonedDoc.createElement('style');
+              style.textContent = `
+                /* Bump root font-size so all rem-based Tailwind text scales proportionally */
+                html, body, #${elementId}.pdf-capture-root {
+                  font-size: 40px !important; /* scale up from default 16px */
+                  line-height: 1.5 !important;
+                }
+                /* Neutralize Tailwind font-size utilities (text-*, print:text-*) so they inherit */
+                #${elementId}.pdf-capture-root [class*="text-"],
+                #${elementId}.pdf-capture-root [class*="print:text-"] {
+                  font-size: inherit !important;
+                }
+                #${elementId}.pdf-capture-root,
+                #${elementId}.pdf-capture-root * {
+                  box-sizing: border-box !important;
+                }
+                /* Remove layout caps in clone */
+                #${elementId}.pdf-capture-root { padding: 0 !important; margin: 0 !important; }
+                /* Hard reset max-width and horizontal auto margins for all descendants */
+                #${elementId}.pdf-capture-root * {
+                  max-width: none !important;
+                  margin-left: 0 !important;
+                  margin-right: 0 !important;
+                  padding-left: 0 !important;
+                  padding-right: 0 !important;
+                }
+                #${elementId}.pdf-capture-root .container,
+                #${elementId}.pdf-capture-root [class*="max-w-"],
+                #${elementId}.pdf-capture-root [class*="mx-auto"],
+                #${elementId}.pdf-capture-root [class*="px-"],
+                #${elementId}.pdf-capture-root [class*="prose"] {
+                  max-width: none !important;
+                  width: 100% !important;
+                  margin-left: 0 !important;
+                  margin-right: 0 !important;
+                }
+                #${elementId}.pdf-capture-root p,
+                #${elementId}.pdf-capture-root li,
+                #${elementId}.pdf-capture-root ul,
+                #${elementId}.pdf-capture-root ol,
+                #${elementId}.pdf-capture-root h1,
+                #${elementId}.pdf-capture-root h2,
+                #${elementId}.pdf-capture-root h3 {
+                  max-width: none !important;
+                }
+              `;
+              clonedDoc.head.appendChild(style);
+            } catch {}
+
+            // Additionally sanitize common Tailwind layout classes in the clone
+            const suspects = clonedElement.querySelectorAll('[class*="max-w-"], [class*="mx-auto"], .container');
+            suspects.forEach(node => {
+              const el = node as HTMLElement;
+              el.style.maxWidth = 'none';
+              el.style.width = '100%';
+              el.style.marginLeft = '0';
+              el.style.marginRight = '0';
+              // Remove auto margins if set inline by Tailwind utilities
+              try {
+                el.className = el.className
+                  .replace(/\bmax-w-[^\s]+/g, '')
+                  .replace(/\bmx-auto\b/g, '')
+                  .replace(/\bcontainer\b/g, '')
+                  .trim();
+              } catch {}
+            });
+
+            // STEP 1: Hard reset the main resume content section explicitly (clone only)
+            const resumeSection = clonedElement.querySelector('section[aria-label="Resume Content"]') as HTMLElement | null;
+            if (resumeSection) {
+              try { resumeSection.className = resumeSection.className.replace(/\bmax-w-[^\s]+/g, '').replace(/\bmx-auto\b/g, '').trim(); } catch {}
+              resumeSection.style.width = '100%';
+              resumeSection.style.maxWidth = 'none';
+              resumeSection.style.marginLeft = '0';
+              resumeSection.style.marginRight = '0';
+              resumeSection.style.paddingLeft = '0';
+              resumeSection.style.paddingRight = '0';
+              resumeSection.style.whiteSpace = 'normal';
+              resumeSection.style.wordBreak = 'normal';
+              resumeSection.style.overflowWrap = 'anywhere';
+            }
+
             // Ensure all text is properly aligned
             const badges = clonedElement.querySelectorAll('.app-badge');
             badges.forEach(node => {
@@ -157,7 +277,7 @@ export class PDFService {
         ratio: canvas.height / canvas.width
       });
 
-      // Simple PDF generation - fill the page
+      // Simple PDF generation - fill the page edge-to-edge
       const imgData = canvas.toDataURL('image/png');
       const pdfWidth = pdf.internal.pageSize.getWidth();
       const pdfHeight = pdf.internal.pageSize.getHeight();
@@ -166,75 +286,48 @@ export class PDFService {
       pdf.setFillColor(247, 245, 243); // CV background color
       pdf.rect(0, 0, pdfWidth, pdfHeight, 'F');
 
-      // Calculate dimensions to fit content on single page
-      const margin = 5; // 5mm margin
-      const availableWidth = pdfWidth - (margin * 2);
-      const availableHeight = pdfHeight - (margin * 2);
-
-      // Calculate scaling to fit both width and height
-      const scaleX = availableWidth / (canvas.width / 2); // Divide by 2 because scale=2
-      const scaleY = availableHeight / (canvas.height / 2);
-      const scale = Math.min(scaleX, scaleY); // Use smaller scale to fit both dimensions
-
-      const imgWidth = (canvas.width / 2) * scale;
+      // Scale image to full page width with zero margins
+      const margin = 0;
+      const availableWidth = pdfWidth;
+      const scale = availableWidth / (canvas.width / 2); // Divide by 2 because scale=2
+      const imgWidth = availableWidth;
       const imgHeight = (canvas.height / 2) * scale;
+      const imgX = 0;
+      const imgY = 0;
 
-      // Center the image
-      const imgX = (pdfWidth - imgWidth) / 2;
-      const imgY = margin;
+      // Force single-page output with small inner margins and left/top alignment
+      const marginMm = 6; // ~6mm "mantıklı" iç kenar boşluğu
+      const availableWidthMm = pdfWidth - marginMm * 2;
+      const availableHeightMm = pdfHeight - marginMm * 2;
+      const imgAspect = canvas.height / canvas.width; // keep aspect ratio in page units
 
-      // Check if content fits on single page
-      if (imgHeight > availableHeight) {
-        // Content is too tall - use multiple pages
-        const pageHeight = availableHeight;
-        const totalPages = Math.ceil(imgHeight / pageHeight);
-
-        for (let page = 0; page < totalPages; page++) {
-          if (page > 0) {
-            pdf.addPage();
-            // Set background for new page
-            pdf.setFillColor(247, 245, 243);
-            pdf.rect(0, 0, pdfWidth, pdfHeight, 'F');
-          }
-
-          const sourceY = page * pageHeight * (canvas.height / imgHeight);
-          const sourceHeight = Math.min(pageHeight * (canvas.height / imgHeight), canvas.height - sourceY);
-
-          // Create a temporary canvas for this page section
-          const tempCanvas = document.createElement('canvas');
-          const tempCtx = tempCanvas.getContext('2d');
-          tempCanvas.width = canvas.width;
-          tempCanvas.height = sourceHeight;
-
-          if (tempCtx) {
-            tempCtx.drawImage(canvas, 0, sourceY, canvas.width, sourceHeight, 0, 0, canvas.width, sourceHeight);
-            const pageImgData = tempCanvas.toDataURL('image/png');
-
-            pdf.addImage(
-                pageImgData,
-                'PNG',
-                imgX,
-                margin,
-                imgWidth,
-                pageHeight,
-                undefined,
-                'FAST'
-            );
-          }
-        }
-      } else {
-        // Content fits on single page
-        pdf.addImage(
-            imgData,
-            'PNG',
-            imgX,
-            imgY,
-            imgWidth,
-            imgHeight,
-            undefined,
-            'FAST' // Compression mode
-        );
+      // Prefer height-fit so the content reaches the bottom; if width overflows, fallback to width-fit
+      let targetHeightMm = availableHeightMm;
+      let targetWidthMm = targetHeightMm / imgAspect;
+      if (targetWidthMm > availableWidthMm) {
+        targetWidthMm = availableWidthMm;
+        targetHeightMm = targetWidthMm * imgAspect;
       }
+
+      const finalX = marginMm; // left aligned
+      const finalY = marginMm; // top aligned
+
+      pdf.addImage(
+          imgData,
+          'PNG',
+          finalX,
+          finalY,
+          targetWidthMm,
+          targetHeightMm,
+          undefined,
+          'FAST'
+      );
+
+      // restore layout styles
+      element.style.display = originalDisplay;
+      element.style.width = originalWidth;
+      element.style.minWidth = originalMinWidth;
+      element.style.maxWidth = originalMaxWidth;
 
       // Add metadata
       const resumeData = this.dataService.resumeData();
@@ -390,7 +483,13 @@ export class PDFService {
     element.style.width = '100%';
     element.style.maxWidth = 'none';
     element.style.margin = '0';
-    element.style.padding = '1rem';
+    element.style.padding = '0';
+    element.style.overflow = 'visible';
+    element.style.height = 'auto';
+
+    // Do NOT mutate inner widths here to avoid leaking styles into the live app.
+
+    // Do not mutate live DOM widths; handle in clone only
 
     // Show print-only contact info - more aggressive approach
     const allDivs = element.querySelectorAll('div');
