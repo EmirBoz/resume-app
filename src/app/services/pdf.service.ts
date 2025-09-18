@@ -297,7 +297,7 @@ export class PDFService {
       const imgY = 0;
 
       // Force single-page output with uniform inner margins and left/top alignment
-      const marginMm = 4; //
+      const marginMm = 3; //
       const availableWidthMm = pdfWidth - marginMm * 2;
       const availableHeightMm = pdfHeight - marginMm * 2;
       const imgAspect = canvas.height / canvas.width; // keep aspect ratio in page units
@@ -310,7 +310,8 @@ export class PDFService {
         targetWidthMm = targetHeightMm / imgAspect;
       }
 
-      const finalX = marginMm; // left aligned
+      const remainingWidthMm = availableWidthMm - targetWidthMm;
+      const finalX = Math.round((marginMm + Math.max(0, remainingWidthMm / 2)) * 100) / 100;
       const finalY = marginMm; // top aligned
 
       pdf.addImage(
