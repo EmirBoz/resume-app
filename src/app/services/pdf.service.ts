@@ -68,8 +68,9 @@ export class PDFService {
 
       // Binary search capture width to approximate target aspect by reflowing text
       const initialWidth = Math.max(600, element.scrollWidth);
-      let low = Math.max(420, Math.floor(initialWidth * 0.55));
-      let high = Math.max(600, Math.floor(initialWidth * 1.0));
+      let low = Math.max(420, Math.floor(initialWidth * 0.5));
+      // Allow expanding the width up to 2x to reduce early wraps and better match A4 aspect
+      let high = Math.max(900, Math.floor(initialWidth * 2.0));
       let bestWidth = high;
       for (let i = 0; i < 6; i++) {
         const mid = Math.floor((low + high) / 2);
@@ -282,7 +283,7 @@ export class PDFService {
       const pdfWidth = pdf.internal.pageSize.getWidth();
       const pdfHeight = pdf.internal.pageSize.getHeight();
 
-      // Set background color
+      // Paint full-page background to avoid white margins
       pdf.setFillColor(247, 245, 243); // CV background color
       pdf.rect(0, 0, pdfWidth, pdfHeight, 'F');
 
@@ -295,18 +296,18 @@ export class PDFService {
       const imgX = 0;
       const imgY = 0;
 
-      // Force single-page output with small inner margins and left/top alignment
-      const marginMm = 6; // ~6mm "mantıklı" iç kenar boşluğu
+      // Force single-page output with uniform inner margins and left/top alignment
+      const marginMm = 4; //
       const availableWidthMm = pdfWidth - marginMm * 2;
       const availableHeightMm = pdfHeight - marginMm * 2;
       const imgAspect = canvas.height / canvas.width; // keep aspect ratio in page units
 
-      // Prefer height-fit so the content reaches the bottom; if width overflows, fallback to width-fit
-      let targetHeightMm = availableHeightMm;
-      let targetWidthMm = targetHeightMm / imgAspect;
-      if (targetWidthMm > availableWidthMm) {
-        targetWidthMm = availableWidthMm;
-        targetHeightMm = targetWidthMm * imgAspect;
+      // Fit by width first to ensure full-page width, then clamp by height if needed
+      let targetWidthMm = availableWidthMm;
+      let targetHeightMm = targetWidthMm * imgAspect;
+      if (targetHeightMm > availableHeightMm) {
+        targetHeightMm = availableHeightMm;
+        targetWidthMm = targetHeightMm / imgAspect;
       }
 
       const finalX = marginMm; // left aligned

@@ -114,11 +114,36 @@ export const RESUME_DATA: ResumeData = {
         'html2canvas'
       ],
       description:
-        'A minimalist, print-friendly single-page CV/Resume app built with Angular 20.\n' +
-        'Features include dynamic data with GraphQL, PDF export, and a custom UI component library for consistent design.',
+        'A minimalist, print-friendly single-page CV/Resume app built with Angular 20. Features include dynamic data with GraphQL, PDF export, a custom UI component library for consistent design, and a comprehensive admin panel for real-time content management. The application provides secure authentication for administrators to update personal information, work experience, education, skills, and projects without requiring code changes.',
       link: {
         label: 'GitHub Repository',
-        href: 'https://github.com/EmirBoz'
+        href: 'https://github.com/EmirBoz/resume-app'
+      }
+    },
+    {
+      title: 'LiftTracker - Fitness Tracking Mobile Application',
+      techStack: [
+        'React Native',
+        'TypeScript',
+        'Redux Toolkit',
+        'React Navigation v7',
+        'React Native Paper (Material Design 3)',
+        'ASP.NET Core 9',
+        'PostgreSQL',
+        'Entity Framework Core',
+        'JWT Authentication',
+        'BCrypt',
+        'React Native Chart Kit',
+        'i18next',
+        'Linear Gradients'
+      ],
+      description:
+          'A cross-platform mobile fitness application built with React Native and ASP.NET Core. ' +
+          'Features multi-day workout program creation, real-time exercise tracking with set/rep logging, and comprehensive performance analytics including personal record tracking and trend analysis. ' +
+          'The application includes secure JWT authentication, PostgreSQL database with complex relational design, and modern Material Design 3 UI with dark theme support and multi-language localization.',
+      link: {
+        label: 'GitHub Repository',
+        href: 'https://github.com/EmirBoz/LiftTracker-app'
       }
     }
   ],
